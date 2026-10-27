@@ -1,4 +1,4 @@
-ap:6px}.cover-shortcuts button span{font-size:.63rem}.cover-month-card{padding:15px!important;border-radius:15px!important}#coverScreen .cover-stat{padding:9px;min-height:67px}#coverScreen .cover-stat .cv{font-size:.92rem}.cover-foot{font-size:.54rem!important;flex-direction:column}.agenda-home-head{align-items:flex-start;flex-direction:column}.agenda-selects{width:100%;flex-wrap:wrap}.agenda-selects select{flex:1}.agenda-status{margin-left:auto}.agenda-calendar-wrap{padding:8px}.agenda-weekdays,.agenda-calendar{gap:3px}.agenda-day{min-height:35px;padding:4px}.agenda-day .n{font-size:.6rem}.agenda-summary{display:block}.agenda-summary-title{margin-bottom:9px}.agenda-quick{grid-template-columns:1fr 1fr}.agenda-kpis{grid-template-columns:repeat(2,1fr)}.agenda-legend{gap:8px;font-size:.52rem}}
+adding:9px 8px;gap:6px}.cover-shortcuts button span{font-size:.63rem}.cover-month-card{padding:15px!important;border-radius:15px!important}#coverScreen .cover-stat{padding:9px;min-height:67px}#coverScreen .cover-stat .cv{font-size:.92rem}.cover-foot{font-size:.54rem!important;flex-direction:column}.agenda-home-head{align-items:flex-start;flex-direction:column}.agenda-selects{width:100%;flex-wrap:wrap}.agenda-selects select{flex:1}.agenda-status{margin-left:auto}.agenda-calendar-wrap{padding:8px}.agenda-weekdays,.agenda-calendar{gap:3px}.agenda-day{min-height:35px;padding:4px}.agenda-day .n{font-size:.6rem}.agenda-summary{display:block}.agenda-summary-title{margin-bottom:9px}.agenda-quick{grid-template-columns:1fr 1fr}.agenda-kpis{grid-template-columns:repeat(2,1fr)}.agenda-legend{gap:8px;font-size:.52rem}}
 @media(prefers-reduced-motion:reduce){.agenda-day,.cover-shortcuts button{transition:none}.agenda-day:hover,.cover-shortcuts button:hover{transform:none}}
 </style>
 <script id="monthly-agenda-runtime">
@@ -55,6 +55,98 @@ saveData=function(){_agendaSaveData();if(typeof renderAgendaHome==='function')re
 const _agendaSetMonthFilter=setMonthFilter;
 setMonthFilter=function(v){_agendaSetMonthFilter(v);renderAgendaHome();};
 renderAgendaHome();
+</script>
+
+
+<script id="google-sync-runtime">
+/* Archivio centrale Google Drive */
+const GOOGLE_SYNC_URL = 'https://script.google.com/macros/s/AKfycbwlO49qLDWc3TFaA9KqfIVwibsl_7sdl_xqqHbWivZGILsDCpzu7lSKpH8jQBBuXu4m/exec';
+let googleSyncReady = false;
+let googleSyncTimer = null;
+let googleSyncRevision = 0;
+
+function setGoogleSyncStatus(message, state) {
+  const el = document.getElementById('googleSyncStatus');
+  if (!el) return;
+  el.textContent = message;
+  el.dataset.state = state || '';
+}
+function googleSnapshot() {
+  const storage = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('strao_')) storage[key] = localStorage.getItem(key);
+  }
+  return {
+    app: 'Gestione Ore', backupType: 'snapshot-completo', version: 2,
+    createdAt: new Date().toISOString(), data: DATA, brand: loadBrand(),
+    theme: localStorage.getItem(THEME_KEY),
+    graphicStyle: localStorage.getItem('strao_graphic_style_v1') || 'base',
+    view: { year: currentYear, monthFilter: currentMonthFilter }, localStorage: storage
+  };
+}
+async function pullGoogleData() {
+  setGoogleSyncStatus('Connessione Google…', 'loading');
+  try {
+    const response = await fetch(GOOGLE_SYNC_URL + '?action=load', {cache:'no-store'});
+    const payload = await response.json();
+    const snapshot = payload && payload.data;
+    if (!payload || !payload.ok || !snapshot || !snapshot.data) throw new Error('Archivio non disponibile');
+    if (snapshot.localStorage && typeof snapshot.localStorage === 'object') {
+      Object.entries(snapshot.localStorage).forEach(([key, value]) => {
+        if (key.startsWith('strao_') && typeof value === 'string') localStorage.setItem(key, value);
+      });
+    }
+    DATA = snapshot.data;
+    if (snapshot.brand) saveBrand(snapshot.brand);
+    if (snapshot.theme) localStorage.setItem(THEME_KEY, snapshot.theme);
+    if (snapshot.graphicStyle) localStorage.setItem('strao_graphic_style_v1', snapshot.graphicStyle);
+    purgeInvalidYears();
+    const nowYear = String(new Date().getFullYear());
+    const savedYear = snapshot.view && String(snapshot.view.year || '');
+    currentYear = DATA[nowYear] ? Number(nowYear) : (DATA[savedYear] ? Number(savedYear) : Math.max(...Object.keys(DATA).map(Number).filter(Number.isFinite)));
+    currentMonthFilter = snapshot.view && snapshot.view.monthFilter !== undefined ? String(snapshot.view.monthFilter) : '';
+    localStorage.setItem(STORE_KEY, JSON.stringify(DATA));
+    if (typeof initBrand === 'function') initBrand();
+    if (typeof initTheme === 'function') initTheme();
+    if (typeof setGraphicStyle === 'function') setGraphicStyle(localStorage.getItem('strao_graphic_style_v1') || 'base');
+    if (typeof populateMonthFilter === 'function') populateMonthFilter();
+    const monthSel = document.getElementById('monthFilter'); if (monthSel) monthSel.value = currentMonthFilter;
+    googleSyncRevision = payload.revision || 0; googleSyncReady = true;
+    renderAll();
+    if (typeof renderCoverStats === 'function') renderCoverStats();
+    setGoogleSyncStatus('Google sincronizzato', 'ok');
+  } catch (error) {
+    googleSyncReady = false;
+    setGoogleSyncStatus('Salvataggio locale attivo', 'offline');
+    console.warn('Google sync:', error);
+  }
+}
+async function pushGoogleData() {
+  if (!googleSyncReady) return;
+  setGoogleSyncStatus('Salvataggio Google…', 'saving');
+  try {
+    const response = await fetch(GOOGLE_SYNC_URL, {
+      method: 'POST', headers: {'Content-Type':'text/plain;charset=utf-8'},
+      body: JSON.stringify({action:'save', data:googleSnapshot(), revision:googleSyncRevision})
+    });
+    const payload = await response.json();
+    if (!payload || !payload.ok) throw new Error('Salvataggio non riuscito');
+    googleSyncRevision = payload.revision || googleSyncRevision;
+    setGoogleSyncStatus('Google sincronizzato', 'ok');
+  } catch (error) {
+    setGoogleSyncStatus('Modifiche salvate sul dispositivo', 'offline');
+    console.warn('Google save:', error);
+  }
+}
+function scheduleGoogleSave() {
+  if (!googleSyncReady) return;
+  clearTimeout(googleSyncTimer);
+  googleSyncTimer = setTimeout(pushGoogleData, 900);
+}
+const _googleSyncSaveData = saveData;
+saveData = function() { _googleSyncSaveData(); scheduleGoogleSave(); };
+setTimeout(pullGoogleData, 180);
 </script>
 
 </html>
