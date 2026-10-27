@@ -1,4 +1,5 @@
-reader = new FileReader();
+turn;
+    const reader = new FileReader();
     reader.onload = (e)=>{
       const dataUrl = e.target.result;
       document.getElementById('logoBtn').innerHTML = `<img src="${dataUrl}" alt="logo">`;
@@ -393,4 +394,4 @@ function renderRepPage(){
 
 function toggleSection(id){
   const body = document.getElementById(id);
-  const chevron = d
+  c
