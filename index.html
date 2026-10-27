@@ -298,6 +298,28 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
 @media(max-width:680px){.insight-grid{grid-template-columns:1fr}.insight-card{padding:14px}}
 </style>
 
+<style id="agenda-interior-design">
+/* Ingresso Agenda: stessa grafica della copertina scelta, senza cambiare alcuna logica. */
+:root{--agenda-cyan:#23d4f4;--agenda-green:#24dfa1;--agenda-violet:#a878ff;--agenda-amber:#ffb341;}
+.main{max-width:none;padding-top:28px}
+.agenda-home{padding:25px;border-radius:24px;border-color:rgba(255,255,255,.15);background:radial-gradient(ellipse at 86% 8%,rgba(35,212,244,.17),transparent 37%),radial-gradient(ellipse at 8% 92%,rgba(255,179,65,.11),transparent 38%),linear-gradient(135deg,#0c1824,#101720 52%,#0a131c);box-shadow:0 24px 58px rgba(0,0,0,.30),inset 0 1px 0 rgba(255,255,255,.09)}
+.agenda-home-head{padding-bottom:17px;margin-bottom:17px;border-bottom:1px solid rgba(255,255,255,.12)}
+.agenda-kicker{color:var(--agenda-amber);letter-spacing:.18em}.agenda-home-head h2{font-size:clamp(1.7rem,2.7vw,2.35rem);color:#f5f8fd}.agenda-home-head p{font-size:.86rem}
+.agenda-selects{padding:8px 9px;border:1px solid rgba(255,255,255,.13);border-radius:13px;background:rgba(6,13,21,.38)}
+.agenda-selects select{background:#0b1520;border-color:rgba(255,255,255,.16)}.agenda-status{color:var(--agenda-green);border-color:rgba(36,223,161,.42);background:rgba(36,223,161,.10)}.agenda-status.closed{color:var(--agenda-amber);border-color:rgba(255,179,65,.45);background:rgba(255,179,65,.10)}
+.agenda-layout{grid-template-columns:minmax(0,1.28fr) minmax(300px,.72fr);gap:15px}.agenda-calendar-wrap,.agenda-summary{border-color:rgba(255,255,255,.14);border-radius:16px;background:rgba(5,12,20,.48);box-shadow:inset 0 1px 0 rgba(255,255,255,.055)}
+.agenda-calendar-wrap{padding:16px}.agenda-summary{padding:16px}.agenda-summary-title{font-size:.8rem;letter-spacing:.03em;color:#f2f6fb}.agenda-weekdays span{font-size:.58rem;color:#8398ad}.agenda-day{min-height:48px;border-color:rgba(255,255,255,.045);background:rgba(255,255,255,.055);border-radius:10px}.agenda-day:hover{border-color:var(--agenda-cyan);box-shadow:0 0 0 2px rgba(35,212,244,.12)}.agenda-day.weekend{background:rgba(255,255,255,.025)}.agenda-day.has-hours:after{background:var(--agenda-cyan)}.agenda-day.worked .mark{background:var(--agenda-green);box-shadow:0 0 8px var(--agenda-green)}
+.agenda-kpis{gap:8px}.agenda-kpi{min-height:70px;border-radius:12px;padding:11px;background:linear-gradient(140deg,color-mix(in srgb,var(--k) 12%,#101923),#0d1520);box-shadow:0 8px 20px color-mix(in srgb,var(--k) 8%,transparent)}.agenda-kpi strong{font-size:1.12rem}.agenda-kpi span{font-size:.56rem}.agenda-kpi.euro-month{min-height:59px}
+.agenda-quick{gap:7px}.agenda-quick button{border-color:rgba(255,255,255,.14);border-radius:10px;background:rgba(255,255,255,.045);padding:10px;font-size:.65rem}.agenda-quick button:hover{border-color:var(--agenda-cyan);background:rgba(35,212,244,.08)}.agenda-quick i{color:var(--agenda-amber)}.agenda-month-btn{margin-top:10px;border-radius:11px;background:linear-gradient(105deg,var(--agenda-amber),#f48e3d);color:#18130c;box-shadow:0 10px 24px rgba(255,179,65,.17)}
+.top{padding:21px 4px 16px;margin:0}.top h1{font-size:clamp(1.5rem,2.5vw,2.15rem)}.top h1::after{content:"REGISTRO";color:var(--agenda-cyan);border-color:rgba(35,212,244,.38);background:rgba(35,212,244,.09)}.actions .btn{border-radius:11px}
+.calendar-legend{margin:0 0 16px;padding:9px 12px;border:1px solid rgba(255,255,255,.10);border-radius:12px;background:rgba(255,255,255,.035)}
+.section-card{border-radius:20px;background:linear-gradient(145deg,rgba(21,32,46,.76),rgba(10,18,28,.76));border-color:rgba(255,255,255,.13)}.section-card h3>i:first-child{background:rgba(35,212,244,.13);color:var(--agenda-cyan)}
+.chart-card{border-radius:20px;border-color:rgba(255,255,255,.13);background:linear-gradient(145deg,rgba(21,32,46,.76),rgba(10,18,28,.76))}.insight-card{border-radius:16px;background:linear-gradient(145deg,rgba(21,32,46,.84),rgba(10,18,28,.80));border-color:rgba(255,255,255,.13)}
+.month-card{border-radius:18px;border-color:rgba(255,255,255,.13);background:linear-gradient(145deg,rgba(20,29,40,.84),rgba(10,18,28,.86))}.month-head{background:rgba(255,255,255,.045)}
+html[data-graphic-style="base"] .agenda-home{background:radial-gradient(ellipse at 86% 8%,rgba(35,212,244,.13),transparent 37%),radial-gradient(ellipse at 8% 92%,rgba(255,179,65,.09),transparent 38%),linear-gradient(135deg,#112037,#101b2a 52%,#0b1622)}
+@media(max-width:900px){.agenda-layout{grid-template-columns:1fr}.agenda-home{padding:18px}.agenda-day{min-height:42px}}
+@media(max-width:560px){.agenda-home{padding:14px;border-radius:18px}.agenda-home-head{padding-bottom:13px;margin-bottom:13px}.agenda-home-head h2{font-size:1.55rem}.agenda-selects{width:100%;justify-content:space-between}.agenda-calendar-wrap,.agenda-summary{padding:11px}.agenda-day{min-height:36px}.agenda-kpi{min-height:63px;padding:9px}.agenda-quick button{padding:9px 7px}.agenda-month-btn{padding:10px}}
+</style>
 </head>
 <body>
 
