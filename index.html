@@ -5,7 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gestione Ore Straordinario · iOS Glass</title>
 <style id="offline-inter">/* Font web opzionale: la dashboard usa il carattere del dispositivo. */</style>
-<style id="offline-fontawesome">/* Font web opzionale: la dashboard usa il carattere del dispositivo. */</style>
+<style id="offline-fontawesome">
+/* Icone locali: restano visibili anche offline, senza dipendere da Font Awesome. */
+.fa-solid,.fa-regular,.fa-brands{display:inline-flex;align-items:center;justify-content:center;font-style:normal;line-height:1;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",system-ui,sans-serif;min-width:1em}
+.fa-solid::before,.fa-regular::before,.fa-brands::before{content:"•"}
+.fa-clock::before{content:"◷"}.fa-clock-rotate-left::before{content:"↶"}.fa-calendar::before,.fa-calendar-days::before,.fa-calendar-day::before{content:"▣"}
+.fa-note-sticky::before{content:"▤"}.fa-umbrella-beach::before{content:"☂"}.fa-ticket::before{content:"▰"}.fa-coins::before{content:"●"}.fa-euro-sign::before{content:"€"}
+.fa-phone-volume::before{content:"☎"}.fa-chart-line::before{content:"⌁"}.fa-business-time::before{content:"◫"}.fa-house::before{content:"⌂"}.fa-layer-group::before{content:"▰"}
+.fa-file-excel::before{content:"▤"}.fa-box-archive::before{content:"▣"}.fa-camera::before{content:"◉"}.fa-shield-halved::before{content:"◈"}.fa-triangle-exclamation::before{content:"⚠"}
+.fa-circle-check::before{content:"✓"}.fa-lock::before{content:"▣"}.fa-lock-open::before{content:"▢"}.fa-pen::before{content:"✎"}.fa-plus::before{content:"+"}.fa-xmark::before{content:"×"}.fa-trash::before{content:"⌫"}
+.fa-chevron-down::before{content:"⌄"}.fa-arrow-down::before{content:"↓"}.fa-arrow-left::before{content:"←"}.fa-arrow-right::before{content:"→"}.fa-tag::before{content:"◇"}.fa-sack-dollar::before{content:"$"}.fa-apple::before{content:"●"}
+</style>
 <!-- Esportazione compatibile Excel senza librerie esterne. -->
 <script>/* Grafico annuale disegnato localmente: nessuna libreria esterna richiesta. */</script>
 <script>window.__STRAO_HAD_DATA=!!localStorage.getItem('strao_data_v3');</script>
