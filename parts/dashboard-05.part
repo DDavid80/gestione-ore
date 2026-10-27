@@ -1,0 +1,396 @@
+reader = new FileReader();
+    reader.onload = (e)=>{
+      const dataUrl = e.target.result;
+      document.getElementById('logoBtn').innerHTML = `<img src="${dataUrl}" alt="logo">`;
+      const cur = loadBrand();
+      cur.logo = dataUrl;
+      saveBrand(cur);
+      showToast('Immagine aggiornata.');
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function setTheme(t){
+  if(t === 'navy') document.body.removeAttribute('data-theme');
+  else document.body.setAttribute('data-theme', t);
+  localStorage.setItem(THEME_KEY, t);
+  document.querySelectorAll('.theme-dot').forEach(d=> d.classList.toggle('active', d.dataset.t===t));
+  renderYearChart();
+  Object.keys(monthChartInstances).forEach(mIdx=>{
+    const body = document.getElementById('mbody-'+mIdx);
+    if(body && body.classList.contains('open')) renderMonthChart(mIdx);
+  });
+}
+function initTheme(){
+  const t = localStorage.getItem(THEME_KEY) || 'navy';
+  setTheme(t);
+}
+
+function exportExcel(){
+  const y = ensureYear(currentYear);
+  const wb = XLSX.utils.book_new();
+  const rows = [["Data","Giornata lavorata","Ore Straordinario","Reperibilità","Recupero","Nota"]];
+  y.months.forEach((m, mIdx)=>{
+    rows.push([MONTHS[mIdx], m.closed ? "MESE CHIUSO" : "MESE APERTO", "", "", "", ""]);
+    m.entries.forEach(e=>{ rows.push([e.date, e.lavorato ? "Sì" : "", e.ore, e.rep ? "Rep." : "", e.recup ? "Recup." : "", e.note||""]); });
+    const t = monthTotals(mIdx);
+    rows.push(["TOT", workedDays(mIdx)+" giorni", t.ore, "Rep. "+t.rep.toFixed(2), "Recup. "+t.recup.toFixed(2), "€"+t.euro.toFixed(2)]);
+    rows.push(["","","","","",""]);
+  });
+  const tot = yearTotals();
+  rows.push(["TOTALE ANNO", y.ticketMonths.reduce((a,b)=>a+(parseFloat(b)||0),0)+" giorni ticket", tot.ore, "Rep. "+tot.rep.toFixed(2), "Recup. "+tot.recup.toFixed(2), "€"+tot.euro.toFixed(2)]);
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, "Strao " + currentYear);
+  XLSX.writeFile(wb, "Straordinari_" + currentYear + ".xlsx");
+  showToast('Excel esportato.');
+}
+
+function exportBackup(){
+  saveData();
+  const storage = {};
+  for(let i=0;i<localStorage.length;i++){
+    const key = localStorage.key(i);
+    if(key && key.startsWith('strao_')) storage[key] = localStorage.getItem(key);
+  }
+  const payload = {
+    app: 'Gestione Ore',
+    backupType: 'snapshot-completo',
+    version: 2,
+    createdAt: new Date().toISOString(),
+    data: DATA,
+    brand: loadBrand(),
+    theme: localStorage.getItem(THEME_KEY),
+    graphicStyle: localStorage.getItem('strao_graphic_style_v1') || 'base',
+    view: { year: currentYear, monthFilter: currentMonthFilter },
+    localStorage: storage
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:"application/json"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const stamp = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+  a.href = url; a.download = `Gestione_Ore_backup_completo_${stamp}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Backup completo creato.');
+}
+
+function importBackup(ev){
+  const file = ev.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const parsed = JSON.parse(e.target.result);
+      const restoredData = parsed && parsed.data ? parsed.data : parsed;
+      if(!restoredData || typeof restoredData !== 'object' || Array.isArray(restoredData)) throw new Error('Dati non validi');
+      if(!confirm('Ripristinare questo backup? I dati attuali verranno sostituiti.')) return;
+
+      // Mantiene una copia di emergenza dello stato precedente all'importazione.
+      localStorage.setItem('strao_backup_pre_ripristino', JSON.stringify({createdAt:new Date().toISOString(),data:DATA}));
+
+      if(parsed.localStorage && typeof parsed.localStorage === 'object'){
+        Object.keys(localStorage).filter(k=>k.startsWith('strao_') && k!=='strao_backup_pre_ripristino').forEach(k=>localStorage.removeItem(k));
+        Object.entries(parsed.localStorage).forEach(([key,value])=>{
+          if(key.startsWith('strao_') && typeof value === 'string') localStorage.setItem(key,value);
+        });
+      }
+      if(parsed.data){
+        DATA = parsed.data;
+        if(parsed.brand) saveBrand(parsed.brand);
+        if(parsed.theme) localStorage.setItem(THEME_KEY, parsed.theme);
+        if(parsed.graphicStyle) localStorage.setItem('strao_graphic_style_v1', parsed.graphicStyle);
+      } else {
+        DATA = parsed;
+      }
+      initYears();
+      if(parsed.view && Number(parsed.view.year) && DATA[String(parsed.view.year)]) currentYear = Number(parsed.view.year);
+      currentMonthFilter = parsed.view && parsed.view.monthFilter ? String(parsed.view.monthFilter) : '';
+      saveData();
+      initBrand();
+      initTheme();
+      if(typeof setGraphicStyle==='function') setGraphicStyle(localStorage.getItem('strao_graphic_style_v1')||'base');
+      populateMonthFilter();
+      const monthSel=document.getElementById('monthFilter'); if(monthSel) monthSel.value=currentMonthFilter;
+      renderAll();
+      showToast('Backup completo ripristinato.');
+    }catch(err){
+      showToast('File non valido.');
+    }
+  };
+  reader.readAsText(file);
+  ev.target.value = '';
+}
+
+function populateMonthFilter(){
+  const sel = document.getElementById('monthFilter');
+  if(sel.options.length <= 1){
+    MONTHS.forEach((m,i)=>{
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = m.charAt(0) + m.slice(1).toLowerCase();
+      sel.appendChild(opt);
+    });
+  }
+  sel.value = currentMonthFilter;
+}
+function setMonthFilter(v){
+  currentMonthFilter = v;
+  renderMonthSummary();
+  renderNotes();
+  renderFerie();
+  renderTicket();
+}
+
+function renderMonthSummary(){
+  const box = document.getElementById('monthSummary');
+  if(currentMonthFilter === ''){ box.classList.remove('show'); return; }
+  box.classList.add('show');
+  const mIdx = parseInt(currentMonthFilter,10);
+  const t = monthTotals(mIdx);
+  document.getElementById('mfOre').textContent = t.ore.toFixed(2);
+  document.getElementById('mfRep').textContent = t.rep.toFixed(2);
+  document.getElementById('mfRecup').textContent = t.recup.toFixed(2);
+  document.getElementById('mfEuro').textContent = '€' + t.euro.toFixed(2);
+}
+
+function addNote(){
+  const y = ensureYear(currentYear);
+  y.notes.push({id: Date.now()+Math.random(), date: todayISO(), month: currentMonthFilter===''? '' : currentMonthFilter, text:''});
+  saveData();
+  renderNotes();
+}
+function updateNoteField(id, field, value){
+  const y = ensureYear(currentYear);
+  const n = y.notes.find(n=>n.id===id);
+  if(!n) return;
+  n[field] = value;
+  saveData();
+  renderNotes();
+}
+function deleteNote(id){
+  const y = ensureYear(currentYear);
+  y.notes = y.notes.filter(n=>n.id!==id);
+  saveData();
+  renderNotes();
+}
+function renderNotes(){
+  const y = ensureYear(currentYear);
+  const list = document.getElementById('notesList');
+  const sub = document.getElementById('notesSub');
+  let notes = y.notes;
+  if(currentMonthFilter !== ''){
+    notes = notes.filter(n => n.month === currentMonthFilter || n.month === '' || (n.date && n.date.slice(5,7) === String(parseInt(currentMonthFilter,10)+1).padStart(2,'0')));
+    sub.textContent = 'Note filtrate su ' + MONTHS[parseInt(currentMonthFilter,10)].charAt(0) + MONTHS[parseInt(currentMonthFilter,10)].slice(1).toLowerCase() + '.';
+  } else {
+    sub.textContent = 'Tutte le note dell\'anno ' + currentYear + '.';
+  }
+  const actualNotes = notes.filter(n=>(n.text||'').trim()!=='');
+  const noteSummary = document.getElementById('notesClosedSummary');
+  if(noteSummary){
+    const count = actualNotes.length;
+    const label = count===0 ? 'Nessuna nota' : count===1 ? '1 nota presente' : count + ' note presenti';
+    noteSummary.innerHTML = `<span class="summary-pill note ${count===0?'empty':''}"><i class="${count===0?'fa-regular':'fa-solid'} fa-note-sticky"></i> <strong>${label}</strong></span>`;
+    noteSummary.title = currentMonthFilter==='' ? 'Note presenti nell\'anno selezionato' : 'Note visibili per il mese selezionato';
+  }
+  if(notes.length===0){ list.innerHTML = '<div class="sub-note">Nessuna nota.</div>'; return; }
+  list.innerHTML = notes.map(n=>`
+    <div class="note-item">
+      <input type="date" value="${n.date||''}" onchange="updateNoteField(${n.id},'date',this.value)">
+      <textarea placeholder="Scrivi una nota..." onchange="updateNoteField(${n.id},'text',this.value)">${(n.text||'')}</textarea>
+      <button class="row-del" onclick="deleteNote(${n.id})"><i class="fa-solid fa-xmark"></i></button>
+    </div>`).join('');
+}
+
+const FERIE_COLS = ['ferie','per','semifestivita','rechh'];
+function updateFerieBase(kind, col, value){
+  const y = ensureYear(currentYear);
+  y.ferie[kind][col] = parseFloat(value)||0;
+  saveData();
+  renderFerie();
+}
+function updateFerieMonth(mIdx, col, value){
+  const y = ensureYear(currentYear);
+  y.ferie.usufruitoMonths[mIdx][col] = parseFloat(value)||0;
+  saveData();
+  renderFerie();
+}
+function renderFerie(){
+  const y = ensureYear(currentYear);
+  const f = y.ferie;
+  const upToMonth = currentMonthFilter==='' ? 11 : parseInt(currentMonthFilter,10);
+
+  const cumUsu = {}; FERIE_COLS.forEach(c=>cumUsu[c]=0);
+  const monthUsu = {}; FERIE_COLS.forEach(c=>monthUsu[c]=0);
+  f.usufruitoMonths.forEach((m,i)=>{
+    if(i<=upToMonth) FERIE_COLS.forEach(c=> cumUsu[c]+=(parseFloat(m[c])||0));
+    if(currentMonthFilter!=='' && i===upToMonth) FERIE_COLS.forEach(c=> monthUsu[c]=(parseFloat(m[c])||0));
+  });
+  const usuRowVals = currentMonthFilter==='' ? cumUsu : monthUsu;
+
+  const rowHtml = (label, kind, editable, vals)=> `
+    <tr>
+      <td>${label}</td>
+      ${FERIE_COLS.map(c=> editable
+        ? `<td><input type="number" step="0.5" value="${vals[c]||0}" onchange="updateFerieBase('${kind}','${c}',this.value)"></td>`
+        : `<td>${(vals[c]||0).toFixed(2)}</td>`
+      ).join('')}
+    </tr>`;
+
+  const saldo = {}; FERIE_COLS.forEach(c=> saldo[c] = (f.residuoPrec[c]||0) + (f.spettanza[c]||0) - cumUsu[c]);
+
+  const ferieSummary = document.getElementById('ferieClosedSummary');
+  if(ferieSummary){
+    ferieSummary.innerHTML =
+      `<span class="summary-pill ferie"><i class="fa-solid fa-umbrella-beach"></i> Ferie <strong>${saldo.ferie.toLocaleString('it-IT',{minimumFractionDigits:saldo.ferie%1?1:0,maximumFractionDigits:2})} gg</strong></span>` +
+      `<span class="summary-pill recupero"><i class="fa-solid fa-clock-rotate-left"></i> Recupero <strong>${saldo.rechh.toLocaleString('it-IT',{minimumFractionDigits:saldo.rechh%1?1:0,maximumFractionDigits:2})} h</strong></span>`;
+    ferieSummary.title = currentMonthFilter==='' ? 'Saldo calcolato a fine anno' : 'Saldo calcolato fino al mese selezionato';
+  }
+
+  document.getElementById('ferieHeadRows').innerHTML =
+    rowHtml('Residuo Prec.', 'residuoPrec', true, f.residuoPrec) +
+    rowHtml('Spettanza', 'spettanza', true, f.spettanza) +
+    rowHtml(currentMonthFilter===''? 'Usufruito (anno)' : 'Usufruito (' + MONTHS[upToMonth].charAt(0)+MONTHS[upToMonth].slice(1).toLowerCase() + ')', '', false, usuRowVals) +
+    `<tr class="saldo">` + `<td>Saldo</td>` + FERIE_COLS.map(c=>`<td>${saldo[c].toFixed(2)}</td>`).join('') + `</tr>`;
+
+  document.getElementById('ferieMonthRows').innerHTML = MONTHS.map((name,i)=>`
+    <tr>
+      <td>${name.charAt(0)+name.slice(1).toLowerCase()}</td>
+      ${FERIE_COLS.map(c=>`<td><input type="number" step="0.5" value="${f.usufruitoMonths[i][c]||0}" onchange="updateFerieMonth(${i},'${c}',this.value)"></td>`).join('')}
+    </tr>`).join('');
+}
+
+function ticketRateForDate(y, dateStr){
+  const hist = ensureYear(y).ticketRateHistory.slice().sort((a,b)=>a.from.localeCompare(b.from));
+  if(!dateStr) dateStr = todayISO();
+  let applicable = hist[0] ? hist[0].rate : 0;
+  for(const h of hist){ if(h.from <= dateStr) applicable = h.rate; else break; }
+  return applicable;
+}
+function updateTicketRate(){
+  const v = parseFloat(document.getElementById('ticketRateInput').value);
+  if(isNaN(v)){ showToast('Inserisci un valore valido.'); return; }
+  const y = ensureYear(currentYear);
+  const today = todayISO();
+  const isFirstSetup = y.ticketRateHistory.length===1 && y.ticketRateHistory[0].from===(currentYear+'-01-01');
+  if(isFirstSetup){
+    y.ticketRateHistory[0].rate = v;
+    showToast('Valore ticket impostato per tutto l\'anno ' + currentYear + '.');
+  } else {
+    const existing = y.ticketRateHistory.find(h=>h.from===today);
+    if(existing){ existing.rate = v; } else { y.ticketRateHistory.push({from: today, rate: v}); }
+    showToast('Valore ticket aggiornato da oggi.');
+  }
+  saveData();
+  renderTicket();
+}
+function updateTicketMonth(mIdx, value){
+  const y = ensureYear(currentYear);
+  y.ticketMonths[mIdx] = parseFloat(value)||0;
+  y.months[mIdx].ticketManualOverride = true;
+  y.months[mIdx].ticketManualProtected = true;
+  saveData();
+  renderTicket();
+}
+function updateTicketRateForMonth(mIdx, value){
+  const v = parseFloat(value);
+  if(isNaN(v)) return;
+  const y = ensureYear(currentYear);
+  const monthStart = currentYear+'-'+String(mIdx+1).padStart(2,'0')+'-01';
+  const existing = y.ticketRateHistory.find(h=>h.from===monthStart);
+  if(existing){ existing.rate = v; } else { y.ticketRateHistory.push({from: monthStart, rate: v}); }
+  saveData();
+  renderTicket();
+}
+function renderTicket(){
+  const y = ensureYear(currentYear);
+  document.getElementById('ticketRateInput').value = ticketRateForDate(currentYear, todayISO());
+  const hist = y.ticketRateHistory.slice().sort((a,b)=>a.from.localeCompare(b.from));
+  document.getElementById('ticketHistoryBox').innerHTML = 'Storico: ' + hist.map(h=>`<b>€${h.rate.toFixed(2)}</b> dal ${h.from}`).join(' &nbsp;→&nbsp; ');
+
+  // La sezione Ticket resta sempre annuale, anche quando la dashboard è filtrata su un mese.
+  const months = MONTHS.map((m,i)=>i);
+  let totAnno = 0;
+  const rowsAll = MONTHS.map((name,i)=>{
+    const giorni = y.ticketMonths[i]||0;
+    const closed = !!y.months[i].closed;
+    const protectedHistory = !!y.months[i].ticketManualProtected;
+    const rate = ticketRateForDate(currentYear, currentYear+'-'+String(i+1).padStart(2,'0')+'-01');
+    const tot = giorni*rate;
+    totAnno += tot;
+    return {i, name, giorni, rate, tot, closed, protectedHistory};
+  });
+  const rowsShown = rowsAll.filter(r=>months.includes(r.i));
+  const ticketAnnualSummary = document.getElementById('ticketAnnualSummary');
+  const totAnnoFmt = totAnno.toLocaleString('it-IT',{style:'currency',currency:'EUR'});
+  if(ticketAnnualSummary){
+    ticketAnnualSummary.innerHTML = `<span class="summary-pill ticket"><i class="fa-solid fa-coins"></i> Accumulato ${currentYear} <strong>${totAnnoFmt}</strong></span>`;
+  }
+  document.getElementById('ticketRows').innerHTML = rowsShown.map(r=>`
+    <tr>
+      <td>${r.name.charAt(0)+r.name.slice(1).toLowerCase()}</td>
+      <td><input type="number" step="1" min="0" value="${r.giorni}" onchange="updateTicketMonth(${r.i},this.value)" title="Puoi correggere manualmente i giorni anche se il mese è chiuso"> ${y.months[r.i].ticketManualOverride?'<span class="ticket-auto"><i class="fa-solid fa-pen"></i> Corretto manualmente</span>':r.closed?(r.protectedHistory?'<span class="ticket-auto"><i class="fa-solid fa-shield-halved"></i> Storico protetto</span>':'<span class="ticket-auto"><i class="fa-solid fa-circle-check"></i> Automatico</span>'):'<span class="ticket-wait">Mese aperto</span>'}</td>
+      <td><input type="number" step="0.01" min="0" value="${r.rate.toFixed(2)}" onchange="updateTicketRateForMonth(${r.i},this.value)"></td>
+      <td>€${r.tot.toFixed(2)}</td>
+    </tr>`).join('');
+  document.getElementById('ticketTotalBox').textContent = 'Accumulo anno ' + currentYear + ': ' + totAnnoFmt;
+}
+
+function showRepPage(){
+  document.getElementById('dashboardPage').style.display = 'none';
+  document.getElementById('repPage').style.display = 'block';
+  renderRepPage();
+}
+function hideRepPage(){
+  document.getElementById('repPage').style.display = 'none';
+  document.getElementById('dashboardPage').style.display = 'block';
+}
+let repOpenMonths = new Set();
+function toggleRepDay(mIdx, eIdx, checked){
+  const y = ensureYear(currentYear);
+  y.reperibilitaDays[mIdx].entries[eIdx].rep = checked;
+  saveData();
+  renderRepPage();
+}
+function toggleRepMonth(mIdx){
+  if(repOpenMonths.has(mIdx)) repOpenMonths.delete(mIdx);
+  else repOpenMonths.add(mIdx);
+  const body = document.getElementById('repmbody-'+mIdx);
+  if(body) body.classList.toggle('open');
+}
+function renderRepPage(){
+  const y = ensureYear(currentYear);
+  document.getElementById('repYearLabel').textContent = currentYear;
+  let totYear = 0;
+  const grid = document.getElementById('repMonthsGrid');
+  grid.innerHTML = MONTHS.map((name, mIdx)=>{
+    const entries = y.reperibilitaDays[mIdx].entries;
+    const cnt = entries.filter(e=>e.rep).length;
+    totYear += cnt;
+    const isOpen = repOpenMonths.has(mIdx);
+    const rows = entries.map((e,eIdx)=>{
+      const weekend = weekendInfo(e.date);
+      return `
+      <div class="rep-day-row ${weekend.className}">
+        <label><input type="checkbox" ${e.rep?'checked':''} onchange="toggleRepDay(${mIdx},${eIdx},this.checked)"> <span>${formatDateIT(e.date)}</span>${weekend.badge}</label>
+      </div>`;
+    }).join('');
+    return `
+      <div class="month-card">
+        <div class="month-head" onclick="toggleRepMonth(${mIdx})">
+          <div>
+            <h3>${name}</h3>
+            <div class="sub"><span style="color:var(--warning);font-weight:700;">${cnt} giorni reperibili</span></div>
+          </div>
+          <i class="fa-solid fa-chevron-down"></i>
+        </div>
+        <div class="month-body ${isOpen?'open':''}" id="repmbody-${mIdx}">${rows}</div>
+      </div>`;
+  }).join('');
+  document.getElementById('repYearTotal').textContent = totYear;
+  document.getElementById('repYearWeeks').textContent = (totYear/7).toFixed(1);
+}
+
+function toggleSection(id){
+  const body = document.getElementById(id);
+  const chevron = d

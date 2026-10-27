@@ -1,0 +1,60 @@
+ap:6px}.cover-shortcuts button span{font-size:.63rem}.cover-month-card{padding:15px!important;border-radius:15px!important}#coverScreen .cover-stat{padding:9px;min-height:67px}#coverScreen .cover-stat .cv{font-size:.92rem}.cover-foot{font-size:.54rem!important;flex-direction:column}.agenda-home-head{align-items:flex-start;flex-direction:column}.agenda-selects{width:100%;flex-wrap:wrap}.agenda-selects select{flex:1}.agenda-status{margin-left:auto}.agenda-calendar-wrap{padding:8px}.agenda-weekdays,.agenda-calendar{gap:3px}.agenda-day{min-height:35px;padding:4px}.agenda-day .n{font-size:.6rem}.agenda-summary{display:block}.agenda-summary-title{margin-bottom:9px}.agenda-quick{grid-template-columns:1fr 1fr}.agenda-kpis{grid-template-columns:repeat(2,1fr)}.agenda-legend{gap:8px;font-size:.52rem}}
+@media(prefers-reduced-motion:reduce){.agenda-day,.cover-shortcuts button{transition:none}.agenda-day:hover,.cover-shortcuts button:hover{transform:none}}
+</style>
+<script id="monthly-agenda-runtime">
+function agendaMonthIndex(){
+  if(currentMonthFilter!=='')return Math.max(0,Math.min(11,parseInt(currentMonthFilter,10)||0));
+  const now=new Date();if(Number(currentYear)===now.getFullYear())return now.getMonth();
+  const y=DATA[String(currentYear)];if(y&&y.months){for(let i=11;i>=0;i--){const m=y.months[i];if((m.entries||[]).some(e=>(Number(e.ore)||0)>0||e.lavorato||e.rep||e.recup)||Number(y.ticketMonths&&y.ticketMonths[i])>0)return i;}}
+  return 0;
+}
+function renderAgendaHome(){
+  const host=document.getElementById('agendaHome');if(!host||!currentYear)return;
+  const y=ensureYear(currentYear),mIdx=agendaMonthIndex(),month=y.months[mIdx],entries=month.entries||[],title=MONTHS[mIdx].charAt(0)+MONTHS[mIdx].slice(1).toLowerCase();
+  const stat=monthTotals(mIdx),worked=workedDays(mIdx),saved=Number(y.ticketMonths&&y.ticketMonths[mIdx])||0;
+  const ticketDays=(month.closed||month.ticketManualOverride||month.ticketManualProtected)?saved:worked;
+  const ticketRate=ticketRateForDate(currentYear,currentYear+'-'+String(mIdx+1).padStart(2,'0')+'-01'),ticketEuro=ticketDays*ticketRate;
+  const notes=(y.notes||[]).filter(n=>(n.text||'').trim()!==''&&(n.month===String(mIdx)||n.date&&Number(n.date.slice(5,7))===mIdx+1)).length;
+  document.getElementById('agendaTitle').textContent=title+' '+currentYear;
+  document.getElementById('agendaSubtitle').textContent=`${worked} giorni segnati · ${stat.ore.toFixed(2)} ore straordinarie · ${notes} note presenti`;
+  const status=document.getElementById('agendaStatus');status.textContent=month.closed?'MESE CHIUSO':'MESE APERTO';status.classList.toggle('closed',!!month.closed);
+  const select=document.getElementById('agendaMonthSelect');if(select){if(select.options.length!==13){select.innerHTML='<option value="">Mese in primo piano</option>'+MONTHS.map((n,i)=>`<option value="${i}">${n.charAt(0)+n.slice(1).toLowerCase()}</option>`).join('');}select.value=currentMonthFilter===''?'':String(mIdx);}
+  const kpis=[['fa-business-time',worked+' gg','Giorni lavorati','var(--success)'],['fa-clock',stat.ore.toFixed(2)+' h','Ore straordinarie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','var(--warning)'],['fa-note-sticky',notes,'Note presenti','var(--purple)']];
+  document.getElementById('agendaKpis').innerHTML=kpis.map(k=>`<div class="agenda-kpi" style="--k:${k[3]}"><strong>${k[1]}</strong><span>${k[2]}</span></div>`).join('');
+  const offset=(new Date(Number(currentYear),mIdx,1).getDay()+6)%7,days=daysInMonth(Number(currentYear),mIdx),byDate=new Map(entries.map((e,i)=>[e.date,{e,i}]));
+  let html=Array(offset).fill('<button class="agenda-day empty" tabindex="-1"></button>').join('');
+  const today=todayISO();
+  for(let d=1;d<=days;d++){
+    const iso=`${currentYear}-${String(mIdx+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,item=byDate.get(iso),e=item&&item.e||{},wi=weekendInfo(iso);
+    const cls=['agenda-day'];if(wi.className.includes('weekend'))cls.push('weekend');if(wi.className.includes('holiday'))cls.push('holiday');if(e.lavorato)cls.push('worked');if((Number(e.ore)||0)>0)cls.push('has-hours');if(e.rep)cls.push('rep');if(iso===today)cls.push('today');
+    const idx=item?item.i:-1;
+    html+=`<button class="${cls.join(' ')}" ${idx>=0?`onclick="openAgendaDay(${mIdx},${idx})"`:''} title="${wi.badge?wi.badge.replace(/<[^>]*>/g,''):iso}"><span class="n">${d}</span><span class="mark"></span></button>`;
+  }
+  document.getElementById('agendaCalendar').innerHTML=html;
+}
+function openAgendaSection(id){
+  if(id==='repPage'){document.getElementById('coverScreen').classList.add('hidden');showRepPage();return;}
+  const body=document.getElementById(id);if(body&&body.classList.contains('closed'))toggleSection(id);
+  const page=document.getElementById('repPage');if(page&&page.style.display!=='none')hideRepPage();
+  setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},30);
+}
+function openAgendaMonth(){
+  const mIdx=agendaMonthIndex(),sel=document.getElementById('monthFilter');if(sel)sel.value=String(mIdx);setMonthFilter(String(mIdx));
+  const body=document.getElementById('mbody-'+mIdx);if(body)body.classList.add('open');
+  const table=document.querySelector(`#mbody-${mIdx} table`);if(table)table.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function openAgendaDay(mIdx,eIdx){
+  const sel=document.getElementById('monthFilter');if(sel)sel.value=String(mIdx);setMonthFilter(String(mIdx));
+  const body=document.getElementById('mbody-'+mIdx);if(body)body.classList.add('open');
+  setTimeout(()=>{const row=document.getElementById(`dayrow-${mIdx}-${eIdx}`);if(row){row.scrollIntoView({behavior:'smooth',block:'center'});const input=row.querySelector('td:nth-child(3) input');if(input)input.focus({preventScroll:true});}},80);
+}
+const _agendaRenderAll=renderAll;
+renderAll=function(){_agendaRenderAll();renderAgendaHome();};
+const _agendaSaveData=saveData;
+saveData=function(){_agendaSaveData();if(typeof renderAgendaHome==='function')renderAgendaHome();};
+const _agendaSetMonthFilter=setMonthFilter;
+setMonthFilter=function(v){_agendaSetMonthFilter(v);renderAgendaHome();};
+renderAgendaHome();
+</script>
+
+</html>

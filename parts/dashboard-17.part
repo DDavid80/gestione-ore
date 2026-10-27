@@ -1,0 +1,161 @@
+f9;background:#22d3ee18;border:1px solid #64dcff94;box-shadow:0 0 28px #22d3ee42}.cover-logo img{width:100%;height:100%;object-fit:cover}
+.cover-kicker{color:#67e8f9;font-size:.65rem;text-transform:uppercase;letter-spacing:.18em;font-weight:800;margin-bottom:8px}.cover-title{font-size:clamp(2rem,5vw,3.1rem);line-height:1;font-weight:850;color:#f6fbff;margin-bottom:12px;letter-spacing:-.05em}.cover-sub{display:inline-flex;align-items:center;gap:7px;color:#c4d5e6;font-size:.8rem;margin-bottom:15px;padding:7px 12px;border:1px solid #ffffff1f;border-radius:999px;background:#ffffff0e}
+.cover-desc{max-width:560px;margin:0 auto 20px;color:#94a9bd;font-size:.86rem}.cover-modules{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin-bottom:23px}.cover-module{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:9px;background:#ffffff0b;border:1px solid #ffffff17;color:#b8c9da;font-size:.68rem;font-weight:700}.cover-module:nth-child(1) i{color:#22d3ee}.cover-module:nth-child(2) i{color:#ffb020}.cover-module:nth-child(3) i{color:#bf5af2}.cover-module:nth-child(4) i{color:#30d158}
+.cover-stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:25px}.cover-stat{--cover-neon:#22d3ee;min-width:0;min-height:118px;background:linear-gradient(145deg,#071a27e8,#05101dd4);border:1px solid color-mix(in srgb,var(--cover-neon) 58%,transparent);border-radius:18px;padding:15px 8px 12px;overflow:hidden}.cover-stat:nth-child(2){--cover-neon:#38bdf8}.cover-stat:nth-child(3){--cover-neon:#30d158}.cover-stat:nth-child(4){--cover-neon:#ffb020}.cover-stat:nth-child(5){--cover-neon:#bf5af2}.cover-stat:nth-child(6){--cover-neon:#fb7185}.cover-stat .ci{width:34px;height:34px;display:grid;place-items:center;margin:0 auto 10px;border:1px solid var(--cover-neon);border-radius:50%;color:var(--cover-neon);background:#081522;box-shadow:0 0 15px color-mix(in srgb,var(--cover-neon) 35%,transparent)}.cover-stat .cv{font-size:clamp(.78rem,1.15vw,1.02rem);font-weight:850;color:var(--cover-neon);white-space:nowrap}.cover-stat .cl{font-size:.57rem;text-transform:uppercase;letter-spacing:.05em;color:#9fb2c5;margin-top:5px}
+.cover-btn{background:linear-gradient(135deg,#0a84ff,#5e5ce6);border:1px solid #ffffff2e;color:#fff;font-weight:800;padding:13px 26px;border-radius:14px;cursor:pointer;font-size:.9rem;display:inline-flex;align-items:center;gap:10px;box-shadow:0 13px 30px #0a84ff4d}.cover-foot{margin-top:17px;color:#667d91;font-size:.62rem}
+/* Le card seguono davvero la palette Tortora e i valori non vengono tagliati */
+.summary .stat,.month-summary .stat{min-width:0;padding-left:64px;padding-right:10px}.summary .stat .val,.month-summary .stat .val{font-size:clamp(1.08rem,1.42vw,1.42rem);white-space:nowrap;overflow:visible;text-overflow:clip}
+[data-theme="tortora"] .stat{background:linear-gradient(145deg,color-mix(in srgb,var(--neon) 11%,#fff),#f7f1e9)!important;border-color:color-mix(in srgb,var(--neon) 62%,#8b7762)!important;box-shadow:0 7px 19px #6b59431c,inset 0 1px #fff!important}
+[data-theme="tortora"] .stat::before{background:#fffaf4;color:var(--neon);box-shadow:0 0 14px color-mix(in srgb,var(--neon) 30%,transparent)}
+[data-theme="tortora"] .stat .lbl{color:#514a43!important}[data-theme="tortora"] .stat .val{text-shadow:none!important}
+/* Fine settimana: sabato azzurro, domenica corallo */
+.calendar-legend{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:-10px 0 18px}.legend-weekend{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--txt-muted);font-size:.66rem;font-weight:750}.legend-weekend i{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 9px currentColor}.legend-weekend.sat{color:#38bdf8}.legend-weekend.sun{color:#fb7185}.legend-weekend.holiday{color:#ffb020}
+.date-cell{display:flex;align-items:center;gap:4px;min-width:0}.date-cell input{width:116px;min-width:0;flex:0 1 116px;padding-left:4px;padding-right:4px;font-size:.73rem}
+.month-card td:nth-child(3) input[type=number]{width:72px;min-width:68px;max-width:100%;box-sizing:border-box;padding-left:5px;padding-right:5px;font-variant-numeric:tabular-nums}
+.weekend-badge{display:inline-flex;align-items:center;justify-content:center;min-width:32px;padding:3px 6px;border-radius:999px;font-size:.58rem;font-weight:850;letter-spacing:.055em;line-height:1;border:1px solid currentColor}
+.weekend-badge.sat{color:#38bdf8;background:color-mix(in srgb,#38bdf8 12%,transparent)}.weekend-badge.sun{color:#fb7185;background:color-mix(in srgb,#fb7185 12%,transparent)}
+.weekend-badge.holiday{min-width:43px;color:#ffb020;background:color-mix(in srgb,#ffb020 13%,transparent)}
+tr.weekend-sat td{background:color-mix(in srgb,#38bdf8 8%,transparent)}tr.weekend-sun td{background:color-mix(in srgb,#fb7185 9%,transparent)}
+tr.holiday-it td{background:color-mix(in srgb,#ffb020 10%,transparent)}
+tr.weekend-sat td:first-child{box-shadow:inset 3px 0 #38bdf8}tr.weekend-sun td:first-child{box-shadow:inset 3px 0 #fb7185}
+tr.holiday-it td:first-child{box-shadow:inset 3px 0 #ffb020}
+tr.weekend-sat input{border-color:color-mix(in srgb,#38bdf8 38%,var(--line))!important}tr.weekend-sun input{border-color:color-mix(in srgb,#fb7185 40%,var(--line))!important}
+tr.holiday-it input{border-color:color-mix(in srgb,#ffb020 42%,var(--line))!important}
+.rep-day-row.weekend-sat,.rep-day-row.weekend-sun{margin:2px 0;padding:7px 8px;border-radius:9px}.rep-day-row.weekend-sat{background:color-mix(in srgb,#38bdf8 9%,transparent);border-left:3px solid #38bdf8}.rep-day-row.weekend-sun{background:color-mix(in srgb,#fb7185 10%,transparent);border-left:3px solid #fb7185}.rep-day-row .weekend-badge{margin-left:auto}
+.rep-day-row.holiday-it{margin:2px 0;padding:7px 8px;border-radius:9px;background:color-mix(in srgb,#ffb020 11%,transparent);border-left:3px solid #ffb020}.rep-day-row.holiday-it .weekend-badge{margin-left:auto}
+[data-theme="tortora"] tr.weekend-sat td,[data-theme="tortora"] .rep-day-row.weekend-sat{background:#dff3fa}[data-theme="tortora"] tr.weekend-sun td,[data-theme="tortora"] .rep-day-row.weekend-sun{background:#fae3e5}
+[data-theme="tortora"] tr.holiday-it td,[data-theme="tortora"] .rep-day-row.holiday-it{background:#fff0cf}
+@media(max-width:850px){.cover-stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:520px){#coverScreen{padding:12px}.cover-inner{padding:24px 13px 21px;border-radius:24px}.cover-stats{grid-template-columns:repeat(2,1fr)}.cover-btn{width:100%;justify-content:center}.summary .stat,.month-summary .stat{padding-left:52px}.date-cell{min-width:0;gap:4px}.date-cell input{width:110px;min-width:0;flex-basis:110px;font-size:.7rem}.month-card td:nth-child(3) input[type=number]{width:68px;min-width:64px}.weekend-badge{min-width:29px;padding:3px 5px}}
+
+/* Copertina 4 · layout cinematografico a tutta pagina */
+#coverScreen{padding:0;align-items:stretch;justify-content:stretch;overflow-x:hidden;overflow-y:auto;background:#030914}
+#coverScreen .cover-bg{background:radial-gradient(ellipse at 50% 20%,#4b328a40,transparent 42%),radial-gradient(ellipse at 8% 86%,#00bedb29,transparent 35%),radial-gradient(ellipse at 94% 82%,#f45c8a20,transparent 34%),linear-gradient(145deg,#020711,#081322 52%,#090816)}
+#coverScreen .cover-bg::before{opacity:.09;background-size:58px 58px}
+#coverScreen .cover-inner{width:100%;max-width:none;min-height:100vh;min-height:100svh;box-sizing:border-box;padding:112px clamp(22px,5.7vw,88px) 26px;border:0;border-radius:0;background:transparent;backdrop-filter:none;box-shadow:none;display:flex;flex-direction:column;align-items:stretch;justify-content:center;overflow:visible}
+#coverScreen .cover-logo{position:absolute;z-index:2;top:26px;left:clamp(22px,5.7vw,88px);width:60px;height:60px;margin:0;border-radius:18px;font-size:1.5rem}
+#coverScreen .cover-kicker{order:1;text-align:center;color:#ff9ab5;font-size:.72rem;letter-spacing:.22em;margin:0 auto 12px}
+#coverScreen .cover-title{order:2;text-align:center;font-size:clamp(2.7rem,6.2vw,5rem);line-height:.98;letter-spacing:-.055em;margin:0 auto 12px;text-shadow:0 0 35px #c56af333}
+#coverScreen .cover-sub{position:absolute;z-index:2;top:36px;right:clamp(22px,5.7vw,88px);margin:0;font-size:.76rem;background:#ffffff0a;border-color:#ffffff25}
+#coverScreen .cover-desc{order:3;max-width:720px;text-align:center;margin:0 auto 18px;font-size:.9rem;color:#a9bbcf}
+#coverScreen .cover-modules{order:5;justify-content:center;gap:9px;margin:0 auto 22px}
+#coverScreen .cover-module{padding:8px 12px;border-radius:999px;background:#ffffff08;border-color:#ffffff20;font-size:.68rem;letter-spacing:.035em}
+#coverScreen .cover-stats{order:4;width:100%;max-width:1320px;box-sizing:border-box;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin:0 auto 20px}
+#coverScreen .cover-stat{min-height:106px;box-sizing:border-box;display:grid;grid-template-columns:52px minmax(0,1fr);grid-template-rows:1fr auto;align-items:center;column-gap:13px;padding:18px 21px;border-radius:16px;background:linear-gradient(120deg,#071725ed,#08101de8);box-shadow:0 12px 32px #0004,inset 0 1px #ffffff12;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+#coverScreen .cover-stat:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--cover-neon) 82%,transparent);box-shadow:0 14px 34px #0005,0 0 22px color-mix(in srgb,var(--cover-neon) 12%,transparent)}
+#coverScreen .cover-stat .ci{grid-row:1 / 3;width:42px;height:42px;margin:0;font-size:1rem}
+#coverScreen .cover-stat .cv{align-self:end;font-size:clamp(1.25rem,2.1vw,1.8rem);line-height:1.05;letter-spacing:-.035em}
+#coverScreen .cover-stat .cl{align-self:start;margin-top:5px;font-size:.62rem;letter-spacing:.075em}
+#coverScreen .cover-btn{order:6;align-self:center;justify-content:center;min-width:250px;min-height:52px;margin:2px auto 0;padding:14px 25px;border-radius:14px;background:linear-gradient(110deg,#ff668e,#9a63ff);box-shadow:0 12px 34px #a34d9c38;font-size:.86rem;letter-spacing:.025em;transition:transform .18s ease,filter .18s ease}
+#coverScreen .cover-btn:hover{transform:translateY(-2px);filter:brightness(1.08)}
+#coverScreen .cover-foot{order:7;text-align:center;margin:14px auto 0;color:#72849b;font-size:.63rem}
+@media(max-width:760px){
+  #coverScreen .cover-inner{padding:106px 22px 24px}
+  #coverScreen .cover-logo{top:20px;left:22px;width:52px;height:52px;border-radius:16px}
+  #coverScreen .cover-sub{top:29px;right:22px;padding:6px 9px;font-size:.68rem}
+  #coverScreen .cover-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  #coverScreen .cover-stat{min-height:92px;padding:13px 14px;grid-template-columns:40px minmax(0,1fr);column-gap:9px}
+  #coverScreen .cover-stat .ci{width:34px;height:34px;font-size:.88rem}
+  #coverScreen .cover-stat .cv{font-size:clamp(1.03rem,3.8vw,1.42rem)}
+  #coverScreen .cover-stat .cl{font-size:.55rem}
+}
+@media(max-width:480px){
+  #coverScreen .cover-inner{padding:98px 15px 20px;justify-content:flex-start}
+  #coverScreen .cover-logo{top:16px;left:15px;width:46px;height:46px;border-radius:14px}
+  #coverScreen .cover-sub{top:22px;right:14px;max-width:190px;font-size:.62rem;padding:5px 7px;gap:5px}
+  #coverScreen .cover-kicker{font-size:.6rem;margin-bottom:10px}
+  #coverScreen .cover-title{font-size:clamp(2.35rem,11vw,3.2rem);margin-bottom:10px}
+  #coverScreen .cover-desc{font-size:.78rem;margin-bottom:15px}
+  #coverScreen .cover-modules{gap:6px;margin-bottom:17px}
+  #coverScreen .cover-module{padding:7px 9px;font-size:.61rem}
+  #coverScreen .cover-stats{gap:8px;margin-bottom:16px}
+  #coverScreen .cover-stat{min-height:82px;padding:10px 9px;grid-template-columns:31px minmax(0,1fr);column-gap:7px;border-radius:13px}
+  #coverScreen .cover-stat .ci{width:29px;height:29px;font-size:.75rem}
+  #coverScreen .cover-stat .cv{font-size:clamp(.94rem,4.5vw,1.2rem)}
+  #coverScreen .cover-stat .cl{font-size:.49rem;letter-spacing:.04em;line-height:1.2}
+  #coverScreen .cover-btn{width:100%;min-width:0;min-height:48px}
+  #coverScreen .cover-foot{font-size:.58rem}
+}
+@media(prefers-reduced-motion:reduce){#coverScreen .cover-stat,#coverScreen .cover-btn{transition:none}#coverScreen .cover-stat:hover,#coverScreen .cover-btn:hover{transform:none}}
+
+</style>
+<script>
+function renderCoverStats(){
+  const box=document.getElementById('coverStats');if(!box)return;
+  const now=new Date(),year=now.getFullYear(),mIdx=now.getMonth(),hadYear=!!DATA[String(year)],previousYear=currentYear;
+  let y,t,worked=0,ticketDays=0,ticketEuro=0,noteCount=0;
+  try{
+    y=ensureYear(year);currentYear=year;t=monthTotals(mIdx);worked=workedDays(mIdx);
+    const month=y.months[mIdx],saved=Number(y.ticketMonths&&y.ticketMonths[mIdx])||0;
+    ticketDays=(month.closed||month.ticketManualOverride||month.ticketManualProtected)?saved:worked;
+    const rate=ticketRateForDate(year,year+'-'+String(mIdx+1).padStart(2,'0')+'-01');ticketEuro=ticketDays*rate;
+    noteCount=(y.notes||[]).filter(n=>(n.text||'').trim()!==''&&(n.month===String(mIdx)||n.date&&Number(n.date.slice(5,7))===mIdx+1)).length;
+  }finally{currentYear=previousYear;}
+  if(!hadYear)saveData();
+  const month=ensureYear(year).months[mIdx],status=document.getElementById('coverMonthStatus');
+  document.getElementById('coverMonthName').textContent=MONTHS[mIdx].charAt(0)+MONTHS[mIdx].slice(1).toLowerCase()+' '+year;
+  document.getElementById('coverMonthLabel').textContent=(MONTHS[mIdx]+' '+year).toUpperCase();
+  if(status){status.textContent=month.closed?'MESE CHIUSO':'MESE APERTO';status.classList.toggle('closed',!!month.closed);}
+  const items=[
+    ['fa-business-time',worked+' gg','Giorni lavorati'],
+    ['fa-clock',t.ore.toFixed(2)+' h','Ore inserite'],
+    ['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket maturati'],
+    ['fa-note-sticky',noteCount,'Note presenti']
+  ];
+  box.innerHTML=items.map(it=>`<div class="cover-stat"><div class="ci"><i class="fa-solid ${it[0]}"></i></div><div class="cv">${it[1]}</div><div class="cl">${it[2]}</div></div>`).join('');
+}
+function initCover(){
+  const b=loadBrand(),d=new Date(),days=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  document.getElementById('coverTitle').textContent=b.name||'Gestione Ore';
+  const logo=document.getElementById('coverLogo');logo.innerHTML=b.logo?`<img src="${b.logo}" alt="logo">`:'';
+  document.getElementById('coverDate').textContent=days[d.getDay()]+' '+formatDateIT(todayISO());renderCoverStats();
+}
+function showCover(){initCover();document.getElementById('coverScreen').classList.remove('hidden')}
+function enterDashboard(mode='month',target=''){
+  const year=new Date().getFullYear(),month=new Date().getMonth(),hadYear=!!DATA[String(year)];
+  ensureYear(year);currentYear=year;currentMonthFilter=mode==='year'?'':String(month);
+  const sel=document.getElementById('monthFilter');if(sel)sel.value=currentMonthFilter;
+  // Uscendo dalla copertina, ripristina sempre la pagina principale: Reperibilità
+  // può essere rimasta aperta da una visita precedente.
+  const repPage=document.getElementById('repPage');if(repPage)repPage.style.display='none';
+  const dashboardPage=document.getElementById('dashboardPage');if(dashboardPage)dashboardPage.style.display='block';
+  if(!hadYear)saveData();
+  renderAll();document.getElementById('coverScreen').classList.add('hidden');
+  if(target==='repPage'){showRepPage();return;}
+  if(target){setTimeout(()=>{const el=document.getElementById(target);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
+}
+</script>
+<script>setGraphicStyle(localStorage.getItem('strao_graphic_style_v1')||'base');</script>
+<script id="dashboard-insights-script">
+function insightMonthMetrics(year,index){
+  const y=DATA[String(year)];
+  if(!y||!y.months||!y.months[index]) return {hours:0,euro:0,rep:0,recup:0,worked:0,ticketDays:0,ticketEuro:0};
+  const month=y.months[index]; let hours=0,euro=0,rep=0,recup=0;
+  (month.entries||[]).forEach(e=>{const h=Number(e.ore)||0;hours+=h;euro+=h*(Number.isFinite(Number(e.date&&rateForDate(year,e.date)))?rateForDate(year,e.date):0);if(e.rep)rep+=h;if(e.recup)recup+=h;});
+  const worked=(month.entries||[]).filter(e=>!!e.lavorato).length;
+  const savedTicketDays=Number(y.ticketMonths&&y.ticketMonths[index])||0;
+  const ticketDays=(month.closed||month.ticketManualOverride||month.ticketManualProtected)?savedTicketDays:worked;
+  const rate=(typeof ticketRateForDate==='function')?ticketRateForDate(year,year+'-'+String(index+1).padStart(2,'0')+'-01'):0;
+  return {hours,euro,rep,recup,worked,ticketDays,ticketEuro:ticketDays*rate};
+}
+function insightMonthIndex(){
+  if(currentMonthFilter!=='') return Math.max(0,Math.min(11,parseInt(currentMonthFilter,10)||0));
+  const now=new Date();
+  if(Number(currentYear)===now.getFullYear()) return now.getMonth();
+  const y=DATA[String(currentYear)];
+  if(y&&y.months){for(let i=11;i>=0;i--){const m=y.months[i];if((m.entries||[]).some(e=>(Number(e.ore)||0)!==0||e.lavorato||e.rep||e.recup)||Number(y.ticketMonths&&y.ticketMonths[i])>0)return i;}}
+  return 0;
+}
+function insightDateValid(value){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(value||''))return false;
+  const d=new Date(value+'T12:00:00');return !Number.isNaN(d.getTime())&&d.toISOString().slice(0,10)===value;
+}
+function renderDashboardInsights(){
+  const box=document.getElementById('insightsGrid');if(!box||!currentYear)return;
+  const mIdx=insightMonthIndex(),monthName=MONTHS[mIdx].charAt(0)+MONTHS[mIdx].slice(1).toLowerCase();
+  const cur=insightMonthMetrics(Number(currentYear),mIdx);
+  const prevIndex=(mIdx+11)%12,prevYear=mIdx===0?Number(currentYear)-1:Number(currentYear);
+  const prev=insightMonthMetrics(prevYear,prevIndex);
+  const y=DATA[String(currentYear)]||{};
+  const percent=(a,b)=>b?((a-b)/Math.abs(b)*100):null;
+  const delta=(a,b)=>{const p=percent(a,b);if(p===null)return 'Nessun confronto disponibile con il mese precedente';const sign=p>0?'+':'';return `${sign}${p.toFixed(0)}% rispetto al mese pr

@@ -1,0 +1,235 @@
+:"2025-12-01","ore":1.58,"rep":false},{"date":"2025-12-02","ore":1.1,"rep":false},{"date":"2025-12-03","ore":1,"rep":false},{"date":"2025-12-04","ore":1.05,"rep":false},{"date":"2025-12-05","ore":1.05,"rep":false},{"date":"2025-12-06","ore":1,"rep":false},{"date":"2025-12-09","ore":0.57,"rep":false},{"date":"2025-12-10","ore":1.02,"rep":false},{"date":"2025-12-11","ore":0.58,"rep":false},{"date":"2025-12-12","ore":0.85,"rep":false},{"date":"2025-12-15","ore":0.9,"rep":false},{"date":"2025-12-16","ore":1.18,"rep":false},{"date":"2025-12-17","ore":0.88,"rep":false},{"date":"2025-12-18","ore":1.03,"rep":false},{"date":"2025-12-19","ore":0.53,"rep":false},{"date":"2025-12-22","ore":0.5,"rep":false},{"date":"2025-12-23","ore":0,"rep":false},{"date":"2025-12-24","ore":0,"rep":false},{"date":"2025-12-25","ore":0,"rep":false},{"date":"2025-12-26","ore":0,"rep":false}]}]},"2026":{"rate":19.53952,"months":[{"entries":[{"date":"2026-01-01","ore":0,"rep":false},{"date":"2026-01-02","ore":0,"rep":false},{"date":"2026-01-05","ore":0,"rep":false},{"date":"2026-01-06","ore":0,"rep":false},{"date":"2026-01-07","ore":1.07,"rep":false},{"date":"2026-01-08","ore":1.15,"rep":false},{"date":"2026-01-09","ore":1,"rep":false},{"date":"2026-01-10","ore":2.48,"rep":false},{"date":"2026-01-12","ore":1,"rep":false},{"date":"2026-01-13","ore":1.08,"rep":false},{"date":"2026-01-14","ore":1.17,"rep":false},{"date":"2026-01-15","ore":1.17,"rep":false},{"date":"2026-01-16","ore":0.55,"rep":false},{"date":"2026-01-19","ore":1.12,"rep":false},{"date":"2026-01-20","ore":0.82,"rep":false},{"date":"2026-01-20","ore":1.82,"rep":true},{"date":"2026-01-21","ore":0.5,"rep":true},{"date":"2026-01-21","ore":0.52,"rep":false},{"date":"2026-01-22","ore":0,"rep":false},{"date":"2026-01-23","ore":0.65,"rep":false},{"date":"2026-01-24","ore":0.92,"rep":true},{"date":"2026-01-26","ore":0.73,"rep":false},{"date":"2026-01-27","ore":1.23,"rep":false},{"date":"2026-01-28","ore":1.18,"rep":false},{"date":"2026-01-29","ore":0,"rep":false},{"date":"2026-01-30","ore":1.12,"rep":false}]},{"entries":[{"date":"2026-02-02","ore":1.22,"rep":false},{"date":"2026-02-03","ore":1.15,"rep":false},{"date":"2026-02-04","ore":0.9,"rep":false},{"date":"2026-02-05","ore":1.07,"rep":false},{"date":"2026-02-06","ore":1.37,"rep":false},{"date":"2026-02-09","ore":1.1,"rep":false},{"date":"2026-02-10","ore":1.3,"rep":false},{"date":"2026-02-11","ore":1.15,"rep":false},{"date":"2026-02-12","ore":1,"rep":false},{"date":"2026-02-13","ore":0.53,"rep":false},{"date":"2026-02-16","ore":1,"rep":false},{"date":"2026-02-17","ore":0.5,"rep":false},{"date":"2026-02-18","ore":0.5,"rep":false},{"date":"2026-02-19","ore":1.07,"rep":false},{"date":"2026-02-20","ore":0.6,"rep":false},{"date":"2026-02-23","ore":1.02,"rep":false},{"date":"2026-02-24","ore":1,"rep":false},{"date":"2026-02-25","ore":0.85,"rep":false},{"date":"2026-02-26","ore":0.55,"rep":false},{"date":"2026-02-27","ore":0.5,"rep":false}]},{"entries":[{"date":"2026-03-02","ore":1.15,"rep":false},{"date":"2026-03-03","ore":1.13,"rep":false},{"date":"2026-03-04","ore":1.3,"rep":false},{"date":"2026-03-05","ore":1.17,"rep":false},{"date":"2026-03-06","ore":0.85,"rep":false},{"date":"2026-03-09","ore":0.98,"rep":false},{"date":"2026-03-10","ore":1.22,"rep":false},{"date":"2026-03-11","ore":1.12,"rep":false},{"date":"2026-03-12","ore":1,"rep":false},{"date":"2026-03-13","ore":0.5,"rep":false},{"date":"2026-03-15","ore":1,"rep":false},{"date":"2026-03-16","ore":1,"rep":false},{"date":"2026-03-17","ore":0.5,"rep":false},{"date":"2026-03-18","ore":1.4,"rep":false},{"date":"2026-03-19","ore":0,"rep":false},{"date":"2026-03-20","ore":1.03,"rep":false},{"date":"2026-03-23","ore":0.92,"rep":false},{"date":"2026-03-24","ore":1.12,"rep":false},{"date":"2026-03-25","ore":1.02,"rep":false},{"date":"2026-03-26","ore":1,"rep":false},{"date":"2026-03-27","ore":0,"rep":false},{"date":"2026-03-30","ore":1.08,"rep":false},{"date":"2026-03-31","ore":1.22,"rep":false}]},{"entries":[{"date":"2026-04-01","ore":1.2,"rep":false},{"date":"2026-04-02","ore":1.22,"rep":false},{"date":"2026-04-03","ore":0.75,"rep":false},{"date":"2026-04-06","ore":0,"rep":false},{"date":"2026-04-07","ore":0,"rep":false},{"date":"2026-04-08","ore":0,"rep":false},{"date":"2026-04-09","ore":2.12,"rep":false},{"date":"2026-04-10","ore":1.32,"rep":false},{"date":"2026-04-13","ore":1.75,"rep":false},{"date":"2026-04-14","ore":1.08,"rep":false},{"date":"2026-04-15","ore":3.03,"rep":false},{"date":"2026-04-16","ore":0,"rep":false},{"date":"2026-04-17","ore":1.02,"rep":false},{"date":"2026-04-20","ore":0.75,"rep":false},{"date":"2026-04-21","ore":0.67,"rep":false},{"date":"2026-04-22","ore":1,"rep":false},{"date":"2026-04-23","ore":0.7,"rep":false},{"date":"2026-04-24","ore":0.5,"rep":false},{"date":"2026-04-27","ore":0.78,"rep":false},{"date":"2026-04-28","ore":0,"rep":false},{"date":"2026-04-29","ore":1.03,"rep":false},{"date":"2026-04-30","ore":0,"rep":false}]},{"entries":[{"date":"2026-05-04","ore":1.02,"rep":false},{"date":"2026-05-05","ore":1.18,"rep":false},{"date":"2026-05-06","ore":1.17,"rep":false},{"date":"2026-05-07","ore":1,"rep":false},{"date":"2026-05-08","ore":1,"rep":false},{"date":"2026-05-11","ore":1.18,"rep":false},{"date":"2026-05-12","ore":1.17,"rep":false},{"date":"2026-05-13","ore":1,"rep":false},{"date":"2026-05-14","ore":1.12,"rep":false},{"date":"2026-05-15","ore":0.65,"rep":false},{"date":"2026-05-18","ore":0.5,"rep":false},{"date":"2026-05-19","ore":2,"rep":false},{"date":"2026-05-20","ore":1.05,"rep":false},{"date":"2026-05-21","ore":1.08,"rep":false},{"date":"2026-05-22","ore":0,"rep":false},{"date":"2026-05-25","ore":0.85,"rep":false},{"date":"2026-05-26","ore":1.07,"rep":false},{"date":"2026-05-27","ore":1.03,"rep":false},{"date":"2026-05-28","ore":0.67,"rep":false},{"date":"2026-05-29","ore":0.87,"rep":false}]},{"entries":[{"date":"2026-06-03","ore":1.02,"rep":false},{"date":"2026-06-04","ore":1.18,"rep":false},{"date":"2026-06-05","ore":0.83,"rep":false},{"date":"2026-06-08","ore":1.12,"rep":false},{"date":"2026-06-09","ore":1.15,"rep":false},{"date":"2026-06-10","ore":1.1,"rep":false},{"date":"2026-06-11","ore":1.07,"rep":false},{"date":"2026-06-12","ore":1,"rep":false},{"date":"2026-06-15","ore":1,"rep":false},{"date":"2026-06-16","ore":1.08,"rep":false},{"date":"2026-06-17","ore":1,"rep":false},{"date":"2026-06-18","ore":0.92,"rep":false},{"date":"2026-06-19","ore":0.62,"rep":false},{"date":"2026-06-22","ore":1.05,"rep":false},{"date":"2026-06-23","ore":1.07,"rep":false},{"date":"2026-06-24","ore":0,"rep":false},{"date":"2026-06-25","ore":1,"rep":false},{"date":"2026-06-26","ore":1,"rep":false},{"date":"2026-06-29","ore":1,"rep":false},{"date":"2026-06-30","ore":0.58,"rep":false}]},{"entries":[{"date":"2026-07-01","ore":1.15,"rep":false},{"date":"2026-07-02","ore":0.5,"rep":false},{"date":"2026-07-03","ore":1.17,"rep":false},{"date":"2026-07-06","ore":1.2,"rep":false},{"date":"2026-07-07","ore":1,"rep":false},{"date":"2026-07-08","ore":2.02,"rep":false},{"date":"2026-07-09","ore":1,"rep":false},{"date":"2026-07-10","ore":0.77,"rep":false},{"date":"2026-07-13","ore":1.07,"rep":false},{"date":"2026-07-14","ore":1,"rep":false},{"date":"2026-07-15","ore":1,"rep":false},{"date":"2026-07-16","ore":1.03,"rep":false},{"date":"2026-07-17","ore":0.97,"rep":false},{"date":"2026-07-20","ore":1.08,"rep":false},{"date":"2026-07-21","ore":0,"rep":false},{"date":"2026-07-22","ore":1.17,"rep":false},{"date":"2026-07-23","ore":1,"rep":false},{"date":"2026-07-24","ore":0.65,"rep":false},{"date":"2026-07-27","ore":1.02,"rep":false},{"date":"2026-07-28","ore":0,"rep":false},{"date":"2026-07-29","ore":1.05,"rep":false},{"date":"2026-07-30","ore":0.5,"rep":false},{"date":"2026-07-31","ore":0.5,"rep":false}]},{"entries":[{"date":"2026-08-03","ore":1.15,"rep":false},{"date":"2026-08-04","ore":0,"rep":false},{"date":"2026-08-05","ore":0,"rep":false},{"date":"2026-08-06","ore":0,"rep":false},{"date":"2026-08-07","ore":0,"rep":false},{"date":"2026-08-10","ore":0,"rep":false},{"date":"2026-08-11","ore":0,"rep":false},{"date":"2026-08-12","ore":0,"rep":false},{"date":"2026-08-13","ore":0,"rep":false},{"date":"2026-08-14","ore":0,"rep":false},{"date":"2026-08-17","ore":0,"rep":false},{"date":"2026-08-18","ore":0,"rep":false},{"date":"2026-08-19","ore":0,"rep":false},{"date":"2026-08-20","ore":0,"rep":false},{"date":"2026-08-21","ore":0,"rep":false},{"date":"2026-08-24","ore":0,"rep":false},{"date":"2026-08-25","ore":0,"rep":false},{"date":"2026-08-26","ore":0,"rep":false},{"date":"2026-08-27","ore":0,"rep":false},{"date":"2026-08-28","ore":0,"rep":false},{"date":"2026-08-31","ore":0,"rep":false}]},{"entries":[{"date":"2026-09-01","ore":0,"rep":false},{"date":"2026-09-02","ore":0,"rep":false},{"date":"2026-09-03","ore":0,"rep":false},{"date":"2026-09-04","ore":0,"rep":false},{"date":"2026-09-07","ore":0,"rep":false},{"date":"2026-09-08","ore":0,"rep":false},{"date":"2026-09-09","ore":0,"rep":false},{"date":"2026-09-10","ore":0,"rep":false},{"date":"2026-09-11","ore":0,"rep":false},{"date":"2026-09-14","ore":0,"rep":false},{"date":"2026-09-15","ore":0,"rep":false},{"date":"2026-09-16","ore":0,"rep":false},{"date":"2026-09-17","ore":0,"rep":false},{"date":"2026-09-18","ore":0,"rep":false},{"date":"2026-09-21","ore":0,"rep":false},{"date":"2026-09-22","ore":0,"rep":false},{"date":"2026-09-23","ore":0,"rep":false},{"date":"2026-09-24","ore":0,"rep":false},{"date":"2026-09-25","ore":0,"rep":false},{"date":"2026-09-28","ore":0,"rep":false},{"date":"2026-09-29","ore":0,"rep":false},{"date":"2026-09-30","ore":0,"rep":false}]},{"entries":[]},{"entries":[]},{"entries":[]}]}};
+
+function loadData(){
+  try{ return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveData(){ localStorage.setItem(STORE_KEY, JSON.stringify(DATA)); }
+
+let DATA = loadData();
+let currentYear = null;
+let currentMonthFilter = ""; 
+let yearChartInstance = null;
+let monthChartInstances = {};
+
+function todayISO(){
+  return new Date().toISOString().slice(0,10);
+}
+function daysInMonth(y, mIdx){ return new Date(y, mIdx+1, 0).getDate(); }
+function isWeekday(y, mIdx, d){
+  const wd = new Date(y, mIdx, d).getDay();
+  return wd !== 0 && wd !== 6;
+}
+
+function buildFullMonthEntries(y, mIdx){
+  const entries = [];
+  const dim = daysInMonth(y, mIdx);
+  for(let d=1; d<=dim; d++){
+    const iso = y + '-' + String(mIdx+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    entries.push({date: iso, ore: 0, rep:false, recup:false, lavorato:false, note:''});
+  }
+  return entries;
+}
+function buildAllDaysEntries(y, mIdx){
+  const entries = [];
+  const dim = daysInMonth(y, mIdx);
+  for(let d=1; d<=dim; d++){
+    const iso = y + '-' + String(mIdx+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    entries.push({date: iso, rep:false});
+  }
+  return entries;
+}
+function formatDateIT(iso){
+  if(!iso) return '';
+  const p = iso.split('-');
+  if(p.length!==3) return iso;
+  return p[2] + '/' + p[1] + '/' + p[0];
+}
+
+function emptyYear(y){
+  return {
+    rateHistory: [{from: y+'-01-01', rate:0}],
+    months: MONTHS.map((m,mIdx)=>({entries: buildFullMonthEntries(y, mIdx), closed:false})),
+    notes: [],
+    reperibilitaDays: MONTHS.map((m,mIdx)=>({entries: buildAllDaysEntries(y, mIdx)})),
+    ferie: {
+      residuoPrec: {ferie:0, per:0, semifestivita:0, rechh:0},
+      spettanza: {ferie:0, per:0, semifestivita:0, rechh:0},
+      usufruitoMonths: MONTHS.map(()=>({ferie:0, per:0, semifestivita:0, rechh:0}))
+    },
+    ticketRateHistory: [{from: y+'-01-01', rate:0}],
+    ticketMonths: MONTHS.map(()=>0)
+  };
+}
+
+function ensureYear(y){
+  if(y===undefined || y===null || y==='' || isNaN(Number(y))){
+    y = currentYear && !isNaN(Number(currentYear)) ? currentYear : new Date().getFullYear();
+  }
+  if(!DATA[y]) DATA[y] = emptyYear(y);
+  const Y = DATA[y];
+  if(!Y.rateHistory){
+    const oldRate = Y.rate || 0;
+    Y.rateHistory = [{from: y+'-01-01', rate: oldRate}];
+    delete Y.rate;
+  }
+  if(!Y.notes) Y.notes = [];
+  if(!Y.months) Y.months = MONTHS.map((m,mIdx)=>({entries:buildFullMonthEntries(y,mIdx),closed:false}));
+  Y.months.forEach((m,mIdx)=>{
+    if(!m.entries) m.entries=buildFullMonthEntries(y,mIdx);
+    if(m.closed===undefined) m.closed=false;
+    m.entries.forEach(e=>{ if(e.lavorato===undefined) e.lavorato=false; });
+    const existingDates = new Set(m.entries.map(e=>e.date).filter(Boolean));
+    buildFullMonthEntries(Number(y),mIdx).forEach(day=>{
+      if(!existingDates.has(day.date)) m.entries.push(day);
+    });
+    m.entries.sort((a,b)=>(a.date||'9999-99-99').localeCompare(b.date||'9999-99-99'));
+  });
+  if(!Y.reperibilitaDays) Y.reperibilitaDays = MONTHS.map((m,mIdx)=>({entries: buildAllDaysEntries(y, mIdx)}));
+  Y.reperibilitaDays.forEach((m, mIdx)=>{
+    const dim = daysInMonth(y, mIdx);
+    if(m.entries.length < dim){
+      const full = buildAllDaysEntries(y, mIdx);
+      m.entries.forEach(old=>{
+        const match = full.find(f=>f.date===old.date);
+        if(match) match.rep = !!old.rep;
+      });
+      m.entries = full;
+    }
+  });
+  if(!Y.ferie) Y.ferie = {
+    residuoPrec: {ferie:0, per:0, semifestivita:0, rechh:0},
+    spettanza: {ferie:0, per:0, semifestivita:0, rechh:0},
+    usufruitoMonths: MONTHS.map(()=>({ferie:0, per:0, semifestivita:0, rechh:0}))
+  };
+  if(!Y.ticketRateHistory) Y.ticketRateHistory = [{from: y+'-01-01', rate:0}];
+  if(!Y.ticketMonths) Y.ticketMonths = MONTHS.map(()=>0);
+  return Y;
+}
+
+function migrateHistoricalTicketClosures(force=false){
+  const now = new Date();
+  const currentCalendarYear = now.getFullYear();
+  const currentCalendarMonth = now.getMonth();
+  Object.keys(DATA).forEach(yearKey=>{
+    const yearNum = Number(yearKey);
+    if(isNaN(yearNum)) return;
+    const Y = ensureYear(yearNum);
+    Y.months.forEach((month,mIdx)=>{
+      const isHistorical = yearNum < currentCalendarYear || (yearNum===currentCalendarYear && mIdx<currentCalendarMonth);
+      if(!isHistorical) return;
+      month.closed = true;
+      const savedTicketDays = parseFloat(Y.ticketMonths[mIdx])||0;
+      const checkedWorkDays = (month.entries||[]).filter(e=>!!e.lavorato).length;
+      if(savedTicketDays>0 && checkedWorkDays===0) month.ticketManualProtected = true;
+      if(savedTicketDays===0 && checkedWorkDays>0) Y.ticketMonths[mIdx] = checkedWorkDays;
+    });
+  });
+  localStorage.setItem(TICKET_CLOSURE_MIGRATION_KEY, new Date().toISOString());
+  saveData();
+}
+
+function seedIfNeeded(){
+  if(localStorage.getItem(SEEDED_KEY)) return;
+  Object.keys(SEED_DATA_RAW).forEach(y=>{
+    if(DATA[y]) return;
+    const seed = SEED_DATA_RAW[y];
+    const yearObj = { rateHistory: [{from: y+'-01-01', rate: seed.rate}], months: [] };
+    seed.months.forEach((m, mIdx)=>{
+      const full = buildFullMonthEntries(parseInt(y,10), mIdx);
+      m.entries.forEach(se=>{
+        const match = full.find(f=>f.date===se.date);
+        if(match){ match.ore = se.ore; match.rep = !!se.rep; }
+        else { full.push({date: se.date, ore: se.ore, rep: !!se.rep, recup:false, note:''}); }
+      });
+      full.forEach(f=>{ if(f.recup===undefined) f.recup=false; if(f.lavorato===undefined) f.lavorato=false; if(f.note===undefined) f.note=''; });
+      yearObj.months.push({entries: full, closed:false});
+    });
+    DATA[y] = yearObj;
+  });
+  localStorage.setItem(SEEDED_KEY, '1');
+  saveData();
+}
+
+function purgeInvalidYears(){
+  Object.keys(DATA).forEach(k=>{
+    if(isNaN(Number(k)) || k.trim()===''){ delete DATA[k]; }
+  });
+}
+
+function initYears(){
+  purgeInvalidYears();
+  seedIfNeeded();
+  purgeInvalidYears();
+  let years = Object.keys(DATA).map(Number).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
+  if(years.length===0){
+    const now = new Date().getFullYear();
+    ensureYear(now);
+    years = [now];
+  }
+  currentYear = years[years.length-1];
+  migrateHistoricalTicketClosures();
+  saveData();
+}
+
+function addYear(){
+  const v = document.getElementById('newYearInput').value.trim();
+  if(!v || isNaN(v)){ showToast('Inserisci un anno valido.'); return; }
+  const y = parseInt(v,10);
+  ensureYear(y);
+  currentYear = y;
+  document.getElementById('newYearInput').value='';
+  saveData();
+  renderAll();
+  showToast('Anno ' + y + ' creato.');
+}
+
+function deleteYear(y, ev){
+  ev.stopPropagation();
+  ev.preventDefault();
+  if(!confirm('Eliminare tutti i dati dell\'anno ' + y + '?')) return;
+  delete DATA[y];
+  purgeInvalidYears();
+  if(Object.keys(DATA).length===0){ ensureYear(new Date().getFullYear()); }
+  const years = Object.keys(DATA).map(Number).filter(n=>!isNaN(n)).sort((a,b)=>a-b);
+  currentYear = years[years.length-1];
+  saveData();
+  renderAll();
+}
+
+function selectYear(y){
+  if(isNaN(Number(y))) return;
+  currentYear = Number(y);
+  renderAll();
+}
+
+function rateForDate(y, dateStr){
+  const hist = ensureYear(y).rateHistory.slice().sort((a,b)=> a.from.localeCompare(b.from));
+  if(!dateStr) dateStr = todayISO();
+  let applicable = hist[0] ? hist[0].rate : 0;
+  for(const h of hist){
+    if(h.from <= dateStr) applicable = h.rate; else break;
+  }
+  return applicable;
+}
+function currentRate(y){
+  return rateForDate(y, todayISO());
+}
+
+/* RICALCOLO RETROATTIVO COMPLETO E AUTOCOMPILAZIONE DATE */
+function updateRate(){
+  const v = parseFloat(document.getElementById('rateInput').value);
+  if(isNaN(v)){ showToast('Inserisci una tariffa valida.'); return; }
+  const y = ensureYear(currentYear);
+  
+  // Seleziona il mese target (quello filtrato o il mese corrente)
+  let targetMonthIdx = currentMonthFilter !== '' ? parseInt(currentMonthFilter, 10) : new Date().getMonth();
+  const monthStr = String(targetMonthIdx + 1).padStart(2, '0');
+  const monthStartISO = `${currentYear}-${monthStr}-01`;
+
+  // Assegna la nuova tariffa a partire dal 1° del mese
+  y.rateHistory = y.rateHistory.filter(h => h.from < monthStartISO);
+  y.rateHistory.push({from: monthStartISO, rate: v});
+  
+  // Forza la compilazione della data su ogni voce per garantire che la nuova tariffa venga applicata a tutte le ore
+  if(y.months[targ

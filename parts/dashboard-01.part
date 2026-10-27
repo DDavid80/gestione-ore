@@ -1,0 +1,158 @@
+a(0,0,0,.34);--soft-glow:0 12px 34px rgba(0,0,0,.20);
+  --glass:rgba(24,33,49,.64);--glass-strong:rgba(30,40,59,.82);--glass-border:rgba(255,255,255,.14);
+}
+[data-theme="grigio"]{--bg:#0a0a0c;--side:rgba(28,28,30,.76);--card:rgba(44,44,46,.64);--card-border:rgba(255,255,255,.13);--line:rgba(255,255,255,.10);--glass:rgba(38,38,41,.64);--glass-strong:rgba(48,48,51,.82);}
+[data-theme="tortora"]{--bg:#ebe7e0;--side:rgba(245,241,234,.76);--card:rgba(255,255,255,.62);--card-border:rgba(90,75,60,.15);--line:rgba(90,75,60,.13);--txt:#2c2925;--txt-muted:#746d64;--acc:#8b6f56;--acc-hover:#745a44;--success:#438657;--warning:#c47c16;--danger:#c74b42;--purple:#8061a8;--glass:rgba(255,255,255,.58);--glass-strong:rgba(255,255,255,.80);--glass-border:rgba(90,75,60,.13);}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,system-ui,sans-serif;background:var(--bg);background-image:none;position:relative;isolation:isolate;letter-spacing:-.01em;}
+body::before,body::after{content:"";position:fixed;z-index:-2;border-radius:50%;filter:blur(90px);pointer-events:none;opacity:.65;}
+body::before{width:48vw;height:48vw;min-width:420px;min-height:420px;right:-15vw;top:-20vw;background:radial-gradient(circle,rgba(10,132,255,.44),rgba(94,92,230,.15) 48%,transparent 72%);}
+body::after{width:42vw;height:42vw;min-width:360px;min-height:360px;left:10vw;bottom:-28vw;background:radial-gradient(circle,rgba(48,209,88,.22),rgba(191,90,242,.12) 48%,transparent 72%);}
+.side{background:var(--side);border-right:1px solid var(--glass-border);backdrop-filter:blur(30px) saturate(145%);-webkit-backdrop-filter:blur(30px) saturate(145%);box-shadow:18px 0 55px rgba(0,0,0,.20);padding:22px 17px;}
+.brand{padding:2px 2px 19px;border-color:var(--glass-border)}
+.brand-logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(145deg,rgba(255,255,255,.16),rgba(255,255,255,.045));border-color:var(--glass-border);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 25px rgba(0,0,0,.18)}
+.logo-tag{color:#64d2ff;font-size:.66rem}.brand-title{font-size:1.12rem;letter-spacing:-.025em}
+.side label{font-size:.66rem;letter-spacing:.075em;color:var(--txt-muted);margin-top:17px}
+.side input,.side select,.rep-side .rm,.year-item{background:rgba(255,255,255,.07);border:1px solid var(--glass-border);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.055)}
+.side input:focus,.side select:focus{outline:none;border-color:rgba(10,132,255,.8);box-shadow:0 0 0 3px rgba(10,132,255,.17)}
+.year-item{padding:11px 13px;transition:transform .18s ease,background .18s ease,border-color .18s ease}.year-item:hover{transform:scale(1.015);border-color:rgba(255,255,255,.25)}
+.year-item.active{background:linear-gradient(135deg,#0a84ff,#5e5ce6);box-shadow:0 10px 28px rgba(10,132,255,.30),inset 0 1px 0 rgba(255,255,255,.25)}
+.btn-sm{background:linear-gradient(135deg,#0a84ff,#3478f6);border-radius:11px;box-shadow:0 8px 18px rgba(10,132,255,.24)}
+.theme-dot{width:32px;height:32px;border:3px solid rgba(255,255,255,.12);box-shadow:0 5px 14px rgba(0,0,0,.20)}.theme-dot.active{border-color:#fff;box-shadow:0 0 0 3px rgba(10,132,255,.24)}
+.main{padding:36px 42px 60px}.top{margin-bottom:26px}.top h1{font-size:2.05rem;letter-spacing:-.045em;font-weight:800}.top h1::after{content:"GLASS";display:inline-flex;margin-left:10px;vertical-align:middle;padding:4px 8px;border:1px solid rgba(100,210,255,.38);border-radius:999px;color:#64d2ff;background:rgba(100,210,255,.10);font-size:.58rem;letter-spacing:.08em;font-weight:800}
+.top p{font-size:.9rem;color:var(--txt-muted)}
+.btn{min-height:42px;border-radius:13px;background:rgba(255,255,255,.085);border:1px solid var(--glass-border);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 8px 22px rgba(0,0,0,.15);transition:.18s ease}
+.btn:hover{transform:translateY(-1px);background:rgba(255,255,255,.13);border-color:rgba(100,210,255,.46);color:#64d2ff}.btn.primary{background:linear-gradient(135deg,#0a84ff,#3478f6);border-color:rgba(255,255,255,.18);box-shadow:0 10px 26px rgba(10,132,255,.28)}
+.summary{gap:16px}.stat{min-height:102px;padding:17px 18px;border-radius:22px;background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.045));border:1px solid var(--glass-border);backdrop-filter:blur(23px) saturate(140%);-webkit-backdrop-filter:blur(23px) saturate(140%);box-shadow:inset 0 1px 0 rgba(255,255,255,.11),var(--soft-glow)}
+.stat::before{content:"";position:absolute;width:72px;height:72px;right:-26px;top:-27px;border-radius:50%;background:currentColor;filter:blur(30px);opacity:.10}.stat::after{height:1px;left:17px;right:17px;bottom:10px;background:linear-gradient(90deg,currentColor,transparent);opacity:.34}.stat:hover{transform:translateY(-3px) scale(1.008);border-color:rgba(255,255,255,.23)}
+.stat .lbl{font-size:.65rem;letter-spacing:.065em}.stat .val{font-size:1.46rem;letter-spacing:-.035em;margin-top:9px}
+.rate-box,.chart-card,.section-card,.month-card{background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,.035));border:1px solid var(--glass-border);backdrop-filter:blur(24px) saturate(140%);-webkit-backdrop-filter:blur(24px) saturate(140%);box-shadow:inset 0 1px 0 rgba(255,255,255,.085),var(--shadow)}
+.rate-box{border-radius:22px;padding:19px 20px}.chart-card{border-radius:24px;padding:20px 22px}.section-card{border-radius:24px;padding:20px 22px}.section-card:hover{border-color:rgba(100,210,255,.30)}
+.section-card h3{font-size:1.02rem;letter-spacing:-.02em}.section-card h3>i:first-child{width:31px;height:31px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;background:rgba(10,132,255,.14);color:#64d2ff;box-shadow:inset 0 1px 0 rgba(255,255,255,.10)}
+.sec-chevron{width:auto!important;height:auto!important;background:none!important;box-shadow:none!important;color:var(--txt-muted)!important}
+.summary-pill{background:rgba(255,255,255,.065);border-color:var(--glass-border);padding:7px 11px;box-shadow:inset 0 1px 0 rgba(255,255,255,.055);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.month-card{border-radius:21px;transition:transform .18s ease,border-color .18s ease}.month-card:hover{transform:translateY(-2px);border-color:rgba(100,210,255,.28)}
+.month-head{padding:15px 17px;background:rgba(255,255,255,.045)}.month-head h3{letter-spacing:.02em}.month-body{padding:15px 17px}
+.ticket-total{border-radius:16px;background:rgba(48,209,88,.075);border-color:rgba(48,209,88,.26);box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 12px 28px rgba(48,209,88,.08)}
+input,select,textarea{transition:border-color .16s ease,box-shadow .16s ease,background .16s ease}td input[type=date],td input[type=number],td input[type=text],.rate-box input,.ticket-box input,.note-item input[type=date],.note-item textarea{background:rgba(0,0,0,.18);border:1px solid var(--glass-border);border-radius:10px}input:focus,select:focus,textarea:focus{outline:none;border-color:rgba(10,132,255,.75)!important;box-shadow:0 0 0 3px rgba(10,132,255,.16)!important}
+table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border-color:var(--line)}td{border-color:var(--line)}tbody tr{transition:background .15s ease}tbody tr:hover{background:rgba(255,255,255,.035)}
+.add-row{min-height:42px;border-radius:13px;background:rgba(255,255,255,.035)}.add-row:hover{background:rgba(10,132,255,.08)}
+.toast{border-radius:17px;background:var(--glass-strong);border:1px solid rgba(100,210,255,.4);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:var(--shadow);bottom:28px;right:28px}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:999px}
+@media(max-width:760px){
+  body::before{right:-55vw;top:-8vw}body::after{left:-35vw;bottom:-10vw}.side{position:relative;top:auto;background:rgba(12,19,32,.82);padding:16px;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
+  .brand{margin-bottom:12px}.main{padding:20px 13px 48px}.top h1{font-size:1.65rem}.top h1::after{font-size:.5rem}.actions{gap:8px}.btn{border-radius:13px}
+  .summary{gap:10px}.stat{min-height:94px;border-radius:19px;padding:15px 14px}.stat .val{font-size:1.25rem}.rate-box,.chart-card,.section-card{border-radius:21px;padding:16px 14px}.month-card{border-radius:19px}
+  .section-inline-summary{gap:6px}.summary-pill{padding:6px 9px}.toast{left:14px;right:14px;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center}
+}
+</style>
+
+
+<style id="dashboard-insights-style">
+.insight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:16px 0 22px}
+.insight-card{min-width:0;border:1px solid var(--card-border);border-radius:16px;padding:16px;background:linear-gradient(145deg,color-mix(in srgb,var(--card) 95%,var(--acc) 5%),var(--card));box-shadow:var(--soft-glow)}
+.insight-head{display:flex;align-items:center;gap:10px;margin:0 0 12px;font-size:.96rem;font-weight:800;color:var(--txt)}
+.insight-icon{width:34px;height:34px;display:grid;place-items:center;border-radius:11px;background:color-mix(in srgb,var(--acc) 17%,transparent);color:var(--acc)}
+.insight-sub{color:var(--txt-muted);font-size:.78rem;line-height:1.45;margin:-4px 0 12px}
+.insight-big{font-size:1.45rem;font-weight:850;color:var(--txt);letter-spacing:-.03em}
+.insight-row{display:flex;justify-content:space-between;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:.8rem;color:var(--txt-muted)}
+.insight-row strong{color:var(--txt);text-align:right}
+.insight-delta{font-size:.76rem;font-weight:750;color:var(--acc);margin-top:4px}
+.insight-alert{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--line);font-size:.78rem;color:var(--txt-muted);line-height:1.4}
+.insight-alert i{color:var(--warning);margin-top:2px}
+.insight-ok{color:var(--success);font-weight:700}
+.insight-forecast{border-color:color-mix(in srgb,var(--purple) 45%,var(--card-border));background:linear-gradient(145deg,color-mix(in srgb,var(--purple) 9%,var(--card)),var(--card))}
+.insight-forecast .insight-icon{color:var(--purple);background:color-mix(in srgb,var(--purple) 18%,transparent)}
+.insight-note{font-size:.7rem;color:var(--txt-muted);margin-top:10px;line-height:1.4}
+@media(max-width:1050px){.insight-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:680px){.insight-grid{grid-template-columns:1fr}.insight-card{padding:14px}}
+</style>
+
+</head>
+<body>
+
+<div id="coverScreen">
+  <div class="cover-bg"></div>
+  <div class="cover-inner">
+    <header class="cover-toprow">
+      <div class="cover-brandblock"><div class="cover-logo" id="coverLogo"></div><div><div class="cover-kicker">GESTIONE ORE · AGENDA PERSONALE</div><div class="cover-title" id="coverTitle">Gestione Ore</div></div></div>
+      <div class="cover-datebox"><span>OGGI</span><strong id="coverDate">Oggi</strong><b id="coverMonthLabel">MESE · ANNO</b></div>
+    </header>
+    <section class="cover-hero"><div class="cover-overline">IL TUO MESE, A COLPO D’OCCHIO</div><h1>Il mese,<br><em>giorno per giorno.</em></h1><p>Ore, presenze e ticket subito sotto mano. Apri l’agenda o vai direttamente alla sezione che ti serve.</p><div class="cover-shortcuts"><button onclick="enterDashboard('month','secOre')"><i class="fa-solid fa-clock"></i><span>Registra ore</span><b>›</b></button><button onclick="enterDashboard('month','repPage')"><i class="fa-solid fa-phone-volume"></i><span>Reperibilità</span><b>›</b></button><button onclick="enterDashboard('month','secFerie')"><i class="fa-solid fa-umbrella-beach"></i><span>Ferie e recuperi</span><b>›</b></button><button onclick="enterDashboard('month','secTicket')"><i class="fa-solid fa-ticket"></i><span>Ticket</span><b>›</b></button></div></section>
+    <aside class="cover-month-card"><div class="cover-card-head"><div><span class="cover-card-kicker">RIEPILOGO DEL MESE</span><h2 id="coverMonthName">Ottobre 2026</h2></div><span id="coverMonthStatus" class="cover-status">MESE APERTO</span></div><div class="cover-stats" id="coverStats"></div><div class="cover-card-foot"><span><i class="fa-solid fa-lock"></i> I mesi chiusi restano consultabili e modificabili secondo le regole della dashboard.</span></div><button class="cover-btn" onclick="enterDashboard('month')"><span>Apri l’agenda</span><i class="fa-solid fa-arrow-right"></i></button><button class="cover-year-btn" onclick="enterDashboard('year')">Vista annuale <i class="fa-solid fa-arrow-up-right-from-square"></i></button></aside>
+    <footer class="cover-foot"><span><i class="fa-solid fa-shield-halved"></i> Dati conservati nel browser</span><span>Seleziona un collegamento o apri il mese corrente</span></footer>
+  </div>
+</div>
+
+<div class="side">
+  <div class="brand">
+    <div class="brand-logo" id="logoBtn" title="Cambia immagine">
+      <i class="fa-solid fa-camera"></i>
+    </div>
+    <div class="brand-name">
+      <div class="logo-tag">Dashboard</div>
+      <div class="brand-title" id="brandTitle" contenteditable="true" spellcheck="false">Gestione Ore</div>
+    </div>
+    <input type="file" id="logoFileInput" accept="image/*">
+  </div>
+
+  <label>Anno</label>
+  <div class="year-list" id="yearList"></div>
+  <div class="add-year">
+    <input type="number" id="newYearInput" placeholder="Es. 2027">
+    <button class="btn-sm" onclick="addYear()">+</button>
+  </div>
+
+  <label>Mese</label>
+  <select id="monthFilter" onchange="setMonthFilter(this.value)">
+    <option value="">Tutto l'anno</option>
+  </select>
+
+  <label>Palette colori</label>
+  <div class="theme-row">
+    <div class="theme-dot navy" data-t="navy" onclick="setTheme('navy')" title="Blu notte"></div>
+    <div class="theme-dot grigio" data-t="grigio" onclick="setTheme('grigio')" title="Grigio scuro"></div>
+  <div class="theme-dot tortora" data-t="tortora" onclick="setTheme('tortora')" title="Tortora"></div>
+  </div>
+
+  <label>Stile grafico</label>
+  <div class="style-switch" id="styleSwitch" role="group" aria-label="Stile grafico">
+    <button type="button" class="style-choice active" data-style="base" onclick="setGraphicStyle('base')"><i class="fa-solid fa-layer-group"></i> Base</button>
+    <button type="button" class="style-choice" data-style="ios" onclick="setGraphicStyle('ios')"><i class="fa-brands fa-apple"></i> iOS Glass</button>
+  </div>
+
+  <label>Sezioni</label>
+  <div class="year-item" onclick="showRepPage()" id="repPageBtn">
+    <span><i class="fa-solid fa-phone-volume" style="margin-right:8px;"></i>Reperibilità</span>
+    <span class="del" style="visibility:hidden;"><i class="fa-solid fa-trash"></i></span>
+  </div>
+  <div class="year-item" onclick="showCover()" id="coverBtn">
+    <span><i class="fa-solid fa-house" style="margin-right:8px;"></i>Copertina</span>
+    <span class="del" style="visibility:hidden;"><i class="fa-solid fa-trash"></i></span>
+  </div>
+
+  <div class="side-foot">
+    Dati salvati solo su questo browser (localStorage). Usa "Esporta backup" per non perderli.
+  </div>
+</div>
+
+<div class="main">
+<div id="dashboardPage">
+<section class="agenda-home" id="agendaHome">
+  <div class="agenda-home-head"><div><div class="agenda-kicker">AGENDA · MESE IN PRIMO PIANO</div><h2 id="agendaTitle">Il mese corrente</h2><p id="agendaSubtitle">Calendario, ore inserite e ticket maturati.</p></div><div class="agenda-selects"><label for="agendaMonthSelect">Mese</label><select id="agendaMonthSelect" onchange="setMonthFilter(this.value)"><option value="">Mese in primo piano</option></select><span id="agendaStatus" class="agenda-status">MESE APERTO</span></div></div>
+  <div class="agenda-layout"><div class="agenda-calendar-wrap"><div class="agenda-weekdays"><span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span></div><div class="agenda-calendar" id="agendaCalendar"></div><div class="agenda-legend"><span><i class="worked"></i>Lavorato</span><span><i class="hours"></i>Ore inserite</span><span><i class="rep"></i>Reperibilità</span><span><i class="holiday"></i>Festività</span></div></div><div class="agenda-summary"><div class="agenda-summary-title">Riepilogo mese</div><div class="agenda-kpis" id="agendaKpis"></div><div class="agenda-quick"><button onclick="openAgendaSection('secOre')"><span><i class="fa-solid fa-clock"></i> Registro ore</span><b>Apri →</b></button><button onclick="openAgendaSection('secTicket')"><span><i class="fa-solid fa-ticket"></i> Ticket</span><b>Apri →</b></button><button onclick="openAgendaSection('secFerie')"><span><i class="fa-solid fa-umbrella-beach"></i> Ferie e recuperi</span><b>Apri →</b></button><button onclick="openAgendaSection('repPage')"><span><i class="fa-solid fa-phone-volume"></i> Reperibilità</span><b>Apri →</b></button></div><button class="agenda-month-btn" onclick="openAgendaMonth()">Apri il registro giornaliero <i class="fa-solid fa-arrow-down"></i></button></div></div>
+</section>
+<div class="top">
+    <div>
+      <h1 id="pageTitle">Gestione Ore Straordinario</h1>
+      <p>Tutti i giorni del mese sono già pronti: compila ore, Rep., Recup. e note.</p>
+    </div>
+    <div class="actions">
+      <button class="btn" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Esporta Excel</button>
+      <button class="btn" onclick="exportBackup()" title="Salva una fotografia completa della dashboard"><i class="fa-solid fa-box-archive"></i> Backup completo</button>
+      <button class="btn" onclick="document.getElementById('importFile').click()" title="Ripristina una fotografia completa della dashboard"><i class="fa-solid fa-clock-rotate-left"></i> Ripristina backup</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(event)">
+    </div>
+  </div>
+
+  <div class="calendar-legend"><span class="legend-weekend sat"><i></i> Sabato</span><span cla
