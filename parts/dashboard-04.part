@@ -1,4 +1,4 @@
-etMonthIdx]){
+if(y.months[targetMonthIdx]){
     y.months[targetMonthIdx].entries.forEach((e, i) => {
       if(!e.date || e.date < monthStartISO){
         const dayStr = String(i + 1).padStart(2, '0');
@@ -385,5 +385,4 @@ function initBrand(){
   });
   document.getElementById('logoFileInput').addEventListener('change', (ev)=>{
     const file = ev.target.files[0];
-    if(!file) return;
-    const 
+    if(!file) re
