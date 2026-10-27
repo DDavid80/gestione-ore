@@ -132,7 +132,7 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
   </div>
 
   <div class="side-foot">
-    Dati salvati solo su questo browser (localStorage). Usa "Esporta backup" per non perderli.
+    <span id="googleSyncStatus">Connessione Google…</span><br><small>Backup locale sempre disponibile.</small>
   </div>
 </div>
 
@@ -155,4 +155,4 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
     </div>
   </div>
 
-  <div class="calendar-legend"><span class="legend-weekend sat"><i></i> Sabato</span><span cla
+  <div class="calendar-legend"><span class="legend-weekend sat"><i></i> Sabato
