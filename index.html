@@ -2473,7 +2473,11 @@ function setCanvasHover(canvas, points){
     points.forEach(p=>{const d=Math.abs(px-p.x);if(d<dist){dist=d;best=p;}});
     if(!best || dist>Math.max(24,r.width/(Math.max(points.length,1)*1.35))){tip.style.display='none';return;}
     tip.innerHTML='<b>'+best.label+'</b>'+best.lines.map(v=>'<span>'+v+'</span>').join('');
-    tip.style.left=Math.max(54,Math.min(r.width-54,best.x))+'px';tip.style.top=Math.max(34,best.y)+'px';tip.style.display='block';
+    const showBelow = best.y < 62;
+    tip.style.left=Math.max(66,Math.min(r.width-66,best.x))+'px';
+    tip.style.top=(showBelow ? Math.max(20,best.y+6) : Math.max(34,best.y-4))+'px';
+    tip.style.transform=showBelow?'translate(-50%, 0)':'translate(-50%, -115%)';
+    tip.style.display='block';
   };
   canvas.onmouseleave=function(){tip.style.display='none';};
 }
