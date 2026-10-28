@@ -541,6 +541,12 @@ html[data-graphic-style="base"] .agenda-home{background:radial-gradient(ellipse 
     <div class="stat rep"><div class="lbl">Giorni reperibilità anno</div><div class="val" id="repYearTotal">0</div></div>
     <div class="stat rep"><div class="lbl">Settimane (stima)</div><div class="val" id="repYearWeeks">0</div></div>
   </div>
+  <div class="chart-card rep-annual-card">
+    <h3>Andamento reperibilità per anno</h3>
+    <p class="rep-chart-sub" id="repComparisonText">Confronto automatico con gli anni presenti.</p>
+    <div class="ch-wrap"><canvas id="repYearChart"></canvas></div>
+    <div class="rep-compare-grid" id="repCompareGrid"></div>
+  </div>
   <div class="months" id="repMonthsGrid"></div>
 </div>
 </div>
@@ -2447,3 +2453,53 @@ html[data-graphic-style="pro"] .note-item,html[data-graphic-style="pro"] .ticket
 }
 </style>
 </html>
+
+<style id="charts-tooltip-and-rep-final">
+.ch-wrap{position:relative;min-width:0;overflow:hidden}
+.chart-tooltip{position:absolute;z-index:20;display:none;min-width:128px;padding:8px 10px;border:1px solid rgba(255,255,255,.18);border-radius:9px;background:rgba(9,14,21,.96);color:#f8fbff;box-shadow:0 12px 28px rgba(0,0,0,.35);font:600 12px/1.45 system-ui,sans-serif;pointer-events:none;transform:translate(-50%,-115%);white-space:nowrap}
+.chart-tooltip b{display:block;color:#7dd3fc;font-size:11px;letter-spacing:.035em;text-transform:uppercase}.chart-tooltip span{display:block;color:#d7e1ec}.chart-tooltip strong{color:#39e58c}
+.rep-annual-card{margin:20px 0 26px}.rep-chart-sub{font-size:.78rem;color:var(--txt-muted);margin:-3px 0 10px}.rep-compare-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}.rep-compare-item{padding:11px 12px;border:1px solid var(--card-border);border-radius:11px;background:rgba(255,255,255,.035)}.rep-compare-item span{display:block;font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--txt-muted);font-weight:700}.rep-compare-item strong{display:block;margin-top:4px;font-size:1.05rem;color:var(--success)}.rep-compare-item strong.down{color:var(--warning)}.rep-compare-item strong.neutral{color:var(--txt)}
+@media(max-width:620px){.rep-compare-grid{grid-template-columns:1fr}.rep-annual-card .ch-wrap{height:220px}}
+</style>
+<script id="charts-tooltip-and-rep-runtime">
+/* Tooltip locali, senza dipendenze online */
+function setCanvasHover(canvas, points){
+  const host=canvas.parentElement;if(!host)return;
+  host.querySelectorAll('.chart-tooltip').forEach(el=>el.remove());
+  const tip=document.createElement('div');tip.className='chart-tooltip';host.appendChild(tip);
+  canvas.onmousemove=function(ev){
+    const r=canvas.getBoundingClientRect(), px=ev.clientX-r.left;
+    let best=null,dist=Infinity;
+    points.forEach(p=>{const d=Math.abs(px-p.x);if(d<dist){dist=d;best=p;}});
+    if(!best || dist>Math.max(24,r.width/(Math.max(points.length,1)*1.35))){tip.style.display='none';return;}
+    tip.innerHTML='<b>'+best.label+'</b>'+best.lines.map(v=>'<span>'+v+'</span>').join('');
+    tip.style.left=Math.max(54,Math.min(r.width-54,best.x))+'px';tip.style.top=Math.max(34,best.y)+'px';tip.style.display='block';
+  };
+  canvas.onmouseleave=function(){tip.style.display='none';};
+}
+function drawFallbackAxes(x,width,height,pad,max,steps){
+  const ch=height-pad.t-pad.b;x.font='10px system-ui,sans-serif';x.lineWidth=1;x.strokeStyle='rgba(148,163,184,.18)';x.fillStyle='rgba(180,196,216,.78)';
+  for(let n=0;n<=steps;n++){const yy=pad.t+ch*n/steps;x.beginPath();x.moveTo(pad.l,yy);x.lineTo(width-pad.r,yy);x.stroke();x.textAlign='right';x.fillText((max*(1-n/steps)).toFixed(max<5?1:0),pad.l-6,yy+3)}
+}
+renderMonthChartFallback=function(canvas, labels, values, trendValues, c){
+  const dpr=Math.min(window.devicePixelRatio||1,2),host=canvas.parentElement,width=Math.max(260,(host&&host.clientWidth)||canvas.clientWidth||640),height=Math.max(185,(host&&host.clientHeight)||canvas.clientHeight||210);
+  canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);canvas.style.height=height+'px';const x=canvas.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,width,height);
+  const pad={l:34,r:12,t:30,b:31},cw=width-pad.l-pad.r,ch=height-pad.t-pad.b,max=Math.max(1,...values)*1.16,steps=4;drawFallbackAxes(x,width,height,pad,max,steps);
+  const count=Math.max(1,values.length),step=cw/count,bw=Math.max(3,Math.min(18,step*.58)),points=[];
+  values.forEach((v,i)=>{const h=ch*v/max,xx=pad.l+i*step+(step-bw)/2,yy=pad.t+ch-h,g=x.createLinearGradient(0,yy,0,pad.t+ch);g.addColorStop(0,c.acc||'#4f8cf8');g.addColorStop(1,'rgba(79,140,248,.34)');x.fillStyle=g;x.fillRect(xx,yy,bw,h);if(count<=22){x.fillStyle='rgba(180,196,216,.78)';x.textAlign='center';x.fillText(labels[i],pad.l+i*step+step/2,height-10)}points.push({x:pad.l+i*step+step/2,y:yy, label:'Giorno '+labels[i],lines:['Ore giornaliere: <strong>'+v.toFixed(2)+' h</strong>','Andamento: <strong>'+values[i].toFixed(2)+' h</strong>']})});
+  x.strokeStyle=c.success||'#10b981';x.lineWidth=2.8;x.lineJoin='round';x.lineCap='round';x.beginPath();trendValues.forEach((v,i)=>{const xx=pad.l+i*step+step/2,yy=pad.t+ch-ch*v/max;i?x.lineTo(xx,yy):x.moveTo(xx,yy)});x.stroke();trendValues.forEach((v,i)=>{const xx=pad.l+i*step+step/2,yy=pad.t+ch-ch*v/max;x.beginPath();x.arc(xx,yy,3,0,Math.PI*2);x.fillStyle=c.success||'#10b981';x.fill()});
+  x.textAlign='left';x.fillStyle=c.success||'#10b981';x.beginPath();x.arc(width/2-48,13,4,0,Math.PI*2);x.fill();x.fillStyle='rgba(180,196,216,.78)';x.fillText('Andamento',width/2-41,17);x.fillStyle=c.acc||'#4f8cf8';x.beginPath();x.arc(width/2+35,13,4,0,Math.PI*2);x.fill();x.fillStyle='rgba(180,196,216,.78)';x.fillText('Ore giornaliere',width/2+42,17);setCanvasHover(canvas,points);
+};
+renderYearChartFallback=function(canvas,oreArr,euroArr,c){
+  const dpr=Math.min(window.devicePixelRatio||1,2),host=canvas.parentElement,width=Math.max(280,(host&&host.clientWidth)||canvas.clientWidth||760),height=Math.max(210,(host&&host.clientHeight)||canvas.clientHeight||270);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);canvas.style.height=height+'px';const x=canvas.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,width,height);
+  const pad={l:43,r:40,t:38,b:34},cw=width-pad.l-pad.r,ch=height-pad.t-pad.b,maxOre=Math.max(1,...oreArr),maxEuro=Math.max(1,...euroArr),labels=['GEN','FEB','MAR','APR','MAG','GIU','LUG','AGO','SET','OTT','NOV','DIC'];drawFallbackAxes(x,width,height,pad,maxOre,4);const step=cw/12,bw=Math.min(42,step*.62),points=[];
+  oreArr.forEach((v,i)=>{const h=ch*v/maxOre,xx=pad.l+i*step+(step-bw)/2,yy=pad.t+ch-h,g=x.createLinearGradient(0,yy,0,pad.t+ch);g.addColorStop(0,c.acc||'#4f8cf8');g.addColorStop(1,'rgba(79,140,248,.35)');x.fillStyle=g;x.fillRect(xx,yy,bw,h);x.fillStyle='rgba(180,196,216,.78)';x.textAlign='center';x.fillText(labels[i],pad.l+i*step+step/2,height-12);points.push({x:pad.l+i*step+step/2,y:yy,label:labels[i],lines:['Ore: <strong>'+v.toFixed(2)+' h</strong>','Euro: <strong>€'+euroArr[i].toFixed(2)+'</strong>']})});
+  x.strokeStyle=c.success||'#10b981';x.lineWidth=3;x.beginPath();euroArr.forEach((v,i)=>{const xx=pad.l+i*step+step/2,yy=pad.t+ch-ch*v/maxEuro;i?x.lineTo(xx,yy):x.moveTo(xx,yy)});x.stroke();euroArr.forEach((v,i)=>{const xx=pad.l+i*step+step/2,yy=pad.t+ch-ch*v/maxEuro;x.beginPath();x.arc(xx,yy,3.5,0,Math.PI*2);x.fillStyle=c.success||'#10b981';x.fill()});x.textAlign='left';x.fillStyle=c.acc||'#4f8cf8';x.fillRect(width/2-55,12,18,5);x.fillStyle='rgba(180,196,216,.78)';x.fillText('Ore',width/2-31,17);x.fillStyle=c.success||'#10b981';x.fillRect(width/2+15,12,18,5);x.fillStyle='rgba(180,196,216,.78)';x.fillText('Euro',width/2+38,17);setCanvasHover(canvas,points);
+};
+function repCountForYear(year){const yy=ensureYear(year);return (yy.reperibilitaDays||[]).reduce((s,m)=>s+(m.entries||[]).filter(e=>e.rep).length,0)}
+function renderRepYearChart(){
+  const canvas=document.getElementById('repYearChart');if(!canvas)return;const years=Object.keys(DATA).map(Number).filter(Number.isFinite).sort((a,b)=>a-b), vals=years.map(repCountForYear),c=chartColors(),dpr=Math.min(window.devicePixelRatio||1,2),host=canvas.parentElement,width=Math.max(280,(host&&host.clientWidth)||canvas.clientWidth||700),height=Math.max(205,(host&&host.clientHeight)||canvas.clientHeight||230);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);canvas.style.height=height+'px';const x=canvas.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,width,height);const pad={l:38,r:14,t:22,b:35},cw=width-pad.l-pad.r,ch=height-pad.t-pad.b,max=Math.max(1,...vals)*1.15;drawFallbackAxes(x,width,height,pad,max,4);const step=cw/Math.max(1,years.length),bw=Math.min(74,step*.58),points=[];vals.forEach((v,i)=>{const h=ch*v/max,xx=pad.l+i*step+(step-bw)/2,yy=pad.t+ch-h,g=x.createLinearGradient(0,yy,0,pad.t+ch);g.addColorStop(0,c.warning||'#ffb020');g.addColorStop(1,'rgba(255,176,32,.25)');x.fillStyle=g;x.fillRect(xx,yy,bw,h);x.fillStyle='rgba(180,196,216,.9)';x.textAlign='center';x.fillText(years[i],pad.l+i*step+step/2,height-12);points.push({x:pad.l+i*step+step/2,y:yy,label:'Anno '+years[i],lines:['Reperibilità: <strong>'+v+' giorni</strong>']})});setCanvasHover(canvas,points);
+  const idx=years.indexOf(currentYear),prev=idx>0?vals[idx-1]:null,cur=idx>=0?vals[idx]:0,diff=prev===null?null:cur-prev,maxVal=Math.max(...vals),bestYear=years[vals.indexOf(maxVal)],diffLabel=diff===null?'Nessun anno precedente':(diff>0?'+'+diff:diff)+' gg rispetto al '+years[idx-1];document.getElementById('repComparisonText').textContent=diffLabel;document.getElementById('repCompareGrid').innerHTML='<div class="rep-compare-item"><span>Anno selezionato</span><strong>'+cur+' gg</strong></div><div class="rep-compare-item"><span>Variazione</span><strong class="'+(diff===null?'neutral':diff<0?'down':'')+'">'+(diff===null?'—':(diff>0?'+':'')+diff+' gg')+'</strong></div><div class="rep-compare-item"><span>Massimo storico</span><strong class="neutral">'+maxVal+' gg · '+bestYear+'</strong></div>';
+}
+const _renderRepPageWithAnalytics=renderRepPage;renderRepPage=function(){_renderRepPageWithAnalytics();renderRepYearChart();};
+</script>
