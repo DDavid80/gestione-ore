@@ -61,4 +61,35 @@
   };
   observe('coverStats',extraCover);
   observe('agendaKpis',extraAgenda);
+
+  // Titolo modificabile direttamente dalla copertina, usando il brand già salvato.
+  const coverTitle=document.getElementById('coverTitle');
+  const sidebarTitle=document.getElementById('brandTitle');
+  if(coverTitle){
+    coverTitle.contentEditable='true';
+    coverTitle.spellcheck=false;
+    coverTitle.setAttribute('role','textbox');
+    coverTitle.setAttribute('aria-label','Modifica titolo della dashboard');
+    coverTitle.setAttribute('title','Clicca per modificare il titolo · Invio per salvare');
+    coverTitle.style.cssText+=';cursor:text;outline-offset:5px;min-width:70px;';
+    const saveTitle=()=>{
+      const title=coverTitle.textContent.trim().replace(/\\s+/g,' ').slice(0,80)||'Gestione Ore';
+      const brand=typeof loadBrand==='function'?loadBrand():{};
+      brand.name=title;
+      if(typeof saveBrand==='function')saveBrand(brand);
+      coverTitle.textContent=title;
+      if(sidebarTitle)sidebarTitle.textContent=title;
+      const pageTitle=document.getElementById('pageTitle');
+      if(pageTitle)pageTitle.textContent=title+' '+(typeof currentYear!=='undefined'&&currentYear?currentYear:new Date().getFullYear());
+    };
+    coverTitle.addEventListener('blur',saveTitle);
+    coverTitle.addEventListener('keydown',event=>{
+      if(event.key==='Enter'){event.preventDefault();coverTitle.blur();}
+      if(event.key==='Escape'){event.preventDefault();coverTitle.textContent=(typeof loadBrand==='function'?loadBrand().name:null)||'Gestione Ore';coverTitle.blur();}
+    });
+    if(sidebarTitle)sidebarTitle.addEventListener('blur',()=>{
+      const name=sidebarTitle.textContent.trim()||'Gestione Ore';
+      coverTitle.textContent=name;
+    });
+  }
 })();
