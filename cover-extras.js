@@ -10,7 +10,7 @@
     finally{currentYear=previous;}
     let card=box.querySelector('[data-total-euro-mese]');
     if(!card){card=document.createElement('div');card.className='cover-stat';card.dataset.totalEuroMese='1';card.innerHTML='<div class="ci"><i class="fa-solid fa-euro-sign"></i></div><div class="cv"></div><div class="cl">Totale € mese</div>';box.appendChild(card);}
-    card.querySelector('.cv').textContent=formatEuro(total);
+    const value=formatEuro(total),node=card.querySelector('.cv');if(node.textContent!==value)node.textContent=value;
   };
   const extraAgenda=()=>{
     const box=document.getElementById('agendaKpis');
@@ -18,7 +18,7 @@
     const total=monthTotals(agendaMonthIndex()).euro;
     let card=box.querySelector('[data-total-euro-mese]');
     if(!card){card=document.createElement('div');card.className='agenda-kpi';card.dataset.totalEuroMese='1';card.style.setProperty('--k','var(--success)');card.innerHTML='<strong></strong><span>Totale € mese</span>';box.appendChild(card);}
-    card.querySelector('strong').textContent=formatEuro(total);
+    const value=formatEuro(total),node=card.querySelector('strong');if(node.textContent!==value)node.textContent=value;
   };
   if(typeof renderCoverStats==='function'){
     const original=renderCoverStats;
@@ -30,4 +30,17 @@
   }
   // Le funzioni originali potrebbero aver già disegnato le schede prima del caricamento di questo script.
   extraCover();extraAgenda();
+  // La sincronizzazione dei dati ricrea i box via innerHTML: ripristina la scheda senza duplicarla.
+  const observe=(id,refresh)=>{
+    const host=document.getElementById(id);if(!host)return;
+    let queued=false;
+    const watcher=new MutationObserver(()=>{
+      if(queued)return;
+      queued=true;
+      queueMicrotask(()=>{queued=false;try{refresh();}catch(e){console.warn('Aggiornamento totale mese:',e);}});
+    });
+    watcher.observe(host,{childList:true,subtree:true});
+  };
+  observe('coverStats',extraCover);
+  observe('agendaKpis',extraAgenda);
 })();
