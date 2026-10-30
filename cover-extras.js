@@ -92,4 +92,47 @@
       coverTitle.textContent=name;
     });
   }
+  // Testo principale della cover: modifica diretta con memorizzazione locale.
+  const hero=document.querySelector('#coverScreen .cover-hero h1');
+  const heroKey='gestione_ore_cover_hero_v1';
+  if(hero){
+    const original='Il mese,|giorno per giorno.';
+    const read=()=>{try{return JSON.parse(localStorage.getItem(heroKey))}catch(e){return null}};
+    const render=(lines)=>{
+      const first=String(lines[0]||'Il mese,');
+      const second=String(lines[1]||'giorno per giorno.');
+      hero.replaceChildren(document.createTextNode(first),document.createElement('br'),document.createElement('em'));
+      hero.querySelector('em').textContent=second;
+    };
+    const saved=read();if(Array.isArray(saved))render(saved);
+    hero.setAttribute('title','Clicca per modificare il titolo grande');
+    hero.style.cursor='text';
+    hero.addEventListener('click',()=>{
+      if(hero.dataset.editing==='1')return;
+      hero.dataset.editing='1';
+      const lines=[hero.childNodes[0]?.textContent||'Il mese,',hero.querySelector('em')?.textContent||'giorno per giorno.'];
+      const first=document.createElement('input'),second=document.createElement('input');
+      first.value=lines[0];second.value=lines[1];
+      for(const input of [first,second]){
+        input.maxLength=75;input.style.cssText='display:block;width:100%;box-sizing:border-box;font:inherit;letter-spacing:inherit;color:inherit;background:#0b1f2a;border:1px solid #36cfe1;border-radius:9px;padding:4px 8px;margin:6px 0;';
+      }
+      second.style.color='#37cde0';
+      const wrap=document.createElement('div'),controls=document.createElement('div');
+      controls.style.cssText='display:flex;gap:8px;margin-top:8px;';
+      const save=document.createElement('button'),cancel=document.createElement('button');
+      save.textContent='Salva';cancel.textContent='Annulla';
+      for(const btn of [save,cancel])btn.style.cssText='font:600 14px system-ui;border:1px solid #37cde0;border-radius:8px;padding:8px 15px;cursor:pointer;color:#eafaff;background:#132c37;';
+      const finish=shouldSave=>{
+        const next=[first.value.trim(),second.value.trim()];
+        if(shouldSave&&next.every(Boolean)){localStorage.setItem(heroKey,JSON.stringify(next));render(next);}
+        else render(lines);
+        hero.dataset.editing='0';
+      };
+      save.onclick=e=>{e.stopPropagation();finish(true)};
+      cancel.onclick=e=>{e.stopPropagation();finish(false)};
+      for(const input of [first,second])input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();finish(true)}if(e.key==='Escape'){e.preventDefault();finish(false)}});
+      controls.append(save,cancel);wrap.append(first,second,controls);hero.replaceChildren(wrap);first.focus();
+    });
+  }
+
 })();
