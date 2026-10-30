@@ -73,7 +73,7 @@
     coverTitle.setAttribute('title','Clicca per modificare il titolo · Invio per salvare');
     coverTitle.style.cssText+=';cursor:text;outline-offset:5px;min-width:70px;';
     const saveTitle=()=>{
-      const title=coverTitle.textContent.trim().replace(/\\s+/g,' ').slice(0,80)||'Gestione Ore';
+      const title=coverTitle.textContent.trim().replace(/\s+/g,' ').slice(0,80)||'Gestione Ore';
       const brand=typeof loadBrand==='function'?loadBrand():{};
       brand.name=title;
       if(typeof saveBrand==='function')saveBrand(brand);
