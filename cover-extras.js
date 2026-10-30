@@ -20,6 +20,8 @@
   const extraCover=()=>{
     const box=document.getElementById('coverStats');
     if(!box||typeof monthTotals!=='function'||typeof ensureYear!=='function')return;
+    // Evita che il quinto riquadro appaia da solo prima del riepilogo principale.
+    if([...box.children].filter(el=>el.classList.contains('cover-stat')&&!el.hasAttribute('data-total-euro-mese')).length<4)return;
     const today=new Date(),previous=currentYear;
     let total;
     try{currentYear=today.getFullYear();ensureYear(currentYear);total=monthTotals(today.getMonth()).euro;}
