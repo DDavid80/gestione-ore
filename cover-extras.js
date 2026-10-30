@@ -1,6 +1,22 @@
 (()=>{
   // Usa lo stesso calcolo del registro: ore registrate × tariffa della data.
   const formatEuro=value=>Number(value||0).toLocaleString('it-IT',{style:'currency',currency:'EUR'});
+  const style=document.createElement('style');
+  style.textContent=`
+    #coverStats>.cover-stat[data-total-euro-mese]:last-child:nth-child(odd){
+      grid-column:1 / -1;width:calc((100% - 12px)/2);justify-self:center;
+    }
+    #agendaKpis>.agenda-kpi[data-total-euro-mese]:last-child:nth-child(odd){
+      grid-column:1 / -1;width:calc((100% - 12px)/2);justify-self:center;
+    }
+    @media(max-width:760px){
+      #coverStats>.cover-stat[data-total-euro-mese]:last-child:nth-child(odd),
+      #agendaKpis>.agenda-kpi[data-total-euro-mese]:last-child:nth-child(odd){
+        width:100%;grid-column:1 / -1;
+      }
+    }
+  `;
+  document.head.appendChild(style);
   const extraCover=()=>{
     const box=document.getElementById('coverStats');
     if(!box||typeof monthTotals!=='function'||typeof ensureYear!=='function')return;
