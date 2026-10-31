@@ -1,4 +1,5 @@
-a(0,0,0,.34);--soft-glow:0 12px 34px rgba(0,0,0,.20);
+;--acc:#0a84ff;--acc-hover:#409cff;--success:#30d158;--warning:#ff9f0a;--danger:#ff453a;--purple:#bf5af2;
+  --shadow:0 20px 55px rgba(0,0,0,.34);--soft-glow:0 12px 34px rgba(0,0,0,.20);
   --glass:rgba(24,33,49,.64);--glass-strong:rgba(30,40,59,.82);--glass-border:rgba(255,255,255,.14);
 }
 [data-theme="grigio"]{--bg:#0a0a0c;--side:rgba(28,28,30,.76);--card:rgba(44,44,46,.64);--card-border:rgba(255,255,255,.13);--line:rgba(255,255,255,.10);--glass:rgba(38,38,41,.64);--glass-strong:rgba(48,48,51,.82);}
@@ -118,7 +119,8 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
   <label>Stile grafico</label>
   <div class="style-switch" id="styleSwitch" role="group" aria-label="Stile grafico">
     <button type="button" class="style-choice active" data-style="base" onclick="setGraphicStyle('base')"><i class="fa-solid fa-layer-group"></i> Base</button>
-    <button type="button" class="style-choice" data-style="ios" onclick="setGraphicStyle('ios')"><i class="fa-brands fa-apple"></i> iOS Glass</button>
+    <button type="button" class="style-choice" data-style="ios" onclick="setGraphicStyle('ios')"><i class="fa-brands fa-apple"></i> iOS</button>
+    <button type="button" class="style-choice" data-style="pro" onclick="setGraphicStyle('pro')"><i class="fa-solid fa-gauge-high"></i> Pro</button>
   </div>
 
   <label>Sezioni</label>
@@ -150,9 +152,4 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
     <div class="actions">
       <button class="btn" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Esporta Excel</button>
       <button class="btn" onclick="exportBackup()" title="Salva una fotografia completa della dashboard"><i class="fa-solid fa-box-archive"></i> Backup completo</button>
-      <button class="btn" onclick="document.getElementById('importFile').click()" title="Ripristina una fotografia completa della dashboard"><i class="fa-solid fa-clock-rotate-left"></i> Ripristina backup</button>
-      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importBackup(event)">
-    </div>
-  </div>
-
-  <div class="calendar-legend"><span class="legend-weekend sat"><i></i> Sabato
+      <button class="btn" onclick="document.getElementById('importFile').click()" title="Ripristina una fotografia completa della dashboard"><i cla
