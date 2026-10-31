@@ -1,4 +1,40 @@
-turn;
+ document.getElementById('repPage');
+  if(repPage && repPage.style.display !== 'none') renderRepPage();
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(()=>{ t.style.display='none'; }, 2500);
+}
+
+function loadBrand(){
+  try{ return JSON.parse(localStorage.getItem(BRAND_KEY)) || {}; }
+  catch(e){ return {}; }
+}
+function saveBrand(b){ localStorage.setItem(BRAND_KEY, JSON.stringify(b)); }
+
+function initBrand(){
+  const b = loadBrand();
+  const titleEl = document.getElementById('brandTitle');
+  if(b.name) titleEl.textContent = b.name;
+  if(b.logo){
+    document.getElementById('logoBtn').innerHTML = `<img src="${b.logo}" alt="logo">`;
+  }
+  titleEl.addEventListener('input', ()=>{
+    const cur = loadBrand();
+    cur.name = titleEl.textContent.trim() || 'Gestione Ore';
+    saveBrand(cur);
+    renderTotals();
+  });
+  document.getElementById('logoBtn').addEventListener('click', ()=>{
+    document.getElementById('logoFileInput').click();
+  });
+  document.getElementById('logoFileInput').addEventListener('change', (ev)=>{
+    const file = ev.target.files[0];
+    if(!file) return;
     const reader = new FileReader();
     reader.onload = (e)=>{
       const dataUrl = e.target.result;
@@ -31,10 +67,10 @@ function initTheme(){
 function exportExcel(){
   const y = ensureYear(currentYear);
   const wb = XLSX.utils.book_new();
-  const rows = [["Data","Giornata lavorata","Ore Straordinario","Reperibilità","Recupero","Nota"]];
+  const rows = [["Data","Giornata lavorata","Ferie","Ore Straordinario","Reperibilità","Recupero","Nota"]];
   y.months.forEach((m, mIdx)=>{
     rows.push([MONTHS[mIdx], m.closed ? "MESE CHIUSO" : "MESE APERTO", "", "", "", ""]);
-    m.entries.forEach(e=>{ rows.push([e.date, e.lavorato ? "Sì" : "", e.ore, e.rep ? "Rep." : "", e.recup ? "Recup." : "", e.note||""]); });
+    m.entries.forEach(e=>{ rows.push([e.date, e.lavorato ? "Sì" : "", e.ferie ? "Ferie" : "", e.ore, e.rep ? "Rep." : "", e.recup ? "Recup." : "", e.note||""]); });
     const t = monthTotals(mIdx);
     rows.push(["TOT", workedDays(mIdx)+" giorni", t.ore, "Rep. "+t.rep.toFixed(2), "Recup. "+t.recup.toFixed(2), "€"+t.euro.toFixed(2)]);
     rows.push(["","","","","",""]);
@@ -364,34 +400,4 @@ function renderRepPage(){
   document.getElementById('repYearLabel').textContent = currentYear;
   let totYear = 0;
   const grid = document.getElementById('repMonthsGrid');
-  grid.innerHTML = MONTHS.map((name, mIdx)=>{
-    const entries = y.reperibilitaDays[mIdx].entries;
-    const cnt = entries.filter(e=>e.rep).length;
-    totYear += cnt;
-    const isOpen = repOpenMonths.has(mIdx);
-    const rows = entries.map((e,eIdx)=>{
-      const weekend = weekendInfo(e.date);
-      return `
-      <div class="rep-day-row ${weekend.className}">
-        <label><input type="checkbox" ${e.rep?'checked':''} onchange="toggleRepDay(${mIdx},${eIdx},this.checked)"> <span>${formatDateIT(e.date)}</span>${weekend.badge}</label>
-      </div>`;
-    }).join('');
-    return `
-      <div class="month-card">
-        <div class="month-head" onclick="toggleRepMonth(${mIdx})">
-          <div>
-            <h3>${name}</h3>
-            <div class="sub"><span style="color:var(--warning);font-weight:700;">${cnt} giorni reperibili</span></div>
-          </div>
-          <i class="fa-solid fa-chevron-down"></i>
-        </div>
-        <div class="month-body ${isOpen?'open':''}" id="repmbody-${mIdx}">${rows}</div>
-      </div>`;
-  }).join('');
-  document.getElementById('repYearTotal').textContent = totYear;
-  document.getElementById('repYearWeeks').textContent = (totYear/7).toFixed(1);
-}
-
-function toggleSection(id){
-  const body = document.getElementById(id);
-  c
+  grid.innerH

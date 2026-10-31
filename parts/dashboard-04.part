@@ -1,4 +1,11 @@
-if(y.months[targetMonthIdx]){
+ntYear}-${monthStr}-01`;
+
+  // Assegna la nuova tariffa a partire dal 1° del mese
+  y.rateHistory = y.rateHistory.filter(h => h.from < monthStartISO);
+  y.rateHistory.push({from: monthStartISO, rate: v});
+  
+  // Forza la compilazione della data su ogni voce per garantire che la nuova tariffa venga applicata a tutte le ore
+  if(y.months[targetMonthIdx]){
     y.months[targetMonthIdx].entries.forEach((e, i) => {
       if(!e.date || e.date < monthStartISO){
         const dayStr = String(i + 1).padStart(2, '0');
@@ -15,7 +22,7 @@ if(y.months[targetMonthIdx]){
 }
 
 function addRow(mIdx){
-  ensureYear(currentYear).months[mIdx].entries.push({date:"", ore:0, rep:false, recup:false, lavorato:false, note:''});
+  ensureYear(currentYear).months[mIdx].entries.push({date:"", ore:0, rep:false, recup:false, lavorato:false, ferie:false, note:''});
   saveData();
   renderMonths();
   const body = document.getElementById('mbody-'+mIdx);
@@ -28,7 +35,8 @@ function updateEntry(mIdx, eIdx, field, value){
   if(field==='ore') entry.ore = parseFloat(value)||0;
   else if(field==='rep') entry.rep = value;
   else if(field==='recup') entry.recup = value;
-  else if(field==='lavorato') entry.lavorato = value;
+  else if(field==='lavorato'){ entry.lavorato = value; if(value) entry.ferie = false; }
+  else if(field==='ferie'){ entry.ferie = value; if(value) entry.lavorato = false; }
   else if(field==='note') entry.note = value;
   else entry.date = value;
   saveData();
@@ -45,13 +53,21 @@ function updateEntry(mIdx, eIdx, field, value){
     renderYearChart();
     return;
   }
+  if(field==='lavorato' || field==='ferie'){
+    saveData(); renderMonths();
+    const b2=document.getElementById('mbody-'+mIdx); if(b2)b2.classList.add('open');
+    renderMonthChart(mIdx); renderTotals(); renderYearChart();
+    return;
+  }
   renderTotals();
   renderMonthTotal(mIdx);
   renderMonthChart(mIdx);
   renderYearChart();
-  if(field==='lavorato') renderMonthWorkStatus(mIdx);
 }
 
+function ferieDays(mIdx){
+  return ensureYear(currentYear).months[mIdx].entries.filter(e=>!!e.ferie).length;
+}
 function workedDays(mIdx){
   return ensureYear(currentYear).months[mIdx].entries.filter(e=>!!e.lavorato).length;
 }
@@ -98,6 +114,12 @@ function toggleMonthClosed(mIdx){
   }
   const count=workedDays(mIdx);
   month.closed=true;
+  const fd=ferieDays(mIdx);
+  if(fd>0 || month.ferieAuto){
+    y.ferie.usufruitoMonths[mIdx].ferie=fd;
+    month.ferieAuto=fd>0;
+    renderFerie();
+  }
   if(month.ticketManualOverride || (month.ticketManualProtected && count===0)){
     saveData(); renderMonths(); renderTicket();
     showToast(MONTHS[mIdx]+' chiuso: correzione Ticket conservata.');
@@ -300,6 +322,7 @@ function renderMonths(){
       <tr id="dayrow-${mIdx}-${eIdx}" class="${weekend.className}">
         <td><div class="date-cell"><input type="date" value="${e.date||''}" onchange="updateEntry(${mIdx},${eIdx},'date',this.value)">${weekend.badge}</div></td>
         <td class="chk"><input class="workday-check" type="checkbox" ${e.lavorato?'checked':''} ${monthClosed?'disabled':''} onchange="updateEntry(${mIdx},${eIdx},'lavorato',this.checked)" title="Giornata lavorata"></td>
+        <td class="chk"><input class="ferie-check" type="checkbox" ${e.ferie?'checked':''} ${monthClosed?'disabled':''} onchange="updateEntry(${mIdx},${eIdx},'ferie',this.checked)" title="Giornata di ferie"></td>
         <td><input type="number" step="0.01" value="${e.ore}" onchange="updateEntry(${mIdx},${eIdx},'ore',this.value)"></td>
         <td class="chk"><input type="checkbox" ${e.rep?'checked':''} onchange="updateEntry(${mIdx},${eIdx},'rep',this.checked)" title="Reperibilità"></td>
         <td class="chk"><input type="checkbox" ${e.recup?'checked':''} onchange="updateEntry(${mIdx},${eIdx},'recup',this.checked)" title="Recupero"></td>
@@ -320,7 +343,7 @@ function renderMonths(){
         <div class="month-body" id="mbody-${mIdx}">
           <div class="ch-wrap small"><canvas id="mchart-${mIdx}"></canvas></div>
           <table>
-            <thead><tr><th>Data</th><th>Lavorato</th><th>Ore</th><th>Rep.</th><th>Recup.</th><th>Nota</th><th></th></tr></thead>
+            <thead><tr><th>Data</th><th>Lavorato</th><th>Ferie</th><th>Ore</th><th>Rep.</th><th>Recup.</th><th>Nota</th><th></th></tr></thead>
             <tbody>${rows}</tbody>
           </table>
           <button class="add-row" onclick="addRow(${mIdx})"><i class="fa-solid fa-plus"></i> Aggiungi riga extra</button>
@@ -331,7 +354,7 @@ function renderMonths(){
             <span class="e">€${t.euro.toFixed(2)}</span>
           </div>
           <div class="month-closebar">
-            <div class="work-count"><strong id="workcount-${mIdx}">${workCount}</strong> giorni lavorati<br><span>${monthClosed?'Conteggio trasferito nella sezione Ticket.':'Chiudi il mese per calcolare i Ticket.'}</span></div>
+            <div class="work-count"><strong id="workcount-${mIdx}">${workCount}</strong> giorni lavorati · <strong style="color:var(--warning)">${entries.filter(x=>x.ferie).length}</strong> ferie<br><span>${monthClosed?'Conteggio trasferito nella sezione Ticket.':'Chiudi il mese per calcolare i Ticket.'}</span></div>
             <button class="month-close-btn ${monthClosed?'closed':''}" onclick="toggleMonthClosed(${mIdx})"><i class="fa-solid ${monthClosed?'fa-lock-open':'fa-lock'}"></i> ${monthClosed?'Riapri mese':'Chiudi mese'}</button>
           </div>
         </div>
@@ -349,40 +372,4 @@ function renderAll(){
   renderNotes();
   renderFerie();
   renderTicket();
-  const repPage = document.getElementById('repPage');
-  if(repPage && repPage.style.display !== 'none') renderRepPage();
-}
-
-function showToast(msg){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.display = 'block';
-  clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(()=>{ t.style.display='none'; }, 2500);
-}
-
-function loadBrand(){
-  try{ return JSON.parse(localStorage.getItem(BRAND_KEY)) || {}; }
-  catch(e){ return {}; }
-}
-function saveBrand(b){ localStorage.setItem(BRAND_KEY, JSON.stringify(b)); }
-
-function initBrand(){
-  const b = loadBrand();
-  const titleEl = document.getElementById('brandTitle');
-  if(b.name) titleEl.textContent = b.name;
-  if(b.logo){
-    document.getElementById('logoBtn').innerHTML = `<img src="${b.logo}" alt="logo">`;
-  }
-  titleEl.addEventListener('input', ()=>{
-    const cur = loadBrand();
-    cur.name = titleEl.textContent.trim() || 'Gestione Ore';
-    saveBrand(cur);
-    renderTotals();
-  });
-  document.getElementById('logoBtn').addEventListener('click', ()=>{
-    document.getElementById('logoFileInput').click();
-  });
-  document.getElementById('logoFileInput').addEventListener('change', (ev)=>{
-    const file = ev.target.files[0];
-    if(!file) re
+  const repPage =
