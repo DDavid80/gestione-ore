@@ -1,4 +1,4 @@
-px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--txt);padding:8px;font-size:.58rem;cursor:pointer}.agenda-quick button:hover{border-color:var(--acc)}.agenda-quick i{color:var(--acc);margin-right:4px}.agenda-quick b{color:var(--txt-muted);font-size:.53rem;white-space:nowrap}.agenda-month-btn{width:100%;margin-top:8px;padding:9px;border:0;border-radius:8px;background:linear-gradient(100deg,var(--acc),var(--acc-hover));color:#fff;font-size:.65rem;font-weight:850;cursor:pointer}.agenda-month-btn i{margin-left:5px}.agenda-month-btn:hover{filter:brightness(1.08)}
+9px}.agenda-quick button{display:flex;justify-content:space-between;align-items:center;gap:5px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--txt);padding:8px;font-size:.58rem;cursor:pointer}.agenda-quick button:hover{border-color:var(--acc)}.agenda-quick i{color:var(--acc);margin-right:4px}.agenda-quick b{color:var(--txt-muted);font-size:.53rem;white-space:nowrap}.agenda-month-btn{width:100%;margin-top:8px;padding:9px;border:0;border-radius:8px;background:linear-gradient(100deg,var(--acc),var(--acc-hover));color:#fff;font-size:.65rem;font-weight:850;cursor:pointer}.agenda-month-btn i{margin-left:5px}.agenda-month-btn:hover{filter:brightness(1.08)}
 @media(max-width:900px){#coverScreen .cover-inner{grid-template-columns:1fr;grid-template-rows:auto auto auto auto;gap:24px;padding:24px}.cover-hero{max-width:760px}.cover-hero h1{font-size:clamp(2.6rem,8vw,5rem)}#coverScreen .cover-month-card{justify-self:start;max-width:700px}.agenda-layout{grid-template-columns:1fr}.agenda-summary{display:grid;grid-template-columns:1fr 1.2fr;gap:10px;align-items:start}.agenda-summary-title{grid-column:1/-1;margin-bottom:0}.agenda-kpis{grid-column:1}.agenda-quick{grid-column:2;grid-row:2}.agenda-month-btn{grid-column:1/-1}}
 @media(max-width:560px){#coverScreen .cover-inner{padding:19px 15px 15px;gap:23px}.cover-datebox strong{font-size:.65rem}.cover-datebox b{font-size:.58rem}.cover-brandblock{gap:8px}.cover-kicker{font-size:.53rem!important}#coverScreen .cover-title{font-size:.9rem!important}.cover-hero h1{font-size:clamp(2.35rem,11vw,3.3rem)}.cover-shortcuts{gap:6px}.cover-shortcuts button{padding:9px 8px;gap:6px}.cover-shortcuts button span{font-size:.63rem}.cover-month-card{padding:15px!important;border-radius:15px!important}#coverScreen .cover-stat{padding:9px;min-height:67px}#coverScreen .cover-stat .cv{font-size:.92rem}.cover-foot{font-size:.54rem!important;flex-direction:column}.agenda-home-head{align-items:flex-start;flex-direction:column}.agenda-selects{width:100%;flex-wrap:wrap}.agenda-selects select{flex:1}.agenda-status{margin-left:auto}.agenda-calendar-wrap{padding:8px}.agenda-weekdays,.agenda-calendar{gap:3px}.agenda-day{min-height:35px;padding:4px}.agenda-day .n{font-size:.6rem}.agenda-summary{display:block}.agenda-summary-title{margin-bottom:9px}.agenda-quick{grid-template-columns:1fr 1fr}.agenda-kpis{grid-template-columns:repeat(2,1fr)}.agenda-legend{gap:8px;font-size:.52rem}}
 @media(prefers-reduced-motion:reduce){.agenda-day,.cover-shortcuts button{transition:none}.agenda-day:hover,.cover-shortcuts button:hover{transform:none}}
@@ -97,12 +97,53 @@ html[data-graphic-style="pro"] .note-item,html[data-graphic-style="pro"] .ticket
 }
 </style>
 
+<style id="agenda-oncall">
+.agenda-day.oncall{background:color-mix(in srgb,#f472b6 20%,var(--card));border-color:color-mix(in srgb,#f472b6 55%,transparent);color:var(--txt)}
+.agenda-day.oncall.oc-start{border-top-left-radius:12px;border-bottom-left-radius:12px}
+.agenda-day.oncall.oc-end{border-top-right-radius:12px;border-bottom-right-radius:12px}
+.agenda-day.oncall .oc{position:absolute;right:6px;bottom:6px;font-size:.55rem;color:#f472b6}
+.agenda-legend i.oncall{background:#f472b6}
+.agenda-oncall{display:flex;align-items:center;gap:11px;margin:0 0 9px;padding:11px 12px;border:1px solid color-mix(in srgb,#f472b6 55%,var(--line));border-radius:12px;background:color-mix(in srgb,#f472b6 10%,var(--card))}
+.agenda-oncall>i{flex:0 0 auto;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:color-mix(in srgb,#f472b6 22%,transparent);color:#f472b6;font-size:.85rem}
+.agenda-oncall strong{display:block;font-size:.82rem}
+.agenda-oncall span{display:block;margin-top:2px;color:var(--txt-muted);font-size:.66rem;line-height:1.35}
+.agenda-oncall.now{border-color:#f472b6;box-shadow:0 0 0 1px #f472b655,0 0 22px #f472b626}
+.agenda-oncall.none{border-color:var(--line);background:transparent;opacity:.75}
+.agenda-oncall.none>i{background:var(--line);color:var(--txt-muted)}
+</style>
 <script id="monthly-agenda-runtime">
 function agendaMonthIndex(){
   if(currentMonthFilter!=='')return Math.max(0,Math.min(11,parseInt(currentMonthFilter,10)||0));
   const now=new Date();if(Number(currentYear)===now.getFullYear())return now.getMonth();
   const y=DATA[String(currentYear)];if(y&&y.months){for(let i=11;i>=0;i--){const m=y.months[i];if((m.entries||[]).some(e=>(Number(e.ore)||0)>0||e.lavorato||e.rep||e.recup)||Number(y.ticketMonths&&y.ticketMonths[i])>0)return i;}}
   return 0;
+}
+function agendaIsOnCall(iso){
+  const y=DATA[iso.slice(0,4)];if(!y||!y.reperibilitaDays)return false;
+  const m=y.reperibilitaDays[Number(iso.slice(5,7))-1];if(!m||!m.entries)return false;
+  return m.entries.some(e=>e.date===iso&&e.rep);
+}
+function agendaOncallInfo(){
+  const today=todayISO();let start=null;
+  for(let i=0;i<=400;i++){const d=addDaysISO(today,i);if(agendaIsOnCall(d)){start=d;break;}}
+  if(!start)return null;
+  const now=start===today;let from=start;
+  if(now){while(agendaIsOnCall(addDaysISO(from,-1)))from=addDaysISO(from,-1);}
+  let to=start,len=1;
+  while(agendaIsOnCall(addDaysISO(to,1))){to=addDaysISO(to,1);len++;}
+  if(now){len=1;for(let d=from;d!==to;d=addDaysISO(d,1))len++;}
+  const until=Math.round((new Date(from+'T12:00:00')-new Date(today+'T12:00:00'))/86400000);
+  return {now,from,to,len,until};
+}
+function agendaFmtDay(iso){return new Date(iso+'T12:00:00').toLocaleDateString('it-IT',{weekday:'short',day:'numeric',month:'short'});}
+function renderAgendaOncall(mIdx){
+  const box=document.getElementById('agendaOncall');if(!box)return;
+  const y=ensureYear(currentYear),monthDays=((y.reperibilitaDays&&y.reperibilitaDays[mIdx]&&y.reperibilitaDays[mIdx].entries)||[]).filter(e=>e.rep).length;
+  const info=agendaOncallInfo();
+  if(!info){box.className='agenda-oncall none';box.innerHTML='<i class="fa-solid fa-phone-volume"></i><div><strong>Nessuna reperibilità in programma</strong><span>Segnala i giorni nella pagina Reperibilità.</span></div>';return;}
+  const when=info.now?'Sei reperibile adesso':(info.until===1?'Reperibile da domani':'Prossima reperibilità tra '+info.until+' giorni');
+  box.className='agenda-oncall'+(info.now?' now':'');
+  box.innerHTML=`<i class="fa-solid fa-phone-volume"></i><div><strong>${when}</strong><span>${agendaFmtDay(info.from)} → ${agendaFmtDay(info.to)} · ${info.len} ${info.len===1?'giorno':'giorni'}${monthDays?` · ${monthDays} in questo mese`:''}</span></div>`;
 }
 function renderAgendaHome(){
   const host=document.getElementById('agendaHome');if(!host||!currentYear)return;
@@ -115,46 +156,4 @@ function renderAgendaHome(){
   document.getElementById('agendaSubtitle').textContent=`${worked} giorni segnati · ${stat.ore.toFixed(2)} ore straordinarie · ${notes} note presenti`;
   const status=document.getElementById('agendaStatus');status.textContent=month.closed?'MESE CHIUSO':'MESE APERTO';status.classList.toggle('closed',!!month.closed);
   const select=document.getElementById('agendaMonthSelect');if(select){if(select.options.length!==13){select.innerHTML='<option value="">Mese in primo piano</option>'+MONTHS.map((n,i)=>`<option value="${i}">${n.charAt(0)+n.slice(1).toLowerCase()}</option>`).join('');}select.value=currentMonthFilter===''?'':String(mIdx);}
-  const kpis=[['fa-business-time',worked+' gg','Giorni lavorati','var(--success)'],['fa-clock',stat.ore.toFixed(2)+' h','Ore straordinarie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','var(--warning)'],['fa-note-sticky',notes,'Note presenti','var(--purple)']];
-  document.getElementById('agendaKpis').innerHTML=kpis.map(k=>`<div class="agenda-kpi" style="--k:${k[3]}"><strong>${k[1]}</strong><span>${k[2]}</span></div>`).join('');
-  const offset=(new Date(Number(currentYear),mIdx,1).getDay()+6)%7,days=daysInMonth(Number(currentYear),mIdx),byDate=new Map(entries.map((e,i)=>[e.date,{e,i}]));
-  let html=Array(offset).fill('<button class="agenda-day empty" tabindex="-1"></button>').join('');
-  const today=todayISO();
-  for(let d=1;d<=days;d++){
-    const iso=`${currentYear}-${String(mIdx+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,item=byDate.get(iso),e=item&&item.e||{},wi=weekendInfo(iso);
-    const cls=['agenda-day'];if(wi.className.includes('weekend'))cls.push('weekend');if(wi.className.includes('holiday'))cls.push('holiday');if(e.lavorato)cls.push('worked');if(e.ferie)cls.push('ferie');if((Number(e.ore)||0)>0)cls.push('has-hours');if(e.rep)cls.push('rep');if(iso===today)cls.push('today');
-    const idx=item?item.i:-1;
-    html+=`<button class="${cls.join(' ')}" ${idx>=0?`onclick="openAgendaDay(${mIdx},${idx})"`:''} title="${wi.badge?wi.badge.replace(/<[^>]*>/g,''):iso}"><span class="n">${d}</span><span class="mark"></span></button>`;
-  }
-  document.getElementById('agendaCalendar').innerHTML=html;
-}
-function openAgendaSection(id){
-  if(id==='repPage'){document.getElementById('coverScreen').classList.add('hidden');showRepPage();return;}
-  const body=document.getElementById(id);if(body&&body.classList.contains('closed'))toggleSection(id);
-  const page=document.getElementById('repPage');if(page&&page.style.display!=='none')hideRepPage();
-  setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},30);
-}
-function openAgendaMonth(){
-  const mIdx=agendaMonthIndex(),sel=document.getElementById('monthFilter');if(sel)sel.value=String(mIdx);setMonthFilter(String(mIdx));
-  const body=document.getElementById('mbody-'+mIdx);if(body)body.classList.add('open');
-  const table=document.querySelector(`#mbody-${mIdx} table`);if(table)table.scrollIntoView({behavior:'smooth',block:'start'});
-}
-function openAgendaDay(mIdx,eIdx){
-  const sel=document.getElementById('monthFilter');if(sel)sel.value=String(mIdx);setMonthFilter(String(mIdx));
-  const body=document.getElementById('mbody-'+mIdx);if(body)body.classList.add('open');
-  setTimeout(()=>{const row=document.getElementById(`dayrow-${mIdx}-${eIdx}`);if(row){row.scrollIntoView({behavior:'smooth',block:'center'});const input=row.querySelector('td:nth-child(3) input');if(input)input.focus({preventScroll:true});}},80);
-}
-const _agendaRenderAll=renderAll;
-renderAll=function(){_agendaRenderAll();renderAgendaHome();};
-const _agendaSaveData=saveData;
-saveData=function(){_agendaSaveData();if(typeof renderAgendaHome==='function')renderAgendaHome();};
-const _agendaSetMonthFilter=setMonthFilter;
-setMonthFilter=function(v){_agendaSetMonthFilter(v);renderAgendaHome();};
-renderAgendaHome();
-</script>
-
-
-<script id="google-sync-runtime">
-/* Archivio centrale Google Drive */
-const GOOGLE_SYNC_URL = 'https://script.google.com/macros/s/AKfycbwlO49qLDWc3TFaA9KqfIVwibsl_7sdl_xqqHbWivZGILsDCpzu7lSKpH8jQBBuXu4m/exec';
-let googleSy
+  const kpis=[['fa-business-time',worked+' gg','Giorni lavorati','var(--success)'],['fa-clock',stat.ore.toFixed(2)+' h','Ore straordinar

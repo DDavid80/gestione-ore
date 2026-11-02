@@ -1,4 +1,48 @@
-ncReady = false;
+ie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','var(--warning)'],['fa-note-sticky',notes,'Note presenti','var(--purple)']];
+  document.getElementById('agendaKpis').innerHTML=kpis.map(k=>`<div class="agenda-kpi" style="--k:${k[3]}"><strong>${k[1]}</strong><span>${k[2]}</span></div>`).join('');
+  const offset=(new Date(Number(currentYear),mIdx,1).getDay()+6)%7,days=daysInMonth(Number(currentYear),mIdx),byDate=new Map(entries.map((e,i)=>[e.date,{e,i}]));
+  let html=Array(offset).fill('<button class="agenda-day empty" tabindex="-1"></button>').join('');
+  const today=todayISO();
+  for(let d=1;d<=days;d++){
+    const iso=`${currentYear}-${String(mIdx+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,item=byDate.get(iso),e=item&&item.e||{},wi=weekendInfo(iso);
+    const ocNow=agendaIsOnCall(iso);
+    const cls=['agenda-day'];if(wi.className.includes('weekend'))cls.push('weekend');if(wi.className.includes('holiday'))cls.push('holiday');if(e.lavorato)cls.push('worked');if(e.ferie)cls.push('ferie');if((Number(e.ore)||0)>0)cls.push('has-hours');if(e.rep)cls.push('rep');if(ocNow){cls.push('oncall');if(!agendaIsOnCall(addDaysISO(iso,-1)))cls.push('oc-start');if(!agendaIsOnCall(addDaysISO(iso,1)))cls.push('oc-end');}if(iso===today)cls.push('today');
+    const idx=item?item.i:-1;
+    html+=`<button class="${cls.join(' ')}" ${idx>=0?`onclick="openAgendaDay(${mIdx},${idx})"`:''} title="${wi.badge?wi.badge.replace(/<[^>]*>/g,''):iso}"><span class="n">${d}</span>${ocNow&&!agendaIsOnCall(addDaysISO(iso,-1))?'<i class="fa-solid fa-phone-volume oc"></i>':''}<span class="mark"></span></button>`;
+  }
+  document.getElementById('agendaCalendar').innerHTML=html;
+  renderAgendaOncall(mIdx);
+}
+function openAgendaSection(id){
+  if(id==='repPage'){document.getElementById('coverScreen').classList.add('hidden');showRepPage();return;}
+  const body=document.getElementById(id);if(body&&body.classList.contains('closed'))toggleSection(id);
+  const page=document.getElementById('repPage');if(page&&page.style.display!=='none')hideRepPage();
+  setTimeout(()=>{const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},30);
+}
+function openAgendaMonth(){
+  const mIdx=agendaMonthIndex(),sel=document.getElementById('monthFilter');if(sel)sel.value=String(mIdx);setMonthFilter(String(mIdx));
+  const body=document.getElementById('mbody-'+mIdx);if(body)body.classList.add('open');
+  const table=document.querySelector(`#mbody-${mIdx} table`);if(table)table.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function openAgendaDay(mIdx,eIdx){
+  const sel=document.getElementById('monthFilter');if(sel)sel.value=String(mIdx);setMonthFilter(String(mIdx));
+  const body=document.getElementById('mbody-'+mIdx);if(body)body.classList.add('open');
+  setTimeout(()=>{const row=document.getElementById(`dayrow-${mIdx}-${eIdx}`);if(row){row.scrollIntoView({behavior:'smooth',block:'center'});const input=row.querySelector('td:nth-child(3) input');if(input)input.focus({preventScroll:true});}},80);
+}
+const _agendaRenderAll=renderAll;
+renderAll=function(){_agendaRenderAll();renderAgendaHome();};
+const _agendaSaveData=saveData;
+saveData=function(){_agendaSaveData();if(typeof renderAgendaHome==='function')renderAgendaHome();};
+const _agendaSetMonthFilter=setMonthFilter;
+setMonthFilter=function(v){_agendaSetMonthFilter(v);renderAgendaHome();};
+renderAgendaHome();
+</script>
+
+
+<script id="google-sync-runtime">
+/* Archivio centrale Google Drive */
+const GOOGLE_SYNC_URL = 'https://script.google.com/macros/s/AKfycbwlO49qLDWc3TFaA9KqfIVwibsl_7sdl_xqqHbWivZGILsDCpzu7lSKpH8jQBBuXu4m/exec';
+let googleSyncReady = false;
 let googleSyncTimer = null;
 let googleSyncRevision = 0;
 
