@@ -1,4 +1,24 @@
-nst monthStr = String(targetMonthIdx + 1).padStart(2, '0');
+e().sort((a,b)=> a.from.localeCompare(b.from));
+  if(!dateStr) dateStr = todayISO();
+  let applicable = hist[0] ? hist[0].rate : 0;
+  for(const h of hist){
+    if(h.from <= dateStr) applicable = h.rate; else break;
+  }
+  return applicable;
+}
+function currentRate(y){
+  return rateForDate(y, todayISO());
+}
+
+/* RICALCOLO RETROATTIVO COMPLETO E AUTOCOMPILAZIONE DATE */
+function updateRate(){
+  const v = parseFloat(document.getElementById('rateInput').value);
+  if(isNaN(v)){ showToast('Inserisci una tariffa valida.'); return; }
+  const y = ensureYear(currentYear);
+  
+  // Seleziona il mese target (quello filtrato o il mese corrente)
+  let targetMonthIdx = currentMonthFilter !== '' ? parseInt(currentMonthFilter, 10) : new Date().getMonth();
+  const monthStr = String(targetMonthIdx + 1).padStart(2, '0');
   const monthStartISO = `${currentYear}-${monthStr}-01`;
 
   // Assegna la nuova tariffa a partire dal 1° del mese
@@ -354,19 +374,4 @@ function renderMonths(){
             <span class="rc">Recup. ${t.recup.toFixed(2)} h</span>
             <span class="e">€${t.euro.toFixed(2)}</span>
           </div>
-          <div class="month-closebar">
-            <div class="work-count"><strong id="workcount-${mIdx}">${workCount}</strong> giorni lavorati · <strong style="color:var(--warning)">${entries.filter(x=>x.ferie).length}</strong> ferie<br><span>${monthClosed?'Conteggio trasferito nella sezione Ticket.':'Chiudi il mese per calcolare i Ticket.'}</span></div>
-            <button class="month-close-btn ${monthClosed?'closed':''}" onclick="toggleMonthClosed(${mIdx})"><i class="fa-solid ${monthClosed?'fa-lock-open':'fa-lock'}"></i> ${monthClosed?'Riapri mese':'Chiudi mese'}</button>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
-  monthChartInstances = {};
-}
-
-function renderAll(){
-  renderYearList();
-  renderTotals();
-  renderMonths();
-  renderYearChart();
- 
+          <div class="month

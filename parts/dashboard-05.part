@@ -1,4 +1,19 @@
- renderMonthSummary();
+-closebar">
+            <div class="work-count"><strong id="workcount-${mIdx}">${workCount}</strong> giorni lavorati · <strong style="color:var(--warning)">${entries.filter(x=>x.ferie).length}</strong> ferie<br><span>${monthClosed?'Conteggio trasferito nella sezione Ticket.':'Chiudi il mese per calcolare i Ticket.'}</span></div>
+            <button class="month-close-btn ${monthClosed?'closed':''}" onclick="toggleMonthClosed(${mIdx})"><i class="fa-solid ${monthClosed?'fa-lock-open':'fa-lock'}"></i> ${monthClosed?'Riapri mese':'Chiudi mese'}</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  monthChartInstances = {};
+}
+
+function renderAll(){
+  renderYearList();
+  renderTotals();
+  renderMonths();
+  renderYearChart();
+  renderMonthSummary();
   renderNotes();
   renderFerie();
   renderTicket();
@@ -379,26 +394,4 @@ function renderTicket(){
 
 function showRepPage(){
   document.getElementById('dashboardPage').style.display = 'none';
-  document.getElementById('repPage').style.display = 'block';
-  renderRepPage();
-}
-function hideRepPage(){
-  document.getElementById('repPage').style.display = 'none';
-  document.getElementById('dashboardPage').style.display = 'block';
-}
-let repOpenMonths = new Set();
-function toggleRepDay(mIdx, eIdx, checked){
-  const y = ensureYear(currentYear);
-  y.reperibilitaDays[mIdx].entries[eIdx].rep = checked;
-  saveData();
-  renderRepPage();
-}
-function toggleRepMonth(mIdx){
-  if(repOpenMonths.has(mIdx)) repOpenMonths.delete(mIdx);
-  else repOpenMonths.add(mIdx);
-  const body = document.getElementById('repmbody-'+mIdx);
-  if(body) body.classList.toggle('open');
-}
-function renderRepPage(){
-  const y = ensureYear(currentYear);
-  document.getElementById('repYearLabel').textContent = currentYea
+  document.getElementById('repPage').style.d

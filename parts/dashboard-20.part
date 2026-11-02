@@ -1,4 +1,32 @@
-ie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','var(--warning)'],['fa-note-sticky',notes,'Note presenti','var(--purple)']];
+);
+  if(!u.length){alert('Nessun giorno di reperibilità da esportare.');return;}
+  const blocks=[];let from=u[0],prev=u[0];
+  for(let i=1;i<u.length;i++){if(u[i]===addDaysISO(prev,1)){prev=u[i];continue;}blocks.push([from,prev]);from=prev=u[i];}
+  blocks.push([from,prev]);
+  const c=iso=>iso.replace(/-/g,''),stamp=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Gestione Ore//Reperibilita//IT','CALSCALE:GREGORIAN'];
+  blocks.forEach(b=>{
+    const n=Math.round((new Date(b[1]+'T12:00:00')-new Date(b[0]+'T12:00:00'))/86400000)+1;
+    L.push('BEGIN:VEVENT','UID:rep-'+c(b[0])+'@gestione-ore','DTSTAMP:'+stamp,'DTSTART;VALUE=DATE:'+c(b[0]),'DTEND;VALUE=DATE:'+c(addDaysISO(b[1],1)),'SUMMARY:Reperibilità ('+n+(n===1?' giorno)':' giorni)'),'TRANSP:TRANSPARENT','BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Reperibilità da domani','TRIGGER:-PT15H','END:VALARM','END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  const blob=new Blob([L.join('\r\n')+'\r\n'],{type:'text/calendar;charset=utf-8'}),a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);a.download='reperibilita.ics';document.body.appendChild(a);a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
+}
+function agendaFerieCount(mIdx){const y=ensureYear(currentYear),m=y.months[mIdx];return ((m&&m.entries)||[]).filter(e=>e.ferie).length;}
+function renderAgendaHome(){
+  const host=document.getElementById('agendaHome');if(!host||!currentYear)return;
+  const y=ensureYear(currentYear),mIdx=agendaMonthIndex(),month=y.months[mIdx],entries=month.entries||[],title=MONTHS[mIdx].charAt(0)+MONTHS[mIdx].slice(1).toLowerCase();
+  const stat=monthTotals(mIdx),worked=workedDays(mIdx),saved=Number(y.ticketMonths&&y.ticketMonths[mIdx])||0;
+  const ticketDays=(month.closed||month.ticketManualOverride||month.ticketManualProtected)?saved:worked;
+  const ticketRate=ticketRateForDate(currentYear,currentYear+'-'+String(mIdx+1).padStart(2,'0')+'-01'),ticketEuro=ticketDays*ticketRate;
+  const notes=(y.notes||[]).filter(n=>(n.text||'').trim()!==''&&(n.month===String(mIdx)||n.date&&Number(n.date.slice(5,7))===mIdx+1)).length;
+  document.getElementById('agendaTitle').textContent=title+' '+currentYear;
+  document.getElementById('agendaSubtitle').textContent=`${worked} giorni segnati · ${stat.ore.toFixed(2)} ore straordinarie · ${notes} note presenti`+(agendaFerieCount(mIdx)?` · ${agendaFerieCount(mIdx)} ${agendaFerieCount(mIdx)===1?'giorno':'giorni'} di ferie`:'');
+  const status=document.getElementById('agendaStatus');status.textContent=month.closed?'MESE CHIUSO':'MESE APERTO';status.classList.toggle('closed',!!month.closed);
+  const select=document.getElementById('agendaMonthSelect');if(select){if(select.options.length!==13){select.innerHTML='<option value="">Mese in primo piano</option>'+MONTHS.map((n,i)=>`<option value="${i}">${n.charAt(0)+n.slice(1).toLowerCase()}</option>`).join('');}select.value=currentMonthFilter===''?'':String(mIdx);}
+  const kpis=[['fa-business-time',worked+' gg','Giorni lavorati','var(--success)'],['fa-clock',stat.ore.toFixed(2)+' h','Ore straordinarie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','var(--warning)'],['fa-note-sticky',notes,'Note presenti','var(--purple)']];
   document.getElementById('agendaKpis').innerHTML=kpis.map(k=>`<div class="agenda-kpi" style="--k:${k[3]}"><strong>${k[1]}</strong><span>${k[2]}</span></div>`).join('');
   const offset=(new Date(Number(currentYear),mIdx,1).getDay()+6)%7,days=daysInMonth(Number(currentYear),mIdx),byDate=new Map(entries.map((e,i)=>[e.date,{e,i}]));
   let html=Array(offset).fill('<button class="agenda-day empty" tabindex="-1"></button>').join('');
@@ -12,6 +40,7 @@ ie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','va
   }
   document.getElementById('agendaCalendar').innerHTML=html;
   renderAgendaOncall(mIdx);
+  renderCoverOncall();
 }
 function openAgendaSection(id){
   if(id==='repPage'){document.getElementById('coverScreen').classList.add('hidden');showRepPage();return;}
@@ -36,6 +65,8 @@ saveData=function(){_agendaSaveData();if(typeof renderAgendaHome==='function')re
 const _agendaSetMonthFilter=setMonthFilter;
 setMonthFilter=function(v){_agendaSetMonthFilter(v);renderAgendaHome();};
 renderAgendaHome();
+if(typeof renderCoverStats==='function'){const _cs=renderCoverStats;renderCoverStats=function(){_cs();renderCoverOncall();};}
+renderCoverOncall();
 </script>
 
 

@@ -1,4 +1,10 @@
-ers-reduced-motion:reduce){.stat{transition:none}.stat:hover{transform:none}}
+neon);font-size:23px;box-shadow:0 0 19px color-mix(in srgb,var(--neon) 55%,transparent)}
+.stat::after{display:none}
+.summary .stat .val,.month-summary .stat .val,.stat .val{color:var(--neon)!important;text-shadow:0 0 15px color-mix(in srgb,var(--neon) 55%,transparent);font-size:1.6rem;letter-spacing:-.03em}
+.summary .stat .lbl,.month-summary .stat .lbl,.stat .lbl{color:#c3d4e1!important;line-height:1.4;letter-spacing:.035em}
+.stat:hover{box-shadow:0 0 22px color-mix(in srgb,var(--neon) 18%,transparent);transform:translateY(-2px)}
+@media(max-width:600px){.stat{padding:16px 10px 16px 52px;min-height:110px}.stat::before{left:10px;width:32px;height:32px;font-size:19px}.summary .stat .val,.month-summary .stat .val{font-size:1.2rem}}
+@media(prefers-reduced-motion:reduce){.stat{transition:none}.stat:hover{transform:none}}
 @media print{.stat{background:white!important;box-shadow:none!important}.stat .val,.stat .lbl{color:#111!important;text-shadow:none!important}}
 </style>
 <style id="cover-and-palette-fix">
@@ -136,13 +142,4 @@ function enterDashboard(mode='month',target=''){
 }
 </script>
 <script>setGraphicStyle(localStorage.getItem('strao_graphic_style_v1')||'base');window.__graphicReady=true;</script>
-<script id="dashboard-insights-script">
-function insightMonthMetrics(year,index){
-  const y=DATA[String(year)];
-  if(!y||!y.months||!y.months[index]) return {hours:0,euro:0,rep:0,recup:0,worked:0,ticketDays:0,ticketEuro:0};
-  const month=y.months[index]; let hours=0,euro=0,rep=0,recup=0;
-  (month.entries||[]).forEach(e=>{const h=Number(e.ore)||0;hours+=h;euro+=h*(Number.isFinite(Number(e.date&&rateForDate(year,e.date)))?rateForDate(year,e.date):0);if(e.rep)rep+=h;if(e.recup)recup+=h;});
-  const worked=(month.entries||[]).filter(e=>!!e.lavorato).length;
-  const savedTicketDays=Number(y.ticketMonths&&y.ticketMonths[index])||0;
-  const ticketDays=(month.closed||month.ticketManualOverride||month.ticketManualProtected)?savedTicketDays:worked;
-  const rate=(typeof ticke
+<script id="dashboard-ins
