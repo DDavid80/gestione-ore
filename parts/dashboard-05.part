@@ -1,4 +1,8 @@
- document.getElementById('repPage');
+ renderMonthSummary();
+  renderNotes();
+  renderFerie();
+  renderTicket();
+  const repPage = document.getElementById('repPage');
   if(repPage && repPage.style.display !== 'none') renderRepPage();
 }
 
@@ -397,7 +401,4 @@ function toggleRepMonth(mIdx){
 }
 function renderRepPage(){
   const y = ensureYear(currentYear);
-  document.getElementById('repYearLabel').textContent = currentYear;
-  let totYear = 0;
-  const grid = document.getElementById('repMonthsGrid');
-  grid.innerH
+  document.getElementById('repYearLabel').textContent = currentYea

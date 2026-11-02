@@ -1,4 +1,5 @@
-stat{background:white!important;box-shadow:none!important}.stat .val,.stat .lbl{color:#111!important;text-shadow:none!important}}
+ers-reduced-motion:reduce){.stat{transition:none}.stat:hover{transform:none}}
+@media print{.stat{background:white!important;box-shadow:none!important}.stat .val,.stat .lbl{color:#111!important;text-shadow:none!important}}
 </style>
 <style id="cover-and-palette-fix">
 /* Copertina indipendente dallo stile Base/iOS */
@@ -144,4 +145,4 @@ function insightMonthMetrics(year,index){
   const worked=(month.entries||[]).filter(e=>!!e.lavorato).length;
   const savedTicketDays=Number(y.ticketMonths&&y.ticketMonths[index])||0;
   const ticketDays=(month.closed||month.ticketManualOverride||month.ticketManualProtected)?savedTicketDays:worked;
-  const rate=(typeof ticketRateForDate==='function')?ticketRateForDate(year,year+'-'+String(index+1).padStart(2,'0')+'
+  const rate=(typeof ticke
