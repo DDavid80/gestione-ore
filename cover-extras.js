@@ -1,6 +1,6 @@
 (()=>{
   const formatEuro=value=>Number(value||0).toLocaleString('it-IT',{style:'currency',currency:'EUR'});
-  const SMART_KEY='gestione_ore_cover_smart_v1';
+  const SMART_KEY='gestione_ore_cover_smart_v1'/*mobile-fix*/;
   const isSmart=()=>{try{return localStorage.getItem(SMART_KEY)==='1'}catch(e){return false}};
   const setSmart=on=>{try{localStorage.setItem(SMART_KEY,on?'1':'0')}catch(e){}};
 
@@ -41,8 +41,86 @@
     #coverSmartProgress .track{height:7px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
     #coverSmartProgress .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#36cfe1,#a855f7);width:0%;transition:width .6s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 12px rgba(54,207,225,.4)}
     #coverSmartProgress .val{font-size:.72rem;font-weight:800;color:#c8e9f5}
-    @media(max-width:720px){#coverSmartToggle{top:12px;right:12px;padding:7px 10px;font-size:10px}#coverScreen.smart-mode #coverSmartBar{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}#coverSmartProgress{grid-column:1 / -1}}
-    @media(prefers-reduced-motion:reduce){#coverScreen.smart-mode .cover-bg,#coverScreen.smart-mode .cover-bg::before,#coverScreen.smart-mode .cover-btn::after{animation:none!important}}
+    /* Mobile: evita sovrapposizioni hero/card — layout a colonna ordinato */
+    @media(max-width:900px){
+      #coverScreen.smart-mode{align-items:flex-start;padding:0}
+      #coverScreen.smart-mode .cover-inner{
+        display:flex!important;
+        flex-direction:column!important;
+        align-items:stretch!important;
+        gap:16px!important;
+        padding:14px 14px 22px!important;
+        min-height:auto!important;
+        width:100%!important;
+        max-width:100%!important;
+        grid-template-columns:none!important;
+        grid-template-rows:none!important;
+      }
+      #coverScreen.smart-mode .cover-toprow{
+        order:1;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px 12px;
+        padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.12);
+      }
+      #coverScreen.smart-mode .cover-brandblock{flex:1;min-width:0}
+      #coverScreen.smart-mode .cover-datebox{text-align:right;flex-shrink:0}
+      #coverSmartToggle{
+        position:static!important;
+        order:0;
+        margin:0 0 4px auto;
+        padding:7px 10px;font-size:10px;
+        align-self:flex-end;
+      }
+      #coverScreen.smart-mode #coverSmartBar{
+        order:2;
+        display:flex!important;
+        flex-direction:column!important;
+        gap:12px!important;
+        width:100%;
+        box-sizing:border-box;
+        margin:0!important;
+      }
+      #coverSmartClock,#coverSmartInsight,#coverSmartProgress{width:100%}
+      #coverSmartProgress{min-width:0}
+      #coverScreen.smart-mode .cover-hero{
+        order:3;
+        max-width:100%!important;
+        margin:0!important;
+        padding:4px 0 0!important;
+        position:relative;
+        z-index:1;
+        overflow:visible;
+      }
+      #coverScreen.smart-mode .cover-hero h1{
+        font-size:clamp(2rem,9.5vw,2.85rem)!important;
+        line-height:1.08!important;
+        margin:0 0 8px!important;
+      }
+      #coverScreen.smart-mode .cover-hero p{
+        margin:8px 0 12px!important;
+        font-size:.88rem!important;
+      }
+      #coverScreen.smart-mode .cover-shortcuts{margin-top:4px}
+      #coverScreen.smart-mode .cover-month-card{
+        order:4;
+        width:100%!important;
+        max-width:100%!important;
+        justify-self:stretch!important;
+        margin:0!important;
+        position:relative;
+        z-index:2;
+      }
+      #coverScreen.smart-mode .cover-foot{order:5;margin-top:4px}
+      #coverScreen.smart-mode .cover-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+    }
+    @media(max-width:420px){
+      #coverScreen.smart-mode .cover-hero h1{font-size:clamp(1.75rem,10vw,2.35rem)!important}
+      #coverSmartInsight{font-size:.72rem}
+      #coverSmartClock{font-size:1.15rem}
+    }
+    @media(prefers-reduced-motion:reduce){
+      #coverScreen.smart-mode .cover-bg,
+      #coverScreen.smart-mode .cover-bg::before,
+      #coverScreen.smart-mode .cover-btn::after{animation:none!important}
+    }
   `;
   document.head.appendChild(style);
 
