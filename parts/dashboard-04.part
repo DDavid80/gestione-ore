@@ -1,4 +1,30 @@
-nst monthStr = String(targetMonthIdx + 1).padStart(2, '0');
+eturn;
+  currentYear = Number(y);
+  renderAll();
+}
+
+function rateForDate(y, dateStr){
+  const hist = ensureYear(y).rateHistory.slice().sort((a,b)=> a.from.localeCompare(b.from));
+  if(!dateStr) dateStr = todayISO();
+  let applicable = hist[0] ? hist[0].rate : 0;
+  for(const h of hist){
+    if(h.from <= dateStr) applicable = h.rate; else break;
+  }
+  return applicable;
+}
+function currentRate(y){
+  return rateForDate(y, todayISO());
+}
+
+/* RICALCOLO RETROATTIVO COMPLETO E AUTOCOMPILAZIONE DATE */
+function updateRate(){
+  const v = parseFloat(document.getElementById('rateInput').value);
+  if(isNaN(v)){ showToast('Inserisci una tariffa valida.'); return; }
+  const y = ensureYear(currentYear);
+  
+  // Seleziona il mese target (quello filtrato o il mese corrente)
+  let targetMonthIdx = currentMonthFilter !== '' ? parseInt(currentMonthFilter, 10) : new Date().getMonth();
+  const monthStr = String(targetMonthIdx + 1).padStart(2, '0');
   const monthStartISO = `${currentYear}-${monthStr}-01`;
 
   // Assegna la nuova tariffa a partire dal 1° del mese
@@ -310,6 +336,22 @@ function renderYearChart(){
   });
 }
 
+const EXIT_BASE='15:21';
+function exitExtraHours(t){
+  if(!/^\d{2}:\d{2}$/.test(t||''))return null;
+  const m=x=>Number(x.slice(0,2))*60+Number(x.slice(3,5));
+  const diff=m(t)-m(EXIT_BASE);
+  return diff>0?Math.round(diff/60*100)/100:0;
+}
+function setExitTime(mIdx,eIdx,value){
+  const entry=ensureYear(currentYear).months[mIdx].entries[eIdx];
+  entry.uscita=value||'';
+  const h=exitExtraHours(value);
+  if(h===null){saveData();return;}
+  updateEntry(mIdx,eIdx,'ore',String(h));
+  const row=document.getElementById(`dayrow-${mIdx}-${eIdx}`);
+  const inp=row&&row.querySelector('input[type=number]');if(inp)inp.value=h;
+}
 function renderMonths(){
   const y = ensureYear(currentYear);
   const grid = document.getElementById('monthsGrid');
@@ -324,7 +366,7 @@ function renderMonths(){
         <td><div class="date-cell"><input type="date" value="${e.date||''}" onchange="updateEntry(${mIdx},${eIdx},'date',this.value)">${weekend.badge}</div></td>
         <td class="chk"><input class="workday-check" type="checkbox" ${e.lavorato?'checked':''} ${monthClosed?'disabled':''} onchange="updateEntry(${mIdx},${eIdx},'lavorato',this.checked)" title="Giornata lavorata"></td>
         <td class="chk"><input class="ferie-check" type="checkbox" ${e.ferie?'checked':''} ${monthClosed?'disabled':''} onchange="updateEntry(${mIdx},${eIdx},'ferie',this.checked)" title="Giornata di ferie"></td>
-        <td><input type="number" step="0.01" value="${e.ore}" onchange="updateEntry(${mIdx},${eIdx},'ore',this.value)"></td>
+        <td><input type="time" class="exit-time" value="${e.uscita||''}" title="Ora di uscita timbrata: calcola le ore extra dopo le ${EXIT_BASE}" onchange="setExitTime(${mIdx},${eIdx},this.value)"><input type="number" step="0.01" value="${e.ore}" onchange="updateEntry(${mIdx},${eIdx},'ore',this.value)"></td>
         <td class="chk"><input type="checkbox" ${e.rep?'checked':''} onchange="updateEntry(${mIdx},${eIdx},'rep',this.checked)" title="Reperibilità"></td>
         <td class="chk"><input type="checkbox" ${e.recup?'checked':''} onchange="updateEntry(${mIdx},${eIdx},'recup',this.checked)" title="Recupero"></td>
         <td><input type="text" value="${(e.note||'').replace(/"/g,'&quot;')}" placeholder="Nota..." onchange="updateEntry(${mIdx},${eIdx},'note',this.value)"></td>
@@ -337,36 +379,4 @@ function renderMonths(){
         <div class="month-head" onclick="toggleMonth(${mIdx})">
           <div>
             <h3>${name}${monthClosed?'<span class="closed-mark"><i class="fa-solid fa-lock"></i> CHIUSO</span>':''}</h3>
-            <div class="sub" id="msub-${mIdx}">${entries.length} giorni &nbsp;·&nbsp; <span id="worksub-${mIdx}" style="color:var(--success);font-weight:700;">${workCount} gg lavorati${monthClosed?' · Ticket calcolati':' · mese aperto'}</span> &nbsp;·&nbsp; <span style="color:var(--acc);font-weight:700;">${t.ore.toFixed(2)} h</span> &nbsp;·&nbsp; <span style="color:var(--warning);font-weight:700;">Rep. ${t.rep.toFixed(2)} h</span> &nbsp;·&nbsp; <span style="color:var(--purple);font-weight:700;">Recup. ${t.recup.toFixed(2)} h</span> &nbsp;·&nbsp; <span style="color:var(--success);font-weight:700;">€${t.euro.toFixed(2)}</span></div>
-          </div>
-          <i class="fa-solid fa-chevron-down"></i>
-        </div>
-        <div class="month-body" id="mbody-${mIdx}">
-          <div class="ch-wrap small"><canvas id="mchart-${mIdx}"></canvas></div>
-          <table>
-            <thead><tr><th>Data</th><th>Lavorato</th><th>Ferie</th><th>Ore</th><th>Rep.</th><th>Recup.</th><th>Nota</th><th></th></tr></thead>
-            <tbody>${rows}</tbody>
-          </table>
-          <button class="add-row" onclick="addRow(${mIdx})"><i class="fa-solid fa-plus"></i> Aggiungi riga extra</button>
-          <div class="month-tot" id="mtot-${mIdx}">
-            <span>Totale: <span class="ore">${t.ore.toFixed(2)} h</span></span>
-            <span class="r">Rep. ${t.rep.toFixed(2)} h</span>
-            <span class="rc">Recup. ${t.recup.toFixed(2)} h</span>
-            <span class="e">€${t.euro.toFixed(2)}</span>
-          </div>
-          <div class="month-closebar">
-            <div class="work-count"><strong id="workcount-${mIdx}">${workCount}</strong> giorni lavorati · <strong style="color:var(--warning)">${entries.filter(x=>x.ferie).length}</strong> ferie<br><span>${monthClosed?'Conteggio trasferito nella sezione Ticket.':'Chiudi il mese per calcolare i Ticket.'}</span></div>
-            <button class="month-close-btn ${monthClosed?'closed':''}" onclick="toggleMonthClosed(${mIdx})"><i class="fa-solid ${monthClosed?'fa-lock-open':'fa-lock'}"></i> ${monthClosed?'Riapri mese':'Chiudi mese'}</button>
-          </div>
-        </div>
-      </div>`;
-  }).join('');
-  monthChartInstances = {};
-}
-
-function renderAll(){
-  renderYearList();
-  renderTotals();
-  renderMonths();
-  renderYearChart();
- 
+            <div class="sub" id="msub-${mIdx}">${entries.length} giorni &nbsp;·&nbsp; <span id="worksub-${mIdx}" style="color:var(--success);font-weight:700;">${workCount} gg lavorati${monthClosed?' · Ticket calcolati':' · mese aperto'}</span> &nbsp;·&nbsp; <span style="color:var(--acc);font-weight:700;">${t.ore.toFixed(2)} h</span> &nbsp;·&nbsp; <span style="color:var(--warning);font-weight:700;">Rep. ${t.rep.toFixed(2)} h</span> &nbsp;·&nbsp; <span style="color:var(--purple);font-weight:700;">Recup. ${t.recup.toFixed(2)} h</span> &nbsp;·&nbsp; <span style="color:var(--success);font-weight:700;">€${t.euro.

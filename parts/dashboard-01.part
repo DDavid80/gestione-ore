@@ -69,6 +69,16 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
 @media(max-width:680px){.insight-grid{grid-template-columns:1fr}.insight-card{padding:14px}}
 </style>
 
+<style id="agenda-extra-css">
+.cover-oncall{display:flex;align-items:center;gap:12px;margin:14px 0 0;padding:12px 14px;border:1px solid #f472b655;border-radius:14px;background:#f472b61a;color:#fff}
+.cover-oncall[hidden]{display:none}
+.cover-oncall i{color:#f472b6;font-size:1.1rem}
+.cover-oncall strong{display:block;font-size:.9rem}
+.cover-oncall span{display:block;font-size:.78rem;opacity:.8;margin-top:2px}
+.cover-oncall.now{background:#f472b638;border-color:#f472b6}
+@media(max-width:430px){#repPage .summary{grid-template-columns:1fr!important}}
+</style>
+<style id="exit-time-css">.exit-time{display:block;width:100%;min-width:84px;margin-bottom:4px;font-size:.8rem;opacity:.9}</style>
 </head>
 <body>
 
@@ -80,7 +90,7 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
       <div class="cover-datebox"><span>OGGI</span><strong id="coverDate">Oggi</strong><b id="coverMonthLabel">MESE · ANNO</b></div>
     </header>
     <section class="cover-hero"><div class="cover-overline">IL TUO MESE, A COLPO D’OCCHIO</div><h1>Il mese,<br><em>giorno per giorno.</em></h1><p>Ore, presenze e ticket subito sotto mano. Apri l’agenda o vai direttamente alla sezione che ti serve.</p><div class="cover-shortcuts"><button onclick="enterDashboard('month','secOre')"><i class="fa-solid fa-clock"></i><span>Registra ore</span><b>›</b></button><button onclick="enterDashboard('month','repPage')"><i class="fa-solid fa-phone-volume"></i><span>Reperibilità</span><b>›</b></button><button onclick="enterDashboard('month','secFerie')"><i class="fa-solid fa-umbrella-beach"></i><span>Ferie e recuperi</span><b>›</b></button><button onclick="enterDashboard('month','secTicket')"><i class="fa-solid fa-ticket"></i><span>Ticket</span><b>›</b></button></div></section>
-    <aside class="cover-month-card"><div class="cover-card-head"><div><span class="cover-card-kicker">RIEPILOGO DEL MESE</span><h2 id="coverMonthName">Ottobre 2026</h2></div><span id="coverMonthStatus" class="cover-status">MESE APERTO</span></div><div class="cover-stats" id="coverStats"></div><div class="cover-card-foot"><span><i class="fa-solid fa-lock"></i> I mesi chiusi restano consultabili e modificabili secondo le regole della dashboard.</span></div><button class="cover-btn" onclick="enterDashboard('month')"><span>Apri l’agenda</span><i class="fa-solid fa-arrow-right"></i></button><button class="cover-year-btn" onclick="enterDashboard('year')">Vista annuale <i class="fa-solid fa-arrow-up-right-from-square"></i></button></aside>
+    <aside class="cover-month-card"><div class="cover-card-head"><div><span class="cover-card-kicker">RIEPILOGO DEL MESE</span><h2 id="coverMonthName">Ottobre 2026</h2></div><span id="coverMonthStatus" class="cover-status">MESE APERTO</span></div><div class="cover-stats" id="coverStats"></div><div class="cover-oncall" id="coverOncall" hidden></div><div class="cover-card-foot"><span><i class="fa-solid fa-lock"></i> I mesi chiusi restano consultabili e modificabili secondo le regole della dashboard.</span></div><button class="cover-btn" onclick="enterDashboard('month')"><span>Apri l’agenda</span><i class="fa-solid fa-arrow-right"></i></button><button class="cover-year-btn" onclick="enterDashboard('year')">Vista annuale <i class="fa-solid fa-arrow-up-right-from-square"></i></button></aside>
     <footer class="cover-foot"><span><i class="fa-solid fa-shield-halved"></i> Dati conservati nel browser</span><span>Seleziona un collegamento o apri il mese corrente</span></footer>
   </div>
 </div>
@@ -142,14 +152,4 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
 <div id="dashboardPage">
 <section class="agenda-home" id="agendaHome">
   <div class="agenda-home-head"><div><div class="agenda-kicker">AGENDA · MESE IN PRIMO PIANO</div><h2 id="agendaTitle">Il mese corrente</h2><p id="agendaSubtitle">Calendario, ore inserite e ticket maturati.</p></div><div class="agenda-selects"><label for="agendaMonthSelect">Mese</label><select id="agendaMonthSelect" onchange="setMonthFilter(this.value)"><option value="">Mese in primo piano</option></select><span id="agendaStatus" class="agenda-status">MESE APERTO</span></div></div>
-  <div class="agenda-layout"><div class="agenda-calendar-wrap"><div class="agenda-weekdays"><span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span></div><div class="agenda-calendar" id="agendaCalendar"></div><div class="agenda-legend"><span><i class="worked"></i>Lavorato</span><span><i class="hours"></i>Ore inserite</span><span><i class="oncall"></i>Reperibile</span><span><i class="rep"></i>Ore rep.</span><span><i class="holiday"></i>Festività</span></div></div><div class="agenda-summary"><div class="agenda-summary-title">Riepilogo mese</div><div class="agenda-oncall" id="agendaOncall"></div><div class="agenda-kpis" id="agendaKpis"></div><div class="agenda-quick"><button onclick="openAgendaSection('secOre')"><span><i class="fa-solid fa-clock"></i> Registro ore</span><b>Apri →</b></button><button onclick="openAgendaSection('secTicket')"><span><i class="fa-solid fa-ticket"></i> Ticket</span><b>Apri →</b></button><button onclick="openAgendaSection('secFerie')"><span><i class="fa-solid fa-umbrella-beach"></i> Ferie e recuperi</span><b>Apri →</b></button><button onclick="openAgendaSection('repPage')"><span><i class="fa-solid fa-phone-volume"></i> Reperibilità</span><b>Apri →</b></button></div><button class="agenda-month-btn" onclick="openAgendaMonth()">Apri il registro giornaliero <i class="fa-solid fa-arrow-down"></i></button></div></div>
-</section>
-<div class="top">
-    <div>
-      <h1 id="pageTitle">Gestione Ore Straordinario</h1>
-      <p>Tutti i giorni del mese sono già pronti: compila ore, Rep., Recup. e note.</p>
-    </div>
-    <div class="actions">
-      <button class="btn" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Esporta Excel</button>
-      <button class="btn" onclick="exportBackup()" title="Salva una fotografia completa della dashboard"><i class="fa-solid fa-box-archive"></i> Backup completo</button>
-      <button class="btn" onclick="document.getElementB
+  <div class="agenda-layout"><div class="agenda-calendar-wrap"><div class="agenda-weekdays"><span>LUN</span><span>MAR</span><span>MER</span><span>GIO</span><span>VEN</span><span>SAB</span><span>DOM</span></div><div class="agenda-calendar" id="agendaCalendar"></div><div class="agenda-legend"><span><i class="worked"></i>Lavorato</span><span><i class="hours"></i>Ore inserite</span><span><i class="oncall"></i>Reperibile</span><span><i class="rep"></i>Ore rep.</span><span><i class="holiday"></i>Festività</span></div></div><div class="agenda-summary"><div class="agenda-summary-title">Riepilogo mese</div><div class="agenda-oncall" id="agendaOncall"></div><div class="agenda-kpis" id="agendaKpis"></div><div class="agenda-quick"><button onclick="openAgendaSection('secOre')"><span><i class="fa-solid fa-clock"></i> Registro ore</span><b>Apri →</b></button><button onclick="openAgendaSection('secTicket')"><span><i class="fa-solid fa-ticket"></i> Ticket</span><b>Apri →</b></button><button onclick="openAgendaSection('secFerie')"><span><i class="fa-solid fa-umbrella-beach"></i> Ferie e recuperi</span><b>Apri →</b></button><button onclick="openAgendaSection('repPage')"><span><i class="fa-solid fa-phone-volume"></i> Reperib
