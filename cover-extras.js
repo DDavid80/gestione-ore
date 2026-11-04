@@ -1,124 +1,226 @@
 (()=>{
+  // Usa lo stesso calcolo del registro: ore registrate × tariffa della data.
   const formatEuro=value=>Number(value||0).toLocaleString('it-IT',{style:'currency',currency:'EUR'});
-  const SMART_KEY='gestione_ore_cover_smart_v1'/*mobile-fix*/;
+  const SMART_KEY='gestione_ore_cover_smart_v1';
   const isSmart=()=>{try{return localStorage.getItem(SMART_KEY)==='1'}catch(e){return false}};
   const setSmart=on=>{try{localStorage.setItem(SMART_KEY,on?'1':'0')}catch(e){}};
 
   const style=document.createElement('style');
+  style.id='cover-smart-style';
   style.textContent=`
-    #coverStats>.cover-stat[data-total-euro-mese]:last-child:nth-child(odd){grid-column:1 / -1;width:calc((100% - 12px)/2);justify-self:center;}
-    #agendaKpis>.agenda-kpi[data-total-euro-mese]:last-child:nth-child(odd){grid-column:1 / -1;width:calc((100% - 12px)/2);justify-self:center;}
+    #coverStats>.cover-stat[data-total-euro-mese]:last-child:nth-child(odd){
+      grid-column:1 / -1;width:calc((100% - 12px)/2);justify-self:center;
+    }
+    #agendaKpis>.agenda-kpi[data-total-euro-mese]:last-child:nth-child(odd){
+      grid-column:1 / -1;width:calc((100% - 12px)/2);justify-self:center;
+    }
     @media(max-width:760px){
       #coverStats>.cover-stat[data-total-euro-mese]:last-child:nth-child(odd),
-      #agendaKpis>.agenda-kpi[data-total-euro-mese]:last-child:nth-child(odd){width:100%;grid-column:1 / -1;}
+      #agendaKpis>.agenda-kpi[data-total-euro-mese]:last-child:nth-child(odd){
+        width:100%;grid-column:1 / -1;
+      }
     }
-    #coverSmartToggle{position:absolute;top:18px;right:18px;z-index:5;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;cursor:pointer;border:1px solid rgba(255,255,255,.18);background:rgba(8,18,28,.72);color:#d7ecf7;font:700 11px/1 system-ui;letter-spacing:.06em;text-transform:uppercase;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;user-select:none;}
-    #coverSmartToggle:hover{transform:translateY(-1px);border-color:rgba(54,207,225,.55);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+
+    #coverSmartToggle{
+      position:absolute;top:16px;right:16px;z-index:20;
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border-radius:999px;cursor:pointer;
+      border:1px solid rgba(255,255,255,.2);
+      background:rgba(6,14,24,.78);color:#d7ecf7;
+      font:700 11px/1 system-ui;letter-spacing:.07em;text-transform:uppercase;
+      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      transition:.2s ease;user-select:none;
+    }
+    #coverSmartToggle:hover{transform:translateY(-1px);border-color:rgba(54,207,225,.55);box-shadow:0 8px 28px rgba(0,0,0,.3)}
     #coverSmartToggle .dot{width:8px;height:8px;border-radius:50%;background:#64748b;transition:.25s}
-    #coverSmartToggle.on .dot{background:#36cfe1;box-shadow:0 0 12px #36cfe1aa}
-    #coverSmartToggle.on{border-color:rgba(54,207,225,.45);color:#e8fbff}
-    #coverScreen.smart-mode .cover-bg{background:radial-gradient(ellipse 80% 60% at 12% 18%,rgba(56,189,248,.22),transparent 55%),radial-gradient(ellipse 70% 50% at 88% 12%,rgba(168,85,247,.18),transparent 50%),radial-gradient(ellipse 60% 45% at 70% 88%,rgba(16,185,129,.14),transparent 48%),radial-gradient(ellipse 50% 40% at 20% 80%,rgba(244,114,182,.10),transparent 45%),linear-gradient(145deg,#020812 0%,#071423 50%,#050b15 100%)!important;animation:smartAurora 14s ease-in-out infinite alternate;}
-    #coverScreen.smart-mode .cover-bg::before{opacity:.22!important;animation:smartGrid 22s linear infinite;}
-    @keyframes smartAurora{0%{filter:hue-rotate(0deg) saturate(1)}50%{filter:hue-rotate(12deg) saturate(1.15)}100%{filter:hue-rotate(-8deg) saturate(1.05)}}
-    @keyframes smartGrid{from{background-position:0 0,0 0}to{background-position:84px 84px,84px 84px}}
-    #coverScreen.smart-mode .cover-month-card{border:1px solid rgba(54,207,225,.28)!important;box-shadow:0 20px 60px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12),0 0 40px rgba(54,207,225,.06)!important;position:relative;overflow:hidden;}
-    #coverScreen.smart-mode .cover-month-card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;background:linear-gradient(135deg,rgba(54,207,225,.15),transparent 40%,transparent 60%,rgba(168,85,247,.12));opacity:.7;}
-    #coverScreen.smart-mode .cover-stat{transition:transform .22s cubic-bezier(.2,.8,.2,1),border-color .22s,box-shadow .22s!important;}
-    #coverScreen.smart-mode .cover-stat:hover{transform:translateY(-4px) scale(1.02)!important;border-color:color-mix(in srgb,var(--cover-neon,#36cfe1) 90%,transparent)!important;box-shadow:0 16px 36px rgba(0,0,0,.35),0 0 28px color-mix(in srgb,var(--cover-neon,#36cfe1) 22%,transparent)!important;}
-    #coverScreen.smart-mode .cover-shortcuts button{transition:transform .18s ease,box-shadow .18s!important;}
-    #coverScreen.smart-mode .cover-shortcuts button:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.28);}
-    #coverScreen.smart-mode .cover-btn{position:relative;overflow:hidden;}
-    #coverScreen.smart-mode .cover-btn::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.18) 50%,transparent 70%);transform:translateX(-120%);animation:smartShimmer 3.2s ease-in-out infinite;}
-    @keyframes smartShimmer{0%,40%{transform:translateX(-120%)}70%{transform:translateX(120%)}100%{transform:translateX(120%)}}
-    #coverSmartBar{display:none;grid-column:1 / -1;margin:0 0 4px;padding:12px 14px;border-radius:14px;border:1px solid rgba(54,207,225,.22);background:linear-gradient(120deg,rgba(8,24,36,.85),rgba(12,18,30,.75));gap:14px;align-items:center;}
-    #coverScreen.smart-mode #coverSmartBar{display:grid;grid-template-columns:auto 1fr auto;gap:12px 16px}
-    #coverSmartClock{font:800 clamp(1.1rem,2.4vw,1.55rem)/1.1 ui-monospace,SFMono-Regular,Menlo,monospace;color:#e8fbff;letter-spacing:.02em;min-width:5.2ch;}
-    #coverSmartClock small{display:block;font:700 9px system-ui;letter-spacing:.14em;color:#7dd3e8;text-transform:uppercase;margin-bottom:3px}
-    #coverSmartInsight{font-size:.78rem;color:#b8cddc;line-height:1.35}
-    #coverSmartInsight strong{color:#eafaff}
-    #coverSmartProgress{display:flex;flex-direction:column;gap:5px;min-width:120px}
-    #coverSmartProgress .lbl{font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;color:#8aa3b6;font-weight:700}
-    #coverSmartProgress .track{height:7px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
-    #coverSmartProgress .fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#36cfe1,#a855f7);width:0%;transition:width .6s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 12px rgba(54,207,225,.4)}
-    #coverSmartProgress .val{font-size:.72rem;font-weight:800;color:#c8e9f5}
-    /* Mobile: evita sovrapposizioni hero/card — layout a colonna ordinato */
+    #coverSmartToggle.on .dot{background:#36cfe1;box-shadow:0 0 14px #36cfe1cc}
+    #coverSmartToggle.on{border-color:rgba(54,207,225,.5);color:#e8fbff}
+
+    #coverSmartFx{display:none;pointer-events:none;position:fixed;inset:0;z-index:0;overflow:hidden}
+    #coverScreen.smart-mode #coverSmartFx{display:block}
+    #coverSmartFx .orb{
+      position:absolute;border-radius:50%;filter:blur(48px);opacity:.55;
+      animation:orbFloat 18s ease-in-out infinite alternate;
+    }
+    #coverSmartFx .orb.o1{width:42vw;height:42vw;min-width:280px;min-height:280px;left:-12%;top:-18%;background:radial-gradient(circle,rgba(56,189,248,.55),transparent 70%);animation-duration:22s}
+    #coverSmartFx .orb.o2{width:36vw;height:36vw;min-width:240px;min-height:240px;right:-10%;top:8%;background:radial-gradient(circle,rgba(168,85,247,.4),transparent 70%);animation-duration:26s;animation-delay:-4s}
+    #coverSmartFx .orb.o3{width:38vw;height:38vw;min-width:220px;min-height:220px;left:20%;bottom:-22%;background:radial-gradient(circle,rgba(16,185,129,.32),transparent 70%);animation-duration:20s;animation-delay:-8s}
+    #coverSmartFx .orb.o4{width:28vw;height:28vw;min-width:180px;min-height:180px;right:18%;bottom:10%;background:radial-gradient(circle,rgba(244,114,182,.28),transparent 70%);animation-duration:24s;animation-delay:-2s}
+    @keyframes orbFloat{
+      0%{transform:translate(0,0) scale(1)}
+      50%{transform:translate(3%,4%) scale(1.08)}
+      100%{transform:translate(-2%,-3%) scale(.96)}
+    }
+
+    #coverScreen.smart-mode .cover-bg{
+      background:linear-gradient(145deg,#020812 0%,#06101c 45%,#040a12 100%)!important;
+    }
+    #coverScreen.smart-mode .cover-bg::before{opacity:.12!important}
+
+    #coverSmartClockPill{
+      display:none;
+      align-items:center;gap:12px;
+      margin:0 0 8px;
+      padding:10px 16px;
+      border-radius:999px;
+      width:fit-content;
+      max-width:100%;
+      border:1px solid rgba(54,207,225,.28);
+      background:linear-gradient(120deg,rgba(8,24,36,.72),rgba(12,18,30,.55));
+      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+      box-shadow:0 8px 32px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.08);
+    }
+    #coverScreen.smart-mode #coverSmartClockPill{display:inline-flex}
+    #coverSmartClockPill .time{
+      font:800 clamp(1.15rem,2.8vw,1.55rem)/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+      color:#e8fbff;letter-spacing:.04em;
+      text-shadow:0 0 24px rgba(54,207,225,.35);
+    }
+    #coverSmartClockPill .sep{
+      width:1px;height:18px;background:rgba(255,255,255,.15);
+    }
+    #coverSmartClockPill .label{
+      font:700 10px/1.2 system-ui;letter-spacing:.12em;text-transform:uppercase;color:#7dd3e8;
+    }
+
+    #coverScreen.smart-mode .cover-month-card{
+      border:1px solid rgba(54,207,225,.32)!important;
+      box-shadow:
+        0 24px 64px rgba(0,0,0,.4),
+        0 0 0 1px rgba(255,255,255,.04) inset,
+        0 0 48px rgba(54,207,225,.08)!important;
+      position:relative;
+      overflow:hidden;
+      animation:cardIn .7s cubic-bezier(.2,.8,.2,1) both;
+    }
+    #coverScreen.smart-mode .cover-month-card::after{
+      content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
+      background:linear-gradient(135deg,rgba(54,207,225,.18),transparent 42%,transparent 58%,rgba(168,85,247,.12));
+      opacity:.85;
+    }
+    @keyframes cardIn{
+      from{opacity:0;transform:translateY(18px) scale(.98)}
+      to{opacity:1;transform:none}
+    }
+
+    #coverScreen.smart-mode .cover-stat{
+      transition:transform .22s cubic-bezier(.2,.8,.2,1),border-color .22s,box-shadow .22s!important;
+    }
+    #coverScreen.smart-mode .cover-stat:hover{
+      transform:translateY(-3px) scale(1.02)!important;
+      box-shadow:0 14px 32px rgba(0,0,0,.35),0 0 24px color-mix(in srgb,var(--cover-neon,#36cfe1) 20%,transparent)!important;
+    }
+    #coverScreen.smart-mode .cover-btn{
+      position:relative;overflow:hidden;
+      box-shadow:0 12px 36px rgba(244,140,60,.25)!important;
+    }
+    #coverScreen.smart-mode .cover-btn::after{
+      content:"";position:absolute;inset:0;
+      background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.22) 50%,transparent 75%);
+      transform:translateX(-130%);
+      animation:shimmer 3.4s ease-in-out infinite;
+    }
+    @keyframes shimmer{
+      0%,45%{transform:translateX(-130%)}
+      70%{transform:translateX(130%)}
+      100%{transform:translateX(130%)}
+    }
+    #coverScreen.smart-mode .cover-hero{
+      animation:heroIn .65s cubic-bezier(.2,.8,.2,1) .05s both;
+    }
+    @keyframes heroIn{
+      from{opacity:0;transform:translateY(12px)}
+      to{opacity:1;transform:none}
+    }
+    #coverScreen.smart-mode .cover-toprow{
+      animation:heroIn .5s cubic-bezier(.2,.8,.2,1) both;
+    }
+
     @media(max-width:900px){
-      #coverScreen.smart-mode{align-items:flex-start;padding:0}
+      #coverSmartToggle{
+        position:fixed!important;
+        top:max(10px,env(safe-area-inset-top));
+        right:12px;
+        z-index:30;
+        padding:7px 10px;font-size:10px;
+      }
       #coverScreen.smart-mode .cover-inner{
         display:flex!important;
         flex-direction:column!important;
         align-items:stretch!important;
-        gap:16px!important;
-        padding:14px 14px 22px!important;
-        min-height:auto!important;
+        justify-content:flex-start!important;
+        gap:14px!important;
+        padding:56px 14px 28px!important;
+        min-height:100%!important;
         width:100%!important;
         max-width:100%!important;
-        grid-template-columns:none!important;
-        grid-template-rows:none!important;
+        grid-template-columns:unset!important;
+        grid-template-rows:unset!important;
+        grid-auto-rows:unset!important;
       }
       #coverScreen.smart-mode .cover-toprow{
-        order:1;display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:10px 12px;
-        padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.12);
-      }
-      #coverScreen.smart-mode .cover-brandblock{flex:1;min-width:0}
-      #coverScreen.smart-mode .cover-datebox{text-align:right;flex-shrink:0}
-      #coverSmartToggle{
-        position:static!important;
-        order:0;
-        margin:0 0 4px auto;
-        padding:7px 10px;font-size:10px;
-        align-self:flex-end;
-      }
-      #coverScreen.smart-mode #coverSmartBar{
-        order:2;
+        order:1!important;
         display:flex!important;
-        flex-direction:column!important;
-        gap:12px!important;
+        flex-wrap:wrap!important;
+        gap:8px 12px!important;
+        padding-bottom:12px!important;
+        margin:0!important;
+        border-bottom:1px solid rgba(255,255,255,.1)!important;
+      }
+      #coverScreen.smart-mode #coverSmartClockPill{
+        order:2!important;
+        margin:2px 0 0!important;
         width:100%;
+        justify-content:center;
         box-sizing:border-box;
-        margin:0!important;
       }
-      #coverSmartClock,#coverSmartInsight,#coverSmartProgress{width:100%}
-      #coverSmartProgress{min-width:0}
       #coverScreen.smart-mode .cover-hero{
-        order:3;
-        max-width:100%!important;
+        order:3!important;
         margin:0!important;
-        padding:4px 0 0!important;
-        position:relative;
-        z-index:1;
-        overflow:visible;
+        padding:0!important;
+        max-width:100%!important;
       }
-      #coverScreen.smart-mode .cover-hero h1{
-        font-size:clamp(2rem,9.5vw,2.85rem)!important;
-        line-height:1.08!important;
-        margin:0 0 8px!important;
+      #coverScreen.smart-mode .cover-hero .cover-overline,
+      #coverScreen.smart-mode .cover-hero h1,
+      #coverScreen.smart-mode .cover-hero > p{
+        display:none!important;
       }
-      #coverScreen.smart-mode .cover-hero p{
-        margin:8px 0 12px!important;
-        font-size:.88rem!important;
+      #coverScreen.smart-mode .cover-hero .cover-shortcuts{
+        display:grid!important;
+        grid-template-columns:1fr 1fr!important;
+        gap:8px!important;
+        margin:0!important;
       }
-      #coverScreen.smart-mode .cover-shortcuts{margin-top:4px}
+      #coverScreen.smart-mode .cover-hero .cover-shortcuts button{
+        min-height:44px;
+      }
       #coverScreen.smart-mode .cover-month-card{
-        order:4;
+        order:4!important;
         width:100%!important;
         max-width:100%!important;
-        justify-self:stretch!important;
         margin:0!important;
-        position:relative;
-        z-index:2;
+        justify-self:stretch!important;
+        position:relative!important;
+        z-index:2!important;
+        transform:none!important;
       }
-      #coverScreen.smart-mode .cover-foot{order:5;margin-top:4px}
-      #coverScreen.smart-mode .cover-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+      #coverScreen.smart-mode .cover-foot{
+        order:5!important;
+        margin:4px 0 0!important;
+      }
+      #coverScreen.smart-mode .cover-stats{
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+      }
     }
     @media(max-width:420px){
-      #coverScreen.smart-mode .cover-hero h1{font-size:clamp(1.75rem,10vw,2.35rem)!important}
-      #coverSmartInsight{font-size:.72rem}
-      #coverSmartClock{font-size:1.15rem}
+      #coverSmartClockPill .time{font-size:1.2rem}
+      #coverScreen.smart-mode .cover-inner{padding:52px 12px 24px!important;gap:12px!important}
     }
     @media(prefers-reduced-motion:reduce){
-      #coverScreen.smart-mode .cover-bg,
-      #coverScreen.smart-mode .cover-bg::before,
+      #coverSmartFx .orb,
+      #coverScreen.smart-mode .cover-month-card,
+      #coverScreen.smart-mode .cover-hero,
+      #coverScreen.smart-mode .cover-toprow,
       #coverScreen.smart-mode .cover-btn::after{animation:none!important}
     }
   `;
@@ -135,9 +237,7 @@
     let card=box.querySelector('[data-total-euro-mese]');
     if(!card){card=document.createElement('div');card.className='cover-stat';card.dataset.totalEuroMese='1';card.innerHTML='<div class="ci"><i class="fa-solid fa-euro-sign"></i></div><div class="cv"></div><div class="cl">Totale € mese</div>';box.appendChild(card);}
     const value=formatEuro(total),node=card.querySelector('.cv');if(node.textContent!==value)node.textContent=value;
-    updateSmartBar();
   };
-
   const extraAgenda=()=>{
     const box=document.getElementById('agendaKpis');
     if(!box||typeof monthTotals!=='function'||typeof agendaMonthIndex!=='function'||!currentYear)return;
@@ -146,7 +246,6 @@
     if(!card){card=document.createElement('div');card.className='agenda-kpi';card.dataset.totalEuroMese='1';card.style.setProperty('--k','var(--success)');card.innerHTML='<strong></strong><span>Totale € mese</span>';box.appendChild(card);}
     const value=formatEuro(total),node=card.querySelector('strong');if(node.textContent!==value)node.textContent=value;
   };
-
   if(typeof renderCoverStats==='function'){
     const original=renderCoverStats;
     renderCoverStats=function(){const result=original.apply(this,arguments);extraCover();return result;};
@@ -156,7 +255,6 @@
     renderAgendaHome=function(){const result=original.apply(this,arguments);extraAgenda();return result;};
   }
   extraCover();extraAgenda();
-
   const observe=(id,refresh)=>{
     const host=document.getElementById(id);if(!host)return;
     let queued=false;
@@ -191,7 +289,6 @@
     });
     if(sidebarTitle)sidebarTitle.addEventListener('blur',()=>{coverTitle.textContent=sidebarTitle.textContent.trim()||'Gestione Ore';});
   }
-
   const hero=document.querySelector('#coverScreen .cover-hero h1');
   const heroKey='gestione_ore_cover_hero_v1';
   if(hero){
@@ -219,63 +316,84 @@
   }
 
   function ensureSmartUI(){
-    const screen=document.getElementById('coverScreen');if(!screen)return;
+    const screen=document.getElementById('coverScreen');
+    if(!screen)return;
+
+    let fx=document.getElementById('coverSmartFx');
+    if(!fx){
+      fx=document.createElement('div');
+      fx.id='coverSmartFx';
+      fx.innerHTML='<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div>';
+      screen.insertBefore(fx, screen.firstChild);
+    }
+
     let toggle=document.getElementById('coverSmartToggle');
     if(!toggle){
-      toggle=document.createElement('button');toggle.id='coverSmartToggle';toggle.type='button';
+      toggle=document.createElement('button');
+      toggle.id='coverSmartToggle';
+      toggle.type='button';
       toggle.innerHTML='<span class="dot"></span><span class="lbl">Cover Smart</span>';
-      toggle.title='Attiva/disattiva Cover Smart (animazioni + insight)';
+      toggle.title='Attiva/disattiva Cover Smart';
       screen.appendChild(toggle);
-      toggle.addEventListener('click',e=>{e.stopPropagation();const next=!isSmart();setSmart(next);applySmartMode(next);});
+      toggle.addEventListener('click',e=>{
+        e.stopPropagation();
+        const next=!isSmart();
+        setSmart(next);
+        applySmartMode(next);
+      });
     }
-    let bar=document.getElementById('coverSmartBar');
-    if(!bar){
-      bar=document.createElement('div');bar.id='coverSmartBar';
-      bar.innerHTML='<div id="coverSmartClock"><small>Ora locale</small><span class="time">--:--:--</span></div><div id="coverSmartInsight">Caricamento insight…</div><div id="coverSmartProgress"><div class="lbl">Progresso mese</div><div class="track"><div class="fill" id="coverSmartFill"></div></div><div class="val" id="coverSmartProgVal">—</div></div>';
-      const inner=screen.querySelector('.cover-inner'),heroSec=screen.querySelector('.cover-hero');
-      if(inner&&heroSec)inner.insertBefore(bar,heroSec);else if(inner)inner.prepend(bar);
+
+    let pill=document.getElementById('coverSmartClockPill');
+    if(!pill){
+      pill=document.createElement('div');
+      pill.id='coverSmartClockPill';
+      pill.innerHTML='<span class="time">--:--:--</span><span class="sep"></span><span class="label">Live</span>';
+      const inner=screen.querySelector('.cover-inner');
+      const heroSec=screen.querySelector('.cover-hero');
+      if(inner && heroSec) inner.insertBefore(pill, heroSec);
+      else if(inner) inner.prepend(pill);
     }
-    applySmartMode(isSmart());startClock();updateSmartBar();
+
+    applySmartMode(isSmart());
+    startClock();
   }
 
   function applySmartMode(on){
-    const screen=document.getElementById('coverScreen'),toggle=document.getElementById('coverSmartToggle');
-    if(screen)screen.classList.toggle('smart-mode',!!on);
-    if(toggle){toggle.classList.toggle('on',!!on);const lbl=toggle.querySelector('.lbl');if(lbl)lbl.textContent=on?'Smart ON':'Cover Smart';}
+    const screen=document.getElementById('coverScreen');
+    const toggle=document.getElementById('coverSmartToggle');
+    if(screen) screen.classList.toggle('smart-mode', !!on);
+    if(toggle){
+      toggle.classList.toggle('on', !!on);
+      const lbl=toggle.querySelector('.lbl');
+      if(lbl) lbl.textContent=on?'Smart ON':'Cover Smart';
+    }
   }
 
   let clockTimer=null;
   function startClock(){
-    const tick=()=>{const el=document.querySelector('#coverSmartClock .time');if(!el)return;el.textContent=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});};
-    tick();if(clockTimer)clearInterval(clockTimer);clockTimer=setInterval(tick,1000);
+    const tick=()=>{
+      const el=document.querySelector('#coverSmartClockPill .time');
+      if(!el)return;
+      el.textContent=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    };
+    tick();
+    if(clockTimer) clearInterval(clockTimer);
+    clockTimer=setInterval(tick,1000);
   }
 
-  function updateSmartBar(){
-    const insight=document.getElementById('coverSmartInsight'),fill=document.getElementById('coverSmartFill'),progVal=document.getElementById('coverSmartProgVal');
-    if(!insight)return;
-    if(typeof monthTotals!=='function'||typeof ensureYear!=='function'){insight.textContent='Insight disponibili dopo il caricamento dati.';return;}
-    const today=new Date(),year=today.getFullYear(),mIdx=today.getMonth();
-    const previous=typeof currentYear!=='undefined'?currentYear:year;
-    let t={ore:0,euro:0},worked=0;
-    try{if(typeof currentYear!=='undefined')currentYear=year;ensureYear(year);t=monthTotals(mIdx);worked=typeof workedDays==='function'?workedDays(mIdx):0;}catch(e){}
-    finally{if(typeof currentYear!=='undefined')currentYear=previous;}
-    const dayOfMonth=today.getDate(),daysInMonth=new Date(year,mIdx+1,0).getDate();
-    const remainingWorkApprox=Math.max(0,Math.round(Math.max(0,daysInMonth-dayOfMonth)*5/7));
-    const avgH=worked>0?(t.ore/worked):0,projected=t.ore+(avgH*remainingWorkApprox);
-    const progressPct=Math.min(100,Math.round((dayOfMonth/daysInMonth)*100));
-    if(fill)fill.style.width=progressPct+'%';
-    if(progVal)progVal.textContent='Giorno '+dayOfMonth+'/'+daysInMonth+' · '+progressPct+'%';
-    const parts=[];
-    parts.push('<strong>'+t.ore.toFixed(1)+' h</strong> registrate');
-    if(worked>0)parts.push('media <strong>'+avgH.toFixed(1)+' h/gg</strong> su '+worked+' gg');
-    if(avgH>0&&remainingWorkApprox>0)parts.push('proiezione mese ~ <strong>'+projected.toFixed(0)+' h</strong>');
-    if(t.euro>0)parts.push('guadagno <strong>'+formatEuro(t.euro)+'</strong>');
-    insight.innerHTML=parts.join(' · ')||'Inizia a registrare le ore per vedere gli insight.';
+  const boot=()=>{
+    if(document.getElementById('coverScreen')) ensureSmartUI();
+    else setTimeout(boot,120);
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot);
+  else boot();
+
+  if(typeof showCover==='function'){
+    const _show=showCover;
+    showCover=function(){const r=_show.apply(this,arguments);ensureSmartUI();return r;};
   }
-
-  const boot=()=>{if(document.getElementById('coverScreen'))ensureSmartUI();else setTimeout(boot,120);};
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
-
-  if(typeof showCover==='function'){const _show=showCover;showCover=function(){const r=_show.apply(this,arguments);ensureSmartUI();updateSmartBar();return r;};}
-  if(typeof initCover==='function'){const _init=initCover;initCover=function(){const r=_init.apply(this,arguments);ensureSmartUI();updateSmartBar();return r;};}
+  if(typeof initCover==='function'){
+    const _init=initCover;
+    initCover=function(){const r=_init.apply(this,arguments);ensureSmartUI();return r;};
+  }
 })();
