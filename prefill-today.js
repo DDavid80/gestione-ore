@@ -20,7 +20,7 @@
       m.entries.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
       saveData();
       renderAll();
-      localStorage.setItem(FLAG,'1);
+      localStorage.setItem(FLAG,'1');
       if(typeof showToast==='function')showToast('Riga di oggi: 1,15 h straordinarie (uscita 16:30).');
     }catch(e){console.warn('prefill-today',e);}
   };
