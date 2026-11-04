@@ -1,0 +1,20 @@
+{
+  "name": "Gestione Ore",
+  "short_name": "Ore",
+  "description": "Agenda personale ore, straordinari e reperibilità",
+  "start_url": "./?source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#050b14",
+  "theme_color": "#081426",
+  "lang": "it",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
