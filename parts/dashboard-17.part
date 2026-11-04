@@ -139,6 +139,7 @@ function initCover(){
   document.getElementById('coverDate').textContent=days[d.getDay()]+' '+formatDateIT(todayISO());renderCoverStats();
 }
 function showCover(){initCover();document.getElementById('coverScreen').classList.remove('hidden')}
+initCover();
 function enterDashboard(mode='month',target=''){
   const year=new Date().getFullYear(),month=new Date().getMonth(),hadYear=!!DATA[String(year)];
-  ensureYear(year);currentYe
+  ensureYear(ye

@@ -1,4 +1,4 @@
-thDays?` · ${monthDays} in questo mese`:''}</span></div>`;
+giorni'}${monthDays?` · ${monthDays} in questo mese`:''}</span></div>`;
 }
 
 function renderCoverOncall(){
