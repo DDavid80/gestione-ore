@@ -76,26 +76,35 @@
 
   async function showLocalNotification(title, body, data) {
     const prefs = loadPrefs();
-    if (!prefs.enabled && !(data && data.force)) return false;
+    if (!prefs.enabled && !(data && data.force)) return { ok:false, reason:'disabled' };
+    if (!('Notification' in window)) return { ok:false, reason:'unsupported' };
     const perm = await ensurePermission();
-    if (perm !== 'granted') return false;
-    const reg = await registerSW();
+    if (perm !== 'granted') return { ok:false, reason:'permission:'+perm };
+
     const opts = {
       body: body || '',
       icon: './icon.svg',
       badge: './icon.svg',
-      tag: (data && data.tag) || 'gestione-ore',
+      tag: (data && data.tag) || 'gestione-ore-' + Date.now(),
       renotify: true,
-      data: { url: (data && data.url) || './' },
-      vibrate: [120, 60, 120]
+      requireInteraction: !!(data && data.force),
+      data: { url: (data && data.url) || './' }
     };
+
     try {
-      if (reg && reg.showNotification) await reg.showNotification(title, opts);
-      else new Notification(title, opts);
-      return true;
+      let reg = await registerSW();
+      if (reg) {
+        try { reg = await navigator.serviceWorker.ready; } catch (e) {}
+        if (reg && reg.showNotification) {
+          await reg.showNotification(title, opts);
+          return { ok:true, via:'service-worker' };
+        }
+      }
+      const n = new Notification(title, opts);
+      return { ok:true, via:'notification-api', notification:n };
     } catch (e) {
       console.warn('[notify] show', e);
-      return false;
+      return { ok:false, reason:String(e && e.message || e) };
     }
   }
 
@@ -317,12 +326,25 @@
       if (typeof showToast === 'function') showToast('Preferenze notifiche salvate');
     };
     panel.querySelector('#npTest').onclick = async () => {
-      const ok = await showLocalNotification(
+      const status = panel.querySelector('#npStatus');
+      const standalone = isStandalone();
+      const ua = navigator.userAgent || '';
+      const isIOS = /iPhone|iPad|iPod/.test(ua);
+      status.textContent = 'Invio prova…';
+      if (isIOS && !standalone) {
+        status.textContent = 'Su iPhone le notifiche funzionano solo aprendo la dash dall’icona Home (non da Safari). Aggiungi a Home → apri da lì → riprova.';
+        return;
+      }
+      const res = await showLocalNotification(
         'Prova Gestione Ore',
-        'Se vedi questo, le notifiche funzionano.',
-        { force: true, tag: 'test' }
+        'Se vedi questo banner/centro notifiche, funziona.',
+        { force: true, tag: 'test-' + Date.now() }
       );
-      panel.querySelector('#npStatus').textContent = ok ? 'Notifica di prova inviata.' : 'Permesso mancante o non supportato.';
+      if (res && res.ok) {
+        status.textContent = 'Inviata via ' + res.via + '. Se non la vedi: Centro notifiche iOS, oppure Impostazioni → Notifiche → Gestione Ore.';
+      } else {
+        status.textContent = 'Fallita: ' + (res && res.reason || 'sconosciuto');
+      }
     };
   }
 
