@@ -1,4 +1,18 @@
-);
+thDays?` · ${monthDays} in questo mese`:''}</span></div>`;
+}
+
+function renderCoverOncall(){
+  const box=document.getElementById('coverOncall');if(!box)return;
+  let info=null;try{info=agendaOncallInfo();}catch(e){}
+  if(!info){box.hidden=true;box.innerHTML='';return;}
+  const when=info.now?'Sei reperibile adesso':(info.until===1?'Reperibile da domani':'Prossima reperibilità tra '+info.until+' giorni');
+  box.hidden=false;box.className='cover-oncall'+(info.now?' now':'');
+  box.innerHTML=`<i class="fa-solid fa-phone-volume"></i><div><strong>${when}</strong><span>${agendaFmtDay(info.from)} → ${agendaFmtDay(info.to)} · ${info.len} ${info.len===1?'giorno':'giorni'}</span></div>`;
+}
+function exportRepIcs(){
+  const days=[];
+  Object.keys(DATA).sort().forEach(yr=>{const y=DATA[yr];((y&&y.reperibilitaDays)||[]).forEach(m=>((m&&m.entries)||[]).forEach(e=>{if(e&&e.rep&&e.date)days.push(e.date);}));});
+  const u=[...new Set(days)].sort();
   if(!u.length){alert('Nessun giorno di reperibilità da esportare.');return;}
   const blocks=[];let from=u[0],prev=u[0];
   for(let i=1;i<u.length;i++){if(u[i]===addDaysISO(prev,1)){prev=u[i];continue;}blocks.push([from,prev]);from=prev=u[i];}

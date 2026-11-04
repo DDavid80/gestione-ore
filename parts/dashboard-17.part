@@ -1,4 +1,16 @@
-neon);font-size:23px;box-shadow:0 0 19px color-mix(in srgb,var(--neon) 55%,transparent)}
+x;bottom:calc(14px + env(safe-area-inset-bottom));text-align:center}
+}
+</style>
+
+<style id="neon-cards">
+.stat{--neon:#22d3ee;--symbol:'◷';border:1px solid var(--neon)!important;background:linear-gradient(145deg,#0a1c28,#06131e)!important;border-radius:19px;min-height:120px;padding:22px 16px 20px 70px;box-shadow:inset 0 0 22px color-mix(in srgb,var(--neon) 4%,transparent),0 5px 20px #0003;color:var(--neon)}
+.stat:nth-child(2){--neon:#20e3a2;--symbol:'◴'}
+.stat:nth-child(3){--neon:#bf5af2;--symbol:'▦'}
+.stat:nth-child(4){--neon:#ffb020;--symbol:'€'}
+.stat.euro{--neon:#20e3a2;--symbol:'€'}
+.stat.rep{--neon:#ffb020;--symbol:'☎'}
+.stat.recup{--neon:#bf5af2;--symbol:'↻'}
+.stat::before{content:var(--symbol);position:absolute;left:16px;top:50%;right:auto;width:40px;height:40px;transform:translateY(-50%);display:grid;place-items:center;border:1px solid var(--neon);border-radius:50%;background:#0b2430;filter:none;opacity:1;color:var(--neon);font-size:23px;box-shadow:0 0 19px color-mix(in srgb,var(--neon) 55%,transparent)}
 .stat::after{display:none}
 .summary .stat .val,.month-summary .stat .val,.stat .val{color:var(--neon)!important;text-shadow:0 0 15px color-mix(in srgb,var(--neon) 55%,transparent);font-size:1.6rem;letter-spacing:-.03em}
 .summary .stat .lbl,.month-summary .stat .lbl,.stat .lbl{color:#c3d4e1!important;line-height:1.4;letter-spacing:.035em}
@@ -129,17 +141,4 @@ function initCover(){
 function showCover(){initCover();document.getElementById('coverScreen').classList.remove('hidden')}
 function enterDashboard(mode='month',target=''){
   const year=new Date().getFullYear(),month=new Date().getMonth(),hadYear=!!DATA[String(year)];
-  ensureYear(year);currentYear=year;currentMonthFilter=mode==='year'?'':String(month);
-  const sel=document.getElementById('monthFilter');if(sel)sel.value=currentMonthFilter;
-  // Uscendo dalla copertina, ripristina sempre la pagina principale: Reperibilità
-  // può essere rimasta aperta da una visita precedente.
-  const repPage=document.getElementById('repPage');if(repPage)repPage.style.display='none';
-  const dashboardPage=document.getElementById('dashboardPage');if(dashboardPage)dashboardPage.style.display='block';
-  if(!hadYear)saveData();
-  renderAll();document.getElementById('coverScreen').classList.add('hidden');
-  if(target==='repPage'){showRepPage();return;}
-  if(target){setTimeout(()=>{const el=document.getElementById(target);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
-}
-</script>
-<script>setGraphicStyle(localStorage.getItem('strao_graphic_style_v1')||'base');window.__graphicReady=true;</script>
-<script id="dashboard-ins
+  ensureYear(year);currentYe
