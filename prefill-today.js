@@ -1,31 +1,52 @@
 (()=>{
-  const KEY='strao_data_v3';
-  const FLAG='gestione_ore_prefill_2026-11-04';
+  // Prefill / update riga di oggi: uscita 16:30 vs base 15:21 = 1h09m = 1.15h
+  const FLAG='gestione_ore_prefill_2026-11-04_v2';
   const TARGET='2026-11-04';
-  const ORE_STRAORD=1.15; // uscita 16:30 - base 15:21 = 1h09m
+  const ORE_STRAORD=1.15;
+  const NOTE='Uscita 16:30 · str. 1h09m';
 
-  const run=()=>{
+  const apply=()=>{
     try{
-      if(localStorage.getItem(FLAG)==='1')return;
-      if(typeof DATA==='undefined'||typeof saveData!=='function'||typeof renderAll!=='function')return;
+      if(typeof DATA==='undefined'||typeof ensureYear!=='function'||typeof saveData!=='function')return false;
+      if(typeof renderAll!=='function')return false;
 
       const y=ensureYear(2026);
-      const m=y.months[10];
-      if(!m)return;
+      const m=y.months[10]; // novembre
+      if(!m||!Array.isArray(m.entries))return false;
 
-      const exists=m.entries.some(e=>e&&e.date===TARGET);
-      if(exists){localStorage.setItem(FLAG,'1');return;}
+      let entry=m.entries.find(e=>e&&e.date===TARGET);
+      if(entry){
+        // Aggiorna sempre ore/nota del giorno (anche se la riga esisteva già)
+        entry.lavorato=true;
+        entry.ferie=false;
+        entry.ore=ORE_STRAORD;
+        entry.note=NOTE;
+      }else{
+        m.entries.push({date:TARGET,lavorato:true,ferie:false,ore:ORE_STRAORD,rep:false,recup:false,note:NOTE});
+        m.entries.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
+      }
 
-      m.entries.push({date:TARGET,lavorato:true,ferie:false,ore:ORE_STRAORD,rep:false,recup:false,note:'Uscita 16:30 · str. 1h09m'});
-      m.entries.sort((a,b)=>(a.date||'').localeCompare(b.date||''));
       saveData();
       renderAll();
-      localStorage.setItem(FLAG,'1');
-      if(typeof showToast==='function')showToast('Riga di oggi: 1,15 h straordinarie (uscita 16:30).');
-    }catch(e){console.warn('prefill-today',e);}
+      try{localStorage.setItem(FLAG,'1');}catch(e){}
+      if(typeof showToast==='function')showToast('Oggi 4/11: 1,15 h straordinarie (uscita 16:30).');
+      return true;
+    }catch(e){
+      console.warn('prefill-today',e);
+      return false;
+    }
   };
 
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(run,800));
-  else setTimeout(run,800);
-  setTimeout(run,2500);
+  // Se già applicato in questa sessione browser, non ripetere all'infinito
+  // ma al primo load utile sì (anche se FLAG vecchio).
+  let done=false;
+  const tryRun=()=>{
+    if(done)return;
+    if(apply()){done=true;}
+  };
+
+  // Vari tentativi: DATA può non essere pronto subito dopo document.write
+  [600,1200,2000,3500,5000].forEach(ms=>setTimeout(tryRun,ms));
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(tryRun,400));
+  else setTimeout(tryRun,400);
 })();
