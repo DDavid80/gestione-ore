@@ -190,7 +190,7 @@
     const s = document.createElement('style');
     s.id = 'notify-prefs-style';
     s.textContent = `
-      #notifyEnableBtn{
+      #notifyEnableBtn{display:none!important;
         position:fixed;left:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:80;
         padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.2);
         background:rgba(8,20,38,.92);color:#e8f6ff;font:700 12px/1 system-ui;cursor:pointer;
@@ -321,7 +321,6 @@
         }
       }
       savePrefs(p);
-      syncButtons();
       panel.querySelector('#npStatus').textContent = 'Salvato.';
       if (typeof showToast === 'function') showToast('Preferenze notifiche salvate');
     };
@@ -348,27 +347,6 @@
     };
   }
 
-  function createNotifyButton() {
-    if (document.getElementById('notifyEnableBtn')) return;
-    ensureStyles();
-    const btn = document.createElement('button');
-    btn.id = 'notifyEnableBtn';
-    btn.type = 'button';
-    btn.textContent = '🔔 Notifiche';
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      createPrefsUI();
-      openPrefs();
-    });
-    document.body.appendChild(btn);
-    const place = () => {
-      const smart = document.getElementById('coverScreen')?.classList.contains('smart-mode');
-      btn.style.bottom = smart ? 'calc(120px + env(safe-area-inset-bottom))' : 'max(12px, env(safe-area-inset-bottom))';
-    };
-    place();
-    setInterval(place, 1500);
-  }
-
   function injectSideCard() {
     const side = document.querySelector('.side');
     if (!side || document.getElementById('notifySideCard')) return;
@@ -384,12 +362,6 @@
     };
   }
 
-  function syncButtons() {
-    const p = loadPrefs();
-    const btn = document.getElementById('notifyEnableBtn');
-    if (btn) btn.textContent = p.enabled && Notification.permission === 'granted' ? '🔔 Notifiche ON' : '🔔 Notifiche';
-  }
-
   window.GestioneOreNotify = {
     show: showLocalNotification,
     openSettings: () => { createPrefsUI(); openPrefs(); },
@@ -402,10 +374,11 @@
   registerSW();
 
   const bootUI = () => {
-    createNotifyButton();
+    // Niente bottone flottante: solo voce nel menu laterale
+    const oldBtn = document.getElementById('notifyEnableBtn');
+    if (oldBtn) oldBtn.remove();
     createPrefsUI();
     injectSideCard();
-    syncButtons();
     setTimeout(runReminders, 5000);
     setInterval(runReminders, 10 * 60 * 1000);
   };
