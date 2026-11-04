@@ -22,11 +22,11 @@
     }
 
     #coverSmartToggle{
-      position:absolute;top:16px;right:16px;z-index:20;
+      position:absolute;top:16px;right:16px;z-index:40;
       display:inline-flex;align-items:center;gap:8px;
       padding:8px 12px;border-radius:999px;cursor:pointer;
-      border:1px solid rgba(255,255,255,.2);
-      background:rgba(6,14,24,.78);color:#d7ecf7;
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(6,14,24,.82);color:#d7ecf7;
       font:700 11px/1 system-ui;letter-spacing:.07em;text-transform:uppercase;
       backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
       transition:.2s ease;user-select:none;
@@ -39,67 +39,86 @@
     #coverSmartFx{display:none;pointer-events:none;position:fixed;inset:0;z-index:0;overflow:hidden}
     #coverScreen.smart-mode #coverSmartFx{display:block}
     #coverSmartFx .orb{
-      position:absolute;border-radius:50%;filter:blur(48px);opacity:.55;
-      animation:orbFloat 18s ease-in-out infinite alternate;
+      position:absolute;border-radius:50%;filter:blur(52px);opacity:.6;
+      animation:orbFloat 16s ease-in-out infinite alternate;
+      will-change:transform;
     }
-    #coverSmartFx .orb.o1{width:42vw;height:42vw;min-width:280px;min-height:280px;left:-12%;top:-18%;background:radial-gradient(circle,rgba(56,189,248,.55),transparent 70%);animation-duration:22s}
-    #coverSmartFx .orb.o2{width:36vw;height:36vw;min-width:240px;min-height:240px;right:-10%;top:8%;background:radial-gradient(circle,rgba(168,85,247,.4),transparent 70%);animation-duration:26s;animation-delay:-4s}
-    #coverSmartFx .orb.o3{width:38vw;height:38vw;min-width:220px;min-height:220px;left:20%;bottom:-22%;background:radial-gradient(circle,rgba(16,185,129,.32),transparent 70%);animation-duration:20s;animation-delay:-8s}
-    #coverSmartFx .orb.o4{width:28vw;height:28vw;min-width:180px;min-height:180px;right:18%;bottom:10%;background:radial-gradient(circle,rgba(244,114,182,.28),transparent 70%);animation-duration:24s;animation-delay:-2s}
+    #coverSmartFx .orb.o1{width:48vw;height:48vw;min-width:300px;min-height:300px;left:-14%;top:-20%;background:radial-gradient(circle,rgba(56,189,248,.6),transparent 68%);animation-duration:20s}
+    #coverSmartFx .orb.o2{width:40vw;height:40vw;min-width:260px;min-height:260px;right:-12%;top:4%;background:radial-gradient(circle,rgba(168,85,247,.48),transparent 68%);animation-duration:24s;animation-delay:-3s}
+    #coverSmartFx .orb.o3{width:42vw;height:42vw;min-width:240px;min-height:240px;left:16%;bottom:-26%;background:radial-gradient(circle,rgba(16,185,129,.38),transparent 68%);animation-duration:18s;animation-delay:-7s}
+    #coverSmartFx .orb.o4{width:32vw;height:32vw;min-width:200px;min-height:200px;right:12%;bottom:6%;background:radial-gradient(circle,rgba(244,114,182,.34),transparent 68%);animation-duration:22s;animation-delay:-1s}
+    #coverSmartFx .spark{
+      position:absolute;width:2px;height:2px;border-radius:50%;
+      background:#fff;box-shadow:0 0 6px 1px rgba(100,210,255,.8);
+      animation:sparkDrift linear infinite;
+      opacity:0;
+    }
     @keyframes orbFloat{
       0%{transform:translate(0,0) scale(1)}
-      50%{transform:translate(3%,4%) scale(1.08)}
-      100%{transform:translate(-2%,-3%) scale(.96)}
+      50%{transform:translate(4%,5%) scale(1.1)}
+      100%{transform:translate(-3%,-4%) scale(.94)}
+    }
+    @keyframes sparkDrift{
+      0%{opacity:0;transform:translateY(20px) scale(.6)}
+      15%{opacity:.9}
+      85%{opacity:.5}
+      100%{opacity:0;transform:translateY(-70vh) scale(1.2)}
     }
 
     #coverScreen.smart-mode .cover-bg{
-      background:linear-gradient(145deg,#020812 0%,#06101c 45%,#040a12 100%)!important;
+      background:linear-gradient(155deg,#01060d 0%,#06101c 42%,#030910 100%)!important;
     }
-    #coverScreen.smart-mode .cover-bg::before{opacity:.12!important}
+    #coverScreen.smart-mode .cover-bg::before{
+      opacity:.18!important;
+      background-size:56px 56px!important;
+      animation:gridPulse 12s linear infinite;
+    }
+    @keyframes gridPulse{
+      from{background-position:0 0}
+      to{background-position:56px 56px}
+    }
 
     #coverSmartClockPill{
       display:none;
       align-items:center;gap:12px;
-      margin:0 0 8px;
-      padding:10px 16px;
+      margin:0 0 6px;
+      padding:11px 18px;
       border-radius:999px;
       width:fit-content;
       max-width:100%;
-      border:1px solid rgba(54,207,225,.28);
-      background:linear-gradient(120deg,rgba(8,24,36,.72),rgba(12,18,30,.55));
-      backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-      box-shadow:0 8px 32px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.08);
+      border:1px solid rgba(54,207,225,.32);
+      background:linear-gradient(120deg,rgba(8,28,40,.78),rgba(10,16,28,.6));
+      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+      box-shadow:0 10px 36px rgba(0,0,0,.3),0 0 24px rgba(54,207,225,.08),inset 0 1px 0 rgba(255,255,255,.1);
     }
     #coverScreen.smart-mode #coverSmartClockPill{display:inline-flex}
     #coverSmartClockPill .time{
-      font:800 clamp(1.15rem,2.8vw,1.55rem)/1 ui-monospace,SFMono-Regular,Menlo,monospace;
-      color:#e8fbff;letter-spacing:.04em;
-      text-shadow:0 0 24px rgba(54,207,225,.35);
+      font:800 clamp(1.2rem,3vw,1.65rem)/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+      color:#e8fbff;letter-spacing:.05em;
+      text-shadow:0 0 28px rgba(54,207,225,.45);
     }
-    #coverSmartClockPill .sep{
-      width:1px;height:18px;background:rgba(255,255,255,.15);
-    }
+    #coverSmartClockPill .sep{width:1px;height:18px;background:rgba(255,255,255,.16)}
     #coverSmartClockPill .label{
-      font:700 10px/1.2 system-ui;letter-spacing:.12em;text-transform:uppercase;color:#7dd3e8;
+      font:700 10px/1.2 system-ui;letter-spacing:.14em;text-transform:uppercase;color:#7dd3e8;
     }
 
     #coverScreen.smart-mode .cover-month-card{
-      border:1px solid rgba(54,207,225,.32)!important;
+      border:1px solid rgba(54,207,225,.36)!important;
       box-shadow:
-        0 24px 64px rgba(0,0,0,.4),
-        0 0 0 1px rgba(255,255,255,.04) inset,
-        0 0 48px rgba(54,207,225,.08)!important;
+        0 28px 70px rgba(0,0,0,.45),
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 0 60px rgba(54,207,225,.1)!important;
       position:relative;
       overflow:hidden;
-      animation:cardIn .7s cubic-bezier(.2,.8,.2,1) both;
+      animation:cardIn .75s cubic-bezier(.2,.85,.2,1) both;
     }
     #coverScreen.smart-mode .cover-month-card::after{
       content:"";position:absolute;inset:-1px;border-radius:inherit;pointer-events:none;
-      background:linear-gradient(135deg,rgba(54,207,225,.18),transparent 42%,transparent 58%,rgba(168,85,247,.12));
-      opacity:.85;
+      background:linear-gradient(135deg,rgba(54,207,225,.2),transparent 40%,transparent 60%,rgba(168,85,247,.14));
+      opacity:.9;
     }
     @keyframes cardIn{
-      from{opacity:0;transform:translateY(18px) scale(.98)}
+      from{opacity:0;transform:translateY(22px) scale(.97)}
       to{opacity:1;transform:none}
     }
 
@@ -107,33 +126,82 @@
       transition:transform .22s cubic-bezier(.2,.8,.2,1),border-color .22s,box-shadow .22s!important;
     }
     #coverScreen.smart-mode .cover-stat:hover{
-      transform:translateY(-3px) scale(1.02)!important;
-      box-shadow:0 14px 32px rgba(0,0,0,.35),0 0 24px color-mix(in srgb,var(--cover-neon,#36cfe1) 20%,transparent)!important;
+      transform:translateY(-3px) scale(1.025)!important;
+      box-shadow:0 16px 36px rgba(0,0,0,.38),0 0 28px color-mix(in srgb,var(--cover-neon,#36cfe1) 24%,transparent)!important;
     }
     #coverScreen.smart-mode .cover-btn{
       position:relative;overflow:hidden;
-      box-shadow:0 12px 36px rgba(244,140,60,.25)!important;
+      box-shadow:0 14px 40px rgba(244,140,60,.3)!important;
     }
     #coverScreen.smart-mode .cover-btn::after{
       content:"";position:absolute;inset:0;
-      background:linear-gradient(105deg,transparent 25%,rgba(255,255,255,.22) 50%,transparent 75%);
+      background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.25) 50%,transparent 80%);
       transform:translateX(-130%);
-      animation:shimmer 3.4s ease-in-out infinite;
+      animation:shimmer 3s ease-in-out infinite;
     }
     @keyframes shimmer{
-      0%,45%{transform:translateX(-130%)}
+      0%,40%{transform:translateX(-130%)}
       70%{transform:translateX(130%)}
       100%{transform:translateX(130%)}
     }
-    #coverScreen.smart-mode .cover-hero{
-      animation:heroIn .65s cubic-bezier(.2,.8,.2,1) .05s both;
+    #coverScreen.smart-mode .cover-hero,
+    #coverScreen.smart-mode .cover-toprow{
+      animation:heroIn .6s cubic-bezier(.2,.85,.2,1) both;
     }
+    #coverScreen.smart-mode .cover-hero{animation-delay:.06s}
     @keyframes heroIn{
-      from{opacity:0;transform:translateY(12px)}
+      from{opacity:0;transform:translateY(14px)}
       to{opacity:1;transform:none}
     }
-    #coverScreen.smart-mode .cover-toprow{
-      animation:heroIn .5s cubic-bezier(.2,.8,.2,1) both;
+
+    #coverSmartCta{
+      display:none;
+      position:fixed;
+      left:12px;right:12px;
+      bottom:max(12px,env(safe-area-inset-bottom));
+      z-index:50;
+      gap:8px;
+      padding:0;
+      pointer-events:none;
+    }
+    #coverScreen.smart-mode #coverSmartCta{display:flex;flex-direction:column;pointer-events:auto}
+    #coverSmartCta button{
+      width:100%;
+      min-height:52px;
+      border:0;border-radius:14px;
+      font:800 15px/1.1 system-ui;
+      letter-spacing:.02em;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;gap:10px;
+      box-shadow:0 12px 36px rgba(0,0,0,.45);
+      transition:transform .15s ease,filter .15s ease;
+    }
+    #coverSmartCta button:active{transform:scale(.98)}
+    #coverSmartCta .cta-main{
+      background:linear-gradient(105deg,#ffb341,#f48e3d);
+      color:#16130e;
+      box-shadow:0 12px 40px rgba(244,140,60,.4),0 0 24px rgba(255,179,65,.15);
+    }
+    #coverSmartCta .cta-year{
+      background:rgba(12,22,34,.92);
+      color:#d5e4f0;
+      border:1px solid rgba(255,255,255,.16)!important;
+      backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+      min-height:42px;
+      font-size:13px;
+      font-weight:700;
+    }
+    @media(max-width:900px){
+      #coverScreen.smart-mode .cover-month-card > .cover-btn,
+      #coverScreen.smart-mode .cover-month-card > .cover-year-btn{
+        display:none!important;
+      }
+      #coverScreen.smart-mode .cover-inner{
+        padding-bottom:calc(130px + env(safe-area-inset-bottom))!important;
+      }
+    }
+    @media(min-width:901px){
+      #coverSmartCta{display:none!important}
     }
 
     @media(max-width:900px){
@@ -141,7 +209,7 @@
         position:fixed!important;
         top:max(10px,env(safe-area-inset-top));
         right:12px;
-        z-index:30;
+        z-index:50;
         padding:7px 10px;font-size:10px;
       }
       #coverScreen.smart-mode .cover-inner{
@@ -149,8 +217,8 @@
         flex-direction:column!important;
         align-items:stretch!important;
         justify-content:flex-start!important;
-        gap:14px!important;
-        padding:56px 14px 28px!important;
+        gap:12px!important;
+        padding:54px 14px 28px!important;
         min-height:100%!important;
         width:100%!important;
         max-width:100%!important;
@@ -163,7 +231,7 @@
         display:flex!important;
         flex-wrap:wrap!important;
         gap:8px 12px!important;
-        padding-bottom:12px!important;
+        padding-bottom:10px!important;
         margin:0!important;
         border-bottom:1px solid rgba(255,255,255,.1)!important;
       }
@@ -192,7 +260,7 @@
         margin:0!important;
       }
       #coverScreen.smart-mode .cover-hero .cover-shortcuts button{
-        min-height:44px;
+        min-height:46px;
       }
       #coverScreen.smart-mode .cover-month-card{
         order:4!important;
@@ -206,7 +274,8 @@
       }
       #coverScreen.smart-mode .cover-foot{
         order:5!important;
-        margin:4px 0 0!important;
+        margin:2px 0 0!important;
+        opacity:.75;
       }
       #coverScreen.smart-mode .cover-stats{
         grid-template-columns:repeat(2,minmax(0,1fr))!important;
@@ -214,14 +283,16 @@
     }
     @media(max-width:420px){
       #coverSmartClockPill .time{font-size:1.2rem}
-      #coverScreen.smart-mode .cover-inner{padding:52px 12px 24px!important;gap:12px!important}
+      #coverScreen.smart-mode .cover-inner{padding-left:12px!important;padding-right:12px!important;gap:10px!important}
+      #coverSmartCta button.cta-main{min-height:50px;font-size:14px}
     }
     @media(prefers-reduced-motion:reduce){
-      #coverSmartFx .orb,
+      #coverSmartFx .orb,#coverSmartFx .spark,
       #coverScreen.smart-mode .cover-month-card,
       #coverScreen.smart-mode .cover-hero,
       #coverScreen.smart-mode .cover-toprow,
-      #coverScreen.smart-mode .cover-btn::after{animation:none!important}
+      #coverScreen.smart-mode .cover-btn::after,
+      #coverScreen.smart-mode .cover-bg::before{animation:none!important}
     }
   `;
   document.head.appendChild(style);
@@ -324,6 +395,16 @@
       fx=document.createElement('div');
       fx.id='coverSmartFx';
       fx.innerHTML='<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div>';
+      for(let i=0;i<14;i++){
+        const s=document.createElement('div');
+        s.className='spark';
+        s.style.left=(5+Math.random()*90)+'%';
+        s.style.bottom=(-5-Math.random()*15)+'%';
+        s.style.animationDuration=(7+Math.random()*10)+'s';
+        s.style.animationDelay=(-Math.random()*12)+'s';
+        s.style.width=s.style.height=(1+Math.random()*2)+'px';
+        fx.appendChild(s);
+      }
       screen.insertBefore(fx, screen.firstChild);
     }
 
@@ -352,6 +433,24 @@
       const heroSec=screen.querySelector('.cover-hero');
       if(inner && heroSec) inner.insertBefore(pill, heroSec);
       else if(inner) inner.prepend(pill);
+    }
+
+    let cta=document.getElementById('coverSmartCta');
+    if(!cta){
+      cta=document.createElement('div');
+      cta.id='coverSmartCta';
+      cta.innerHTML=
+        '<button type="button" class="cta-main" id="coverSmartCtaMain"><span>Apri l\u2019agenda</span><i class="fa-solid fa-arrow-right"></i></button>'+
+        '<button type="button" class="cta-year" id="coverSmartCtaYear">Vista annuale</button>';
+      screen.appendChild(cta);
+      cta.querySelector('#coverSmartCtaMain').addEventListener('click',e=>{
+        e.stopPropagation();
+        if(typeof enterDashboard==='function') enterDashboard('month');
+      });
+      cta.querySelector('#coverSmartCtaYear').addEventListener('click',e=>{
+        e.stopPropagation();
+        if(typeof enterDashboard==='function') enterDashboard('year');
+      });
     }
 
     applySmartMode(isSmart());
