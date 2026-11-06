@@ -92,16 +92,25 @@
     let fx=document.getElementById('coverSmartFx');
     if(!fx){fx=document.createElement('div');fx.id='coverSmartFx';fx.innerHTML='<div class="aurora"></div><div class="beam"></div><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div><div class="orb o4"></div>';for(let i=0;i<18;i++){const s=document.createElement('div');s.className='spark';s.style.left=(3+Math.random()*94)+'%';s.style.bottom=(-8-Math.random()*20)+'%';s.style.animationDuration=(6+Math.random()*9)+'s';s.style.animationDelay=(-Math.random()*14)+'s';s.style.width=s.style.height=(2+Math.random()*2.5)+'px';fx.appendChild(s);}screen.insertBefore(fx,screen.firstChild);}
     let toggle=document.getElementById('coverSmartToggle');
-    if(!toggle){toggle=document.createElement('button');toggle.id='coverSmartToggle';toggle.type='button';toggle.innerHTML='<span class="dot"></span><span class="lbl">Cover Smart</span><span class="ver">v22</span>';toggle.title='Attiva/disattiva Cover Smart';screen.appendChild(toggle);toggle.addEventListener('click',e=>{e.stopPropagation();const next=!isSmart();setSmart(next);applySmartMode(next);});}
+    if(!toggle){toggle=document.createElement('button');toggle.id='coverSmartToggle';toggle.type='button';toggle.innerHTML='<span class="dot"></span><span class="lbl">Cover Smart</span>';toggle.title='Attiva/disattiva Cover Smart';screen.appendChild(toggle);toggle.addEventListener('click',e=>{e.stopPropagation();const next=!isSmart();setSmart(next);applySmartMode(next);});}
     let pill=document.getElementById('coverSmartClockPill');
     if(!pill){pill=document.createElement('div');pill.id='coverSmartClockPill';pill.innerHTML='<span class="time">--:--:--</span><span class="sep"></span><span class="label">Live</span>';const inner=screen.querySelector('.cover-inner'),heroSec=screen.querySelector('.cover-hero');if(inner&&heroSec)inner.insertBefore(pill,heroSec);else if(inner)inner.prepend(pill);}
     let cta=document.getElementById('coverSmartCta');
     if(!cta){cta=document.createElement('div');cta.id='coverSmartCta';cta.innerHTML='<button type="button" class="cta-main" id="coverSmartCtaMain"><span>Apri l\u2019agenda</span><i class="fa-solid fa-arrow-right"></i></button><button type="button" class="cta-year" id="coverSmartCtaYear">Vista annuale</button>';screen.appendChild(cta);cta.querySelector('#coverSmartCtaMain').addEventListener('click',e=>{e.stopPropagation();if(typeof enterDashboard==='function')enterDashboard('month');});cta.querySelector('#coverSmartCtaYear').addEventListener('click',e=>{e.stopPropagation();if(typeof enterDashboard==='function')enterDashboard('year');});}
+    const header=screen.querySelector('.cover-toprow');
+    let bar=header.querySelector('.cover-tools');
+    if(!bar){bar=document.createElement('div');bar.className='cover-tools';header.prepend(bar);bar.append(pill,toggle);
+      const dial=document.createElement('span');dial.className='live-dial';dial.setAttribute('aria-hidden','true');dial.innerHTML='<i class="hh"></i><i class="mm"></i><i class="ss"></i>';pill.prepend(dial);
+      const mode=document.createElement('button');mode.type='button';pill.append(mode);
+      function format(analog){pill.classList.toggle('analog',analog);mode.textContent=analog?'Digitale':'Analogico';mode.setAttribute('aria-label','Passa al formato '+mode.textContent.toLowerCase());}
+      format(localStorage.getItem('ore-clock-format')==='analog');
+      mode.onclick=()=>{const a=!pill.classList.contains('analog');format(a);localStorage.setItem('ore-clock-format',a?'analog':'digital')};
+    }
     applySmartMode(isSmart());startClock();
   }
   function applySmartMode(on){const screen=document.getElementById('coverScreen'),toggle=document.getElementById('coverSmartToggle');if(screen)screen.classList.toggle('smart-mode',!!on);if(toggle){toggle.classList.toggle('on',!!on);const lbl=toggle.querySelector('.lbl');if(lbl)lbl.textContent=on?'Smart ON':'Cover Smart';}}
   let clockTimer=null;
-  function startClock(){const tick=()=>{const el=document.querySelector('#coverSmartClockPill .time');if(!el)return;el.textContent=new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});};tick();if(clockTimer)clearInterval(clockTimer);clockTimer=setInterval(tick,1000);}
+  function startClock(){const tick=()=>{const el=document.querySelector('#coverSmartClockPill .time');if(!el)return;const now=new Date(),p=el.parentElement,m=now.getMinutes()+now.getSeconds()/60;p.style.setProperty('--hh',((now.getHours()%12+m/60)*30)+'deg');p.style.setProperty('--mm',(m*6)+'deg');p.style.setProperty('--ss',(now.getSeconds()*6)+'deg');el.textContent=now.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});};tick();if(clockTimer)clearInterval(clockTimer);clockTimer=setInterval(tick,1000);}
   const boot=()=>{if(document.getElementById('coverScreen'))ensureSmartUI();else setTimeout(boot,120);};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
   if(typeof showCover==='function'){const _s=showCover;showCover=function(){const r=_s.apply(this,arguments);ensureSmartUI();return r;};}
@@ -137,8 +146,16 @@
 const css=document.createElement('style');css.textContent=`
 .register-scroll,.leave-scroll{overflow:auto!important;max-height:clamp(155px,35dvh,360px);scrollbar-gutter:stable}
 .leave-scroll{max-height:clamp(130px,29dvh,280px)}
-.register-scroll th,.leave-scroll th{position:sticky!important;top:0;z-index:2;background:var(--card,#212530)!important;background-color:color-mix(in srgb,var(--card,#212530) 85%,#282b32)!important}
+.register-scroll th,.leave-scroll th{position:sticky!important;top:0;z-index:2;background:#202938!important;color:#f6f8fc!important;opacity:1!important}
 html[data-graphic-style=ios] #monthFilter,html[data-graphic-style=ios] #monthFilter option{color:#fff!important;background:#202d40!important;color-scheme:dark;border-color:#8397b1!important}
+#coverScreen .cover-toprow{flex-wrap:wrap}
+.cover-tools{flex:0 0 100%;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+#coverScreen .cover-tools #coverSmartToggle{position:static!important;inset:auto!important}
+#coverScreen .cover-tools #coverSmartClockPill{display:inline-flex!important;order:0!important;width:auto!important;max-width:100%;padding:7px 10px;margin:0!important;gap:8px;flex-wrap:wrap;background:#102537}
+#coverSmartClockPill button{border:1px solid #607889;color:white;background:#263c4a;border-radius:16px;padding:6px 9px;cursor:pointer}
+.live-dial{display:none;position:relative;width:42px;height:42px;border-radius:50%;border:2px solid #71e6eb;background:radial-gradient(circle,#112737 64%,transparent 65%),repeating-conic-gradient(#ace0eb 0deg 2deg,#112737 2deg 30deg)}
+.analog .live-dial{display:block}.analog .time,.analog .sep{display:none}
+.live-dial i{position:absolute;bottom:50%;left:50%;width:2px;background:white;transform-origin:bottom center}.live-dial .hh{height:24%;transform:rotate(var(--hh))}.live-dial .mm{height:37%;transform:rotate(var(--mm))}.live-dial .ss{height:41%;width:1px;background:#ffb44d;transform:rotate(var(--ss))}
 #cvAgenda{margin-top:16px;padding:14px;border-radius:14px;background:var(--card,#172130);border:1px solid var(--card-border);position:relative;z-index:1}
 #cvAgenda h3{margin:0 0 10px;font-size:1rem}#cvAgenda .agenda-day{min-height:27px;height:29px;padding:2px;font-size:12px}#cvAgenda .agenda-calendar{gap:3px}
 #coverScreen.smart-mode #coverSmartCta{display:none!important}
@@ -147,7 +164,7 @@ html[data-graphic-style=ios] #monthFilter,html[data-graphic-style=ios] #monthFil
 @media(min-width:901px){#coverScreen.smart-mode .cover-inner{grid-template-areas:"header header" "hero stats" "footer footer";align-content:center}#coverScreen.smart-mode .cover-toprow{grid-area:header}#coverScreen.smart-mode .cover-hero{grid-area:hero}#coverScreen.smart-mode .cover-month-card{grid-area:stats}#coverScreen.smart-mode .cover-foot{grid-area:footer}}
 @media(max-width:900px){#coverScreen.smart-mode .cover-inner{padding-bottom:max(22px,env(safe-area-inset-bottom))!important}#coverScreen.smart-mode .cover-toprow{align-items:center}#coverScreen.smart-mode .cover-month-card{min-width:0}}
 `;document.head.append(css);
-const hero=document.querySelector('#coverScreen .cover-hero'), clock=document.querySelector('#coverSmartClockPill');if(clock)hero.prepend(clock);
+const hero=document.querySelector('#coverScreen .cover-hero');
 const box=document.createElement('section');box.id='cvAgenda';hero.append(box);
 function paint(){const now=new Date(),y=now.getFullYear(),m=now.getMonth(),rows=DATA[y]?.months?.[m]?.entries||[],start=(new Date(y,m,1).getDay()+6)%7;
 let cells='<span></span>'.repeat(start);
