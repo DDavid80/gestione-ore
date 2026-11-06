@@ -42,14 +42,19 @@ dialog.memo-dialog{padding:0;border:1px solid #38424e;border-radius:16px;width:m
 dialog.memo-dialog[open]{display:flex;flex-direction:column}
 .memo-dialog .memo-heading{padding:20px 22px 14px}.memo-dialog .memo-heading small{font:600 11px/1.4 system-ui;letter-spacing:.1em;color:#acb8c7}.memo-dialog .memo-heading h2{margin:4px 0 0;font:650 20px/1.3 system-ui}
 .memo-dialog .memo-fields{padding:0 22px;min-height:0;overflow:auto}.memo-dialog .memo-fields label{font-size:13px;color:#c4ccd5}.memo-dialog .memo-fields textarea{appearance:none;display:block;background:#12161c;color:#f4f6f8;border:1px solid #414c59;border-radius:9px;padding:11px 12px;font:400 16px/1.45 system-ui;resize:vertical;min-height:80px;margin:6px 0 16px}.memo-dialog textarea:focus-visible{outline:2px solid #85baff;outline-offset:-1px}
-.memo-dialog .memo-actions{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid #343c46;padding:12px 22px}.memo-actions button{width:auto;margin:0;padding:9px 16px;min-height:40px;border-radius:8px;font:600 14px system-ui;cursor:pointer}.memo-cancel{background:transparent;color:#d5dee8;border:1px solid #46525f}.memo-save{background:#a3caff;color:#10253c;border:1px solid transparent}
+.memo-dialog .memo-row{position:relative}.memo-dialog .memo-row label{display:block}.memo-dialog .memo-row.has-delete label{min-height:28px;padding-right:36px;display:flex;align-items:center}.memo-dialog .memo-delete{position:absolute;top:0;right:0;width:30px;height:28px;margin:0;padding:0;border:0;border-radius:5px;background:transparent;color:#c4ccd5;font:20px/1 system-ui;cursor:pointer}.memo-dialog .memo-delete:is(:hover,:focus-visible){background:#42272c;color:#ffb4bd}.memo-dialog .memo-actions{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid #343c46;padding:12px 22px}.memo-actions button{width:auto;margin:0;padding:9px 16px;min-height:40px;border-radius:8px;font:600 14px system-ui;cursor:pointer}.memo-cancel{background:transparent;color:#d5dee8;border:1px solid #46525f}.memo-save{background:#a3caff;color:#10253c;border:1px solid transparent}
 </style><div class="memo-heading"><small>AGENDA · NOTE</small><h2>${new Date(iso+'T12:00:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</h2></div><div class="memo-fields"></div><div class="memo-actions"><button type="button" class="memo-cancel">Annulla</button><button type="button" class="memo-save">Salva</button></div>`;
  const fields=dialog.querySelector('.memo-fields'),changes=[];
- function field(label,value,commit){const l=document.createElement('label'),t=document.createElement('textarea');l.textContent=label;t.value=value;l.append(t);fields.append(l);changes.push(()=>commit(t.value.trim()));}
+ function field(label,value,commit){
+ const row=document.createElement('div'),l=document.createElement('label'),t=document.createElement('textarea');
+ row.className='memo-row';t.id='memo-field-'+changes.length;l.htmlFor=t.id;l.textContent=label;t.value=value;row.append(l,t);fields.append(row);
+ let deleted=false;changes.push(()=>commit(deleted?'':t.value.trim()));
+ if(value){row.classList.add('has-delete');const x=document.createElement('button');x.type='button';x.className='memo-delete';x.textContent='×';x.title='Elimina nota';x.setAttribute('aria-label','Elimina '+label.toLowerCase()+' '+(changes.length));row.append(x);x.onclick=()=>{deleted=true;const next=row.nextElementSibling;row.remove();next?.querySelector('textarea')?.focus()};}
+ }
  for(const e of y.months[m].entries.filter(e=>e.date===iso&&e.note?.trim()))field('Nota del registro',e.note,v=>e.note=v);
  for(const n of y.notes.filter(n=>n.date===iso&&n.text?.trim()))field('Nota',n.text,v=>{if(v)n.text=v;else y.notes=y.notes.filter(item=>item!==n)});
  field('Aggiungi nota o promemoria','',v=>{if(v)y.notes.push({id:Date.now()+Math.random(),date:iso,month:String(m),text:v})});
- const [cancel,save]=dialog.querySelectorAll('button');cancel.onclick=()=>dialog.close();save.onclick=()=>{changes.forEach(f=>f());saveData();renderAll();dialog.close()};
+ const [cancel,save]=dialog.querySelectorAll('.memo-actions button');cancel.onclick=()=>dialog.close();save.onclick=()=>{changes.forEach(f=>f());saveData();renderAll();dialog.close()};
  document.body.append(dialog);dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.showModal();
 }
 function renderAgendaHome(){
