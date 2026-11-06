@@ -37,7 +37,13 @@ function dayMemoButton(iso){
 function openDayMemo(iso){
  const y=ensureYear(Number(iso.slice(0,4))),m=Number(iso.slice(5,7))-1,dialog=document.createElement('dialog');
  dialog.className='rep-dialog memo-dialog';dialog.setAttribute('aria-label','Note del giorno');
- dialog.innerHTML='<h2>Note · '+formatDateIT(iso)+'</h2><div class="memo-fields"></div><button class="btn">Annulla</button> <button class="btn">Salva</button>';
+ dialog.innerHTML=`<style>
+dialog.memo-dialog{padding:0;border:1px solid #38424e;border-radius:16px;width:min(440px,calc(100vw - 28px));max-height:80dvh;color:#eef2f7;background:#191e25;box-shadow:0 18px 65px #0006}
+dialog.memo-dialog[open]{display:flex;flex-direction:column}
+.memo-dialog .memo-heading{padding:20px 22px 14px}.memo-dialog .memo-heading small{font:600 11px/1.4 system-ui;letter-spacing:.1em;color:#acb8c7}.memo-dialog .memo-heading h2{margin:4px 0 0;font:650 20px/1.3 system-ui}
+.memo-dialog .memo-fields{padding:0 22px;min-height:0;overflow:auto}.memo-dialog .memo-fields label{font-size:13px;color:#c4ccd5}.memo-dialog .memo-fields textarea{appearance:none;display:block;background:#12161c;color:#f4f6f8;border:1px solid #414c59;border-radius:9px;padding:11px 12px;font:400 16px/1.45 system-ui;resize:vertical;min-height:80px;margin:6px 0 16px}.memo-dialog textarea:focus-visible{outline:2px solid #85baff;outline-offset:-1px}
+.memo-dialog .memo-actions{display:flex;justify-content:flex-end;gap:8px;border-top:1px solid #343c46;padding:12px 22px}.memo-actions button{width:auto;margin:0;padding:9px 16px;min-height:40px;border-radius:8px;font:600 14px system-ui;cursor:pointer}.memo-cancel{background:transparent;color:#d5dee8;border:1px solid #46525f}.memo-save{background:#a3caff;color:#10253c;border:1px solid transparent}
+</style><div class="memo-heading"><small>AGENDA · NOTE</small><h2>${new Date(iso+'T12:00:00').toLocaleDateString('it-IT',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</h2></div><div class="memo-fields"></div><div class="memo-actions"><button type="button" class="memo-cancel">Annulla</button><button type="button" class="memo-save">Salva</button></div>`;
  const fields=dialog.querySelector('.memo-fields'),changes=[];
  function field(label,value,commit){const l=document.createElement('label'),t=document.createElement('textarea');l.textContent=label;t.value=value;l.append(t);fields.append(l);changes.push(()=>commit(t.value.trim()));}
  for(const e of y.months[m].entries.filter(e=>e.date===iso&&e.note?.trim()))field('Nota del registro',e.note,v=>e.note=v);
