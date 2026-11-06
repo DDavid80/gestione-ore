@@ -132,3 +132,28 @@
   const boot=()=>{if(apply())return;if(tries<25)setTimeout(boot,400);else console.warn('[prefill] fallito dopo',tries);};
   setTimeout(boot,500); setTimeout(boot,1500); setTimeout(boot,3000);
 })();
+
+(()=>{
+const css=document.createElement('style');css.textContent=`
+.register-scroll,.leave-scroll{overflow:auto!important;max-height:clamp(155px,35dvh,360px);scrollbar-gutter:stable}
+.leave-scroll{max-height:clamp(130px,29dvh,280px)}
+.register-scroll th,.leave-scroll th{position:sticky!important;top:0;z-index:2;background:var(--card,#212530)!important;background-color:color-mix(in srgb,var(--card,#212530) 85%,#282b32)!important}
+html[data-graphic-style=ios] #monthFilter,html[data-graphic-style=ios] #monthFilter option{color:#fff!important;background:#202d40!important;color-scheme:dark;border-color:#8397b1!important}
+#cvAgenda{margin-top:16px;padding:14px;border-radius:14px;background:var(--card,#172130);border:1px solid var(--card-border);position:relative;z-index:1}
+#cvAgenda h3{margin:0 0 10px;font-size:1rem}#cvAgenda .agenda-day{min-height:27px;height:29px;padding:2px;font-size:12px}#cvAgenda .agenda-calendar{gap:3px}
+#coverScreen.smart-mode #coverSmartCta{display:none!important}
+#coverScreen.smart-mode .cover-month-card>.cover-btn,#coverScreen.smart-mode .cover-month-card>.cover-year-btn{display:flex!important;width:100%;justify-content:center}
+#coverScreen.smart-mode .cover-month-card{overflow:hidden;box-sizing:border-box}
+@media(min-width:901px){#coverScreen.smart-mode .cover-inner{grid-template-areas:"header header" "hero stats" "footer footer";align-content:center}#coverScreen.smart-mode .cover-toprow{grid-area:header}#coverScreen.smart-mode .cover-hero{grid-area:hero}#coverScreen.smart-mode .cover-month-card{grid-area:stats}#coverScreen.smart-mode .cover-foot{grid-area:footer}}
+@media(max-width:900px){#coverScreen.smart-mode .cover-inner{padding-bottom:max(22px,env(safe-area-inset-bottom))!important}#coverScreen.smart-mode .cover-toprow{align-items:center}#coverScreen.smart-mode .cover-month-card{min-width:0}}
+`;document.head.append(css);
+const hero=document.querySelector('#coverScreen .cover-hero'), clock=document.querySelector('#coverSmartClockPill');if(clock)hero.prepend(clock);
+const box=document.createElement('section');box.id='cvAgenda';hero.append(box);
+function paint(){const now=new Date(),y=now.getFullYear(),m=now.getMonth(),rows=DATA[y]?.months?.[m]?.entries||[],start=(new Date(y,m,1).getDay()+6)%7;
+let cells='<span></span>'.repeat(start);
+for(let d=1;d<=new Date(y,m+1,0).getDate();d++){const iso=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),e=rows.find(x=>x.date===iso)||{};
+cells+='<button type="button" data-day="'+iso+'" class="agenda-day '+[e.lavorato?'worked':'',e.ferie?'ferie':'',+e.ore?'has-hours':'',agendaIsOnCall(iso)?'oncall':'',d===now.getDate()?'today':''].join(' ')+'"><span class="n">'+d+'</span><span class="mark"></span></button>'}
+box.innerHTML='<h3>Agenda · '+now.toLocaleDateString('it-IT',{month:'long',year:'numeric'})+'</h3><div class="agenda-weekdays">'+['L','M','M','G','V','S','D'].map(x=>'<span>'+x+'</span>').join('')+'</div><div class="agenda-calendar">'+cells+'</div>'}
+box.onclick=e=>{const day=e.target.closest('[data-day]')?.dataset.day;if(!day)return;enterDashboard('month','secOre');const m=Number(day.slice(5,7))-1,i=DATA[day.slice(0,4)].months[m].entries.findIndex(x=>x.date===day);if(i>=0)openAgendaDay(m,i)};
+paint();new MutationObserver(paint).observe(document.getElementById('coverStats'),{childList:true});
+})();

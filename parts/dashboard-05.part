@@ -3,12 +3,12 @@ toFixed(2)}</span></div>
           <i class="fa-solid fa-chevron-down"></i>
         </div>
         <div class="month-body" id="mbody-${mIdx}">
-          <div class="ch-wrap small"><canvas id="mchart-${mIdx}"></canvas></div>
+          <div class="ch-wrap small"><canvas id="mchart-${mIdx}"></canvas></div><div class="register-scroll" tabindex="0" aria-label="Giorni del mese">
           <table>
             <thead><tr><th>Data</th><th>Lavorato</th><th>Ferie</th><th>Ore</th><th>Rep.</th><th>Recup.</th><th>Nota</th><th></th></tr></thead>
             <tbody>${rows}</tbody>
           </table>
-          <button class="add-row" onclick="addRow(${mIdx})"><i class="fa-solid fa-plus"></i> Aggiungi riga extra</button>
+          </div><button class="add-row" onclick="addRow(${mIdx})"><i class="fa-solid fa-plus"></i> Aggiungi riga extra</button>
           <div class="month-tot" id="mtot-${mIdx}">
             <span>Totale: <span class="ore">${t.ore.toFixed(2)} h</span></span>
             <span class="r">Rep. ${t.rep.toFixed(2)} h</span>

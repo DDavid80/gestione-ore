@@ -79,7 +79,7 @@ ilità</span><b>Apri →</b></button></div><button class="agenda-month-btn" oncl
       </table>
       </div>
       <div class="sub-note" style="margin-top:16px;margin-bottom:6px;">Usufruito per mese (compila il mese che ti interessa):</div>
-      <div style="overflow-x:auto;">
+      <div class="leave-scroll" tabindex="0" aria-label="Ferie per mese">
       <table class="ferie-table">
         <thead><tr><th>Mese</th><th>Ferie Giorni</th><th>Per **</th><th>Semifestività</th><th>Rec/HH DIR.VI</th></tr></thead>
         <tbody id="ferieMonthRows"></tbody>
