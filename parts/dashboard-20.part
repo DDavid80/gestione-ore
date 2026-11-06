@@ -57,7 +57,7 @@ function renderAgendaHome(){
   document.getElementById('agendaSubtitle').textContent=`${worked} giorni segnati · ${stat.ore.toFixed(2)} ore straordinarie · ${notes} note presenti`+(agendaFerieCount(mIdx)?` · ${agendaFerieCount(mIdx)} ${agendaFerieCount(mIdx)===1?'giorno':'giorni'} di ferie`:'');
   const status=document.getElementById('agendaStatus');status.textContent=month.closed?'MESE CHIUSO':'MESE APERTO';status.classList.toggle('closed',!!month.closed);
   const select=document.getElementById('agendaMonthSelect');if(select){if(select.options.length!==13){select.innerHTML='<option value="">Mese in primo piano</option>'+MONTHS.map((n,i)=>`<option value="${i}">${n.charAt(0)+n.slice(1).toLowerCase()}</option>`).join('');}select.value=currentMonthFilter===''?'':String(mIdx);}
-  const kpis=[['fa-business-time',worked+' gg','Giorni lavorati','var(--success)'],['fa-clock',stat.ore.toFixed(2)+' h','Ore straordinarie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','var(--warning)'],['fa-umbrella-beach',agendaFerieCount(mIdx)+' gg','Ferie del mese','#efadff'],['fa-note-sticky',notes,'Note presenti','var(--purple)']];
+  const kpis=[['fa-business-time',worked+' gg','Giorni lavorati','var(--success)'],['fa-clock',stat.ore.toFixed(2)+' h','Ore straordinarie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','var(--warning)'],['fa-umbrella-beach',agendaFerieCount(mIdx)+' gg','Ferie del mese','var(--txt)'],['fa-note-sticky',notes,'Note presenti','var(--purple)']];
   document.getElementById('agendaKpis').innerHTML=kpis.map(k=>`<div class="agenda-kpi" style="--k:${k[3]}"><strong>${k[1]}</strong><span>${k[2]}</span></div>`).join('');
   const offset=(new Date(Number(currentYear),mIdx,1).getDay()+6)%7,days=daysInMonth(Number(currentYear),mIdx),byDate=new Map(entries.map((e,i)=>[e.date,{e,i}]));
   let html=Array(offset).fill('<button class="agenda-day empty" tabindex="-1"></button>').join('');
@@ -67,7 +67,7 @@ function renderAgendaHome(){
     const ocNow=agendaIsOnCall(iso);
     const cls=['agenda-day'];if(wi.className.includes('weekend'))cls.push('weekend');if(wi.className.includes('holiday'))cls.push('holiday');if(e.lavorato)cls.push('worked');if(e.ferie)cls.push('ferie');if((Number(e.ore)||0)>0)cls.push('has-hours');if(e.rep)cls.push('rep');if(ocNow){cls.push('oncall');if(!agendaIsOnCall(addDaysISO(iso,-1)))cls.push('oc-start');if(!agendaIsOnCall(addDaysISO(iso,1)))cls.push('oc-end');}if(iso===today)cls.push('today');
     const idx=item?item.i:-1;
-    html+=`<div class="memo-day"><button class="${cls.join(' ')}" ${idx>=0?`onclick="openAgendaDay(${mIdx},${idx})"`:''} title="${wi.badge?wi.badge.replace(/<[^>]*>/g,''):iso}"><span class="n">${d}</span>${ocNow&&!agendaIsOnCall(addDaysISO(iso,-1))?'<i class="fa-solid fa-phone-volume oc"></i>':''}<span class="mark"></span></button>${dayMemoButton(iso)}</div>`;
+    html+=`<div class="memo-day"><button class="${cls.join(' ')}" ${idx>=0?`onclick="openAgendaDay(${mIdx},${idx})"`:''} title="${wi.badge?wi.badge.replace(/<[^>]*>/g,''):iso}"><span class="n">${d}</span>${ocNow?'<i class="fa-solid fa-phone-volume oc"></i>':''}<span class="mark"></span></button>${dayMemoButton(iso)}</div>`;
   }
   document.getElementById('agendaCalendar').innerHTML=html;
   renderAgendaOncall(mIdx);
