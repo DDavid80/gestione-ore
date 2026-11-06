@@ -29,6 +29,23 @@ function exportRepIcs(){
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
 }
 function agendaFerieCount(mIdx){const y=ensureYear(currentYear),m=y.months[mIdx];return ((m&&m.entries)||[]).filter(e=>e.ferie).length;}
+function dayMemoButton(iso){
+ const y=DATA[iso.slice(0,4)],m=Number(iso.slice(5,7))-1;
+ const present=y?.notes?.some(n=>n.date===iso&&n.text?.trim())||y?.months?.[m]?.entries?.some(e=>e.date===iso&&e.note?.trim());
+ return `<button type="button" class="day-memo ${present?'present':''}" aria-label="${present?'Leggi note':'Aggiungi nota'} ${iso}" title="${present?'Leggi note':'Aggiungi nota'}" onclick="openDayMemo('${iso}')">${present?'✎':'+'}</button>`;
+}
+function openDayMemo(iso){
+ const y=ensureYear(Number(iso.slice(0,4))),m=Number(iso.slice(5,7))-1,dialog=document.createElement('dialog');
+ dialog.className='rep-dialog memo-dialog';dialog.setAttribute('aria-label','Note del giorno');
+ dialog.innerHTML='<h2>Note · '+formatDateIT(iso)+'</h2><div class="memo-fields"></div><button class="btn">Annulla</button> <button class="btn">Salva</button>';
+ const fields=dialog.querySelector('.memo-fields'),changes=[];
+ function field(label,value,commit){const l=document.createElement('label'),t=document.createElement('textarea');l.textContent=label;t.value=value;l.append(t);fields.append(l);changes.push(()=>commit(t.value.trim()));}
+ for(const e of y.months[m].entries.filter(e=>e.date===iso&&e.note?.trim()))field('Nota del registro',e.note,v=>e.note=v);
+ for(const n of y.notes.filter(n=>n.date===iso&&n.text?.trim()))field('Nota',n.text,v=>{if(v)n.text=v;else y.notes=y.notes.filter(item=>item!==n)});
+ field('Aggiungi nota o promemoria','',v=>{if(v)y.notes.push({id:Date.now()+Math.random(),date:iso,month:String(m),text:v})});
+ const [cancel,save]=dialog.querySelectorAll('button');cancel.onclick=()=>dialog.close();save.onclick=()=>{changes.forEach(f=>f());saveData();renderAll();dialog.close()};
+ document.body.append(dialog);dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.showModal();
+}
 function renderAgendaHome(){
   const host=document.getElementById('agendaHome');if(!host||!currentYear)return;
   const y=ensureYear(currentYear),mIdx=agendaMonthIndex(),month=y.months[mIdx],entries=month.entries||[],title=MONTHS[mIdx].charAt(0)+MONTHS[mIdx].slice(1).toLowerCase();
@@ -40,7 +57,7 @@ function renderAgendaHome(){
   document.getElementById('agendaSubtitle').textContent=`${worked} giorni segnati · ${stat.ore.toFixed(2)} ore straordinarie · ${notes} note presenti`+(agendaFerieCount(mIdx)?` · ${agendaFerieCount(mIdx)} ${agendaFerieCount(mIdx)===1?'giorno':'giorni'} di ferie`:'');
   const status=document.getElementById('agendaStatus');status.textContent=month.closed?'MESE CHIUSO':'MESE APERTO';status.classList.toggle('closed',!!month.closed);
   const select=document.getElementById('agendaMonthSelect');if(select){if(select.options.length!==13){select.innerHTML='<option value="">Mese in primo piano</option>'+MONTHS.map((n,i)=>`<option value="${i}">${n.charAt(0)+n.slice(1).toLowerCase()}</option>`).join('');}select.value=currentMonthFilter===''?'':String(mIdx);}
-  const kpis=[['fa-business-time',worked+' gg','Giorni lavorati','var(--success)'],['fa-clock',stat.ore.toFixed(2)+' h','Ore straordinarie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','var(--warning)'],['fa-note-sticky',notes,'Note presenti','var(--purple)']];
+  const kpis=[['fa-business-time',worked+' gg','Giorni lavorati','var(--success)'],['fa-clock',stat.ore.toFixed(2)+' h','Ore straordinarie','var(--acc)'],['fa-ticket','€'+ticketEuro.toFixed(2),'Ticket del mese','var(--warning)'],['fa-umbrella-beach',agendaFerieCount(mIdx)+' gg','Ferie del mese','#efadff'],['fa-note-sticky',notes,'Note presenti','var(--purple)']];
   document.getElementById('agendaKpis').innerHTML=kpis.map(k=>`<div class="agenda-kpi" style="--k:${k[3]}"><strong>${k[1]}</strong><span>${k[2]}</span></div>`).join('');
   const offset=(new Date(Number(currentYear),mIdx,1).getDay()+6)%7,days=daysInMonth(Number(currentYear),mIdx),byDate=new Map(entries.map((e,i)=>[e.date,{e,i}]));
   let html=Array(offset).fill('<button class="agenda-day empty" tabindex="-1"></button>').join('');
@@ -50,7 +67,7 @@ function renderAgendaHome(){
     const ocNow=agendaIsOnCall(iso);
     const cls=['agenda-day'];if(wi.className.includes('weekend'))cls.push('weekend');if(wi.className.includes('holiday'))cls.push('holiday');if(e.lavorato)cls.push('worked');if(e.ferie)cls.push('ferie');if((Number(e.ore)||0)>0)cls.push('has-hours');if(e.rep)cls.push('rep');if(ocNow){cls.push('oncall');if(!agendaIsOnCall(addDaysISO(iso,-1)))cls.push('oc-start');if(!agendaIsOnCall(addDaysISO(iso,1)))cls.push('oc-end');}if(iso===today)cls.push('today');
     const idx=item?item.i:-1;
-    html+=`<button class="${cls.join(' ')}" ${idx>=0?`onclick="openAgendaDay(${mIdx},${idx})"`:''} title="${wi.badge?wi.badge.replace(/<[^>]*>/g,''):iso}"><span class="n">${d}</span>${ocNow&&!agendaIsOnCall(addDaysISO(iso,-1))?'<i class="fa-solid fa-phone-volume oc"></i>':''}<span class="mark"></span></button>`;
+    html+=`<div class="memo-day"><button class="${cls.join(' ')}" ${idx>=0?`onclick="openAgendaDay(${mIdx},${idx})"`:''} title="${wi.badge?wi.badge.replace(/<[^>]*>/g,''):iso}"><span class="n">${d}</span>${ocNow&&!agendaIsOnCall(addDaysISO(iso,-1))?'<i class="fa-solid fa-phone-volume oc"></i>':''}<span class="mark"></span></button>${dayMemoButton(iso)}</div>`;
   }
   document.getElementById('agendaCalendar').innerHTML=html;
   renderAgendaOncall(mIdx);

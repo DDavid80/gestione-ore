@@ -270,7 +270,7 @@ function renderNotes(){
   list.innerHTML = notes.map(n=>`
     <div class="note-item">
       <input type="date" value="${n.date||''}" onchange="updateNoteField(${n.id},'date',this.value)">
-      <textarea placeholder="Scrivi una nota..." onchange="updateNoteField(${n.id},'text',this.value)">${(n.text||'')}</textarea>
+      <textarea placeholder="Scrivi una nota..." onchange="updateNoteField(${n.id},'text',this.value)">${String(n.text||'').replace(/&/g,'&amp;').replace(/</g,'&lt;')}</textarea>
       <button class="row-del" onclick="deleteNote(${n.id})"><i class="fa-solid fa-xmark"></i></button>
     </div>`).join('');
 }

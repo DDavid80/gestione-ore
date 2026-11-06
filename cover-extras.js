@@ -169,7 +169,7 @@ const box=document.createElement('section');box.id='cvAgenda';hero.append(box);
 function paint(){const now=new Date(),y=now.getFullYear(),m=now.getMonth(),rows=DATA[y]?.months?.[m]?.entries||[],start=(new Date(y,m,1).getDay()+6)%7;
 let cells='<span></span>'.repeat(start);
 for(let d=1;d<=new Date(y,m+1,0).getDate();d++){const iso=y+'-'+String(m+1).padStart(2,'0')+'-'+String(d).padStart(2,'0'),e=rows.find(x=>x.date===iso)||{};
-cells+='<button type="button" data-day="'+iso+'" class="agenda-day '+[e.lavorato?'worked':'',e.ferie?'ferie':'',+e.ore?'has-hours':'',agendaIsOnCall(iso)?'oncall':'',d===now.getDate()?'today':''].join(' ')+'"><span class="n">'+d+'</span><span class="mark"></span></button>'}
+cells+='<div class="memo-day"><button type="button" data-day="'+iso+'" class="agenda-day '+[e.lavorato?'worked':'',e.ferie?'ferie':'',+e.ore?'has-hours':'',agendaIsOnCall(iso)?'oncall':'',d===now.getDate()?'today':''].join(' ')+'"><span class="n">'+d+'</span><span class="mark"></span></button>'+dayMemoButton(iso)+'</div>'}
 box.innerHTML='<h3>Agenda · '+now.toLocaleDateString('it-IT',{month:'long',year:'numeric'})+'</h3><div class="agenda-weekdays">'+['L','M','M','G','V','S','D'].map(x=>'<span>'+x+'</span>').join('')+'</div><div class="agenda-calendar">'+cells+'</div>'}
 box.onclick=e=>{const day=e.target.closest('[data-day]')?.dataset.day;if(!day)return;enterDashboard('month','secOre');const m=Number(day.slice(5,7))-1,i=DATA[day.slice(0,4)].months[m].entries.findIndex(x=>x.date===day);if(i>=0)openAgendaDay(m,i)};
 paint();new MutationObserver(paint).observe(document.getElementById('coverStats'),{childList:true});
