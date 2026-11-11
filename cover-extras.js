@@ -123,7 +123,12 @@
 const css=document.createElement('style');css.textContent=`
 .register-scroll,.leave-scroll{overflow:auto!important;max-height:clamp(155px,35dvh,360px);scrollbar-gutter:stable}
 .leave-scroll{max-height:clamp(130px,29dvh,280px)}
-.register-scroll th,.leave-scroll th{position:sticky!important;top:0;z-index:2;background:#202938!important;color:#f6f8fc!important;opacity:1!important}
+.register-scroll,.leave-scroll{position:relative;isolation:isolate;background:var(--card)}
+.register-scroll table,.leave-scroll table{border-collapse:separate!important;border-spacing:0}
+.register-scroll thead,.leave-scroll thead{position:relative;z-index:20}
+.register-scroll th,.leave-scroll th{position:sticky!important;top:0;z-index:30!important;background:var(--side)!important;color:var(--txt)!important;opacity:1!important;box-shadow:0 2px 0 var(--line),0 9px 14px color-mix(in srgb,var(--bg) 44%,transparent)}
+.register-scroll td,.leave-scroll td{position:relative;z-index:1}
+.register-scroll tr:first-child td,.leave-scroll tr:first-child td{border-top:0}
 html[data-graphic-style=ios] #monthFilter,html[data-graphic-style=ios] #monthFilter option{color:#fff!important;background:#202d40!important;color-scheme:dark;border-color:#8397b1!important}
 #coverScreen .cover-toprow{flex-wrap:wrap}
 .cover-tools{flex:0 0 100%;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;min-width:0}
