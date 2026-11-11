@@ -60,8 +60,15 @@ function updateEntry(mIdx, eIdx, field, value){
   const month = ensureYear(currentYear).months[mIdx];
   const entry = month.entries[eIdx];
   if(field==='ore') entry.ore = parseFloat(value)||0;
-  else if(field==='rep') entry.rep = value;
-  else if(field==='recup') entry.recup = value;
+  else if(field==='rep' || field==='recup'){
+    entry[field]=!!value;
+    if(value){
+      const other=field==='rep'?'recup':'rep';
+      entry[other]=false;
+      const peer=document.getElementById('entry-'+other+'-'+mIdx+'-'+eIdx);
+      if(peer)peer.checked=false;
+    }
+  }
   else if(field==='lavorato'){ entry.lavorato = value; if(value) entry.ferie = false; }
   else if(field==='ferie'){ entry.ferie = value; if(value) entry.lavorato = false; }
   else if(field==='note') entry.note = value;
@@ -214,6 +221,7 @@ function renderYearList(){
 }
 
 function renderTotals(){
+  renderMonthSummary();
   const t = yearTotals();
   document.getElementById('yearHours').textContent = t.ore.toFixed(2);
   document.getElementById('yearToDate').textContent = t.oreToDate.toFixed(2);
@@ -371,8 +379,8 @@ function renderMonths(){
         <td class="chk"><input class="workday-check" type="checkbox" ${e.lavorato?'checked':''} ${monthClosed?'disabled':''} onchange="updateEntry(${mIdx},${eIdx},'lavorato',this.checked)" title="Giornata lavorata"></td>
         <td class="chk"><input class="ferie-check" type="checkbox" ${e.ferie?'checked':''} ${monthClosed?'disabled':''} onchange="updateEntry(${mIdx},${eIdx},'ferie',this.checked)" title="Giornata di ferie"></td>
         <td><input type="time" class="exit-time" value="${e.uscita||''}" title="Ora di uscita timbrata: calcola le ore extra dopo le ${EXIT_BASE}" onchange="setExitTime(${mIdx},${eIdx},this.value)"><input type="number" step="0.01" value="${e.ore}" onchange="updateEntry(${mIdx},${eIdx},'ore',this.value)"></td>
-        <td class="chk"><input type="checkbox" ${e.rep?'checked':''} onchange="updateEntry(${mIdx},${eIdx},'rep',this.checked)" title="Reperibilità"></td>
-        <td class="chk"><input type="checkbox" ${e.recup?'checked':''} onchange="updateEntry(${mIdx},${eIdx},'recup',this.checked)" title="Recupero"></td>
+        <td class="chk"><input id="entry-rep-${mIdx}-${eIdx}" type="checkbox" ${e.rep?'checked':''} onchange="updateEntry(${mIdx},${eIdx},'rep',this.checked)" title="Reperibilità"></td>
+        <td class="chk"><input id="entry-recup-${mIdx}-${eIdx}" type="checkbox" ${e.recup?'checked':''} onchange="updateEntry(${mIdx},${eIdx},'recup',this.checked)" title="Recupero"></td>
         <td><input type="text" value="${(e.note||'').replace(/"/g,'&quot;')}" placeholder="Nota..." onchange="updateEntry(${mIdx},${eIdx},'note',this.value)"></td>
         <td><button class="row-del" onclick="deleteRow(${mIdx},${eIdx})"><i class="fa-solid fa-xmark"></i></button></td>
       </tr>`;
