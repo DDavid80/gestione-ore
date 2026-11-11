@@ -117,30 +117,7 @@
   if(typeof initCover==='function'){const _i=initCover;initCover=function(){const r=_i.apply(this,arguments);ensureSmartUI();return r;};}
 })();
 
-// PREFILL: uscita 16:30 = 1.15h str.
-(()=>{
-  const TARGET='2026-11-04', USCITA='16:30', ORE=1.15, NOTE='Uscita 16:30 · str. 1h09m (base 15:21)';
-  let tries=0;
-  const apply=()=>{
-    tries++;
-    try{
-      if(typeof ensureYear!=='function'||typeof saveData!=='function')return false;
-      if(typeof DATA==='undefined'||!DATA)return false;
-      const y=ensureYear(2026); if(!y||!y.months||!y.months[10])return false;
-      const month=y.months[10]; if(!Array.isArray(month.entries))return false;
-      let entry=month.entries.find(e=>e&&e.date===TARGET);
-      if(!entry){entry={date:TARGET,ore:0,rep:false,recup:false,lavorato:false,ferie:false,note:'',uscita:''};month.entries.push(entry);month.entries.sort((a,b)=>(a.date||'').localeCompare(b.date||''));}
-      entry.lavorato=true; entry.ferie=false; entry.uscita=USCITA; entry.ore=ORE; entry.note=NOTE;
-      saveData();
-      if(typeof renderAll==='function')renderAll();
-      if(typeof showToast==='function')showToast('Oggi 4/11: uscita 16:30 → 1,15 h straordinarie');
-      console.info('[prefill] OK',TARGET,ORE,'tries',tries);
-      return true;
-    }catch(err){console.warn('[prefill]',err);return false;}
-  };
-  const boot=()=>{if(apply())return;if(tries<25)setTimeout(boot,400);else console.warn('[prefill] fallito dopo',tries);};
-  setTimeout(boot,500); setTimeout(boot,1500); setTimeout(boot,3000);
-})();
+
 
 (()=>{
 const css=document.createElement('style');css.textContent=`
