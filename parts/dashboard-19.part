@@ -25,7 +25,7 @@ html[data-graphic-style="pro"] .year-item{background:transparent;border:0;border
 html[data-graphic-style="pro"] .year-item:hover{transform:none;background:color-mix(in srgb,var(--txt) 5%,transparent);color:var(--txt);border-left-color:var(--line)}
 html[data-graphic-style="pro"] .year-item.active{background:color-mix(in srgb,var(--acc) 14%,transparent);border-left-color:var(--acc);color:var(--txt);box-shadow:none}
 html[data-graphic-style="pro"] .btn-sm{border-radius:6px;background:var(--acc);color:#1a1205}
-html[data-graphic-style="pro"] .style-switch{grid-template-columns:repeat(3,1fr)}
+html[data-graphic-style="pro"] .style-switch{grid-template-columns:repeat(2,1fr)}
 html[data-graphic-style="pro"] .style-choice{border-radius:6px;padding:8px 4px;font-size:11.5px}
 html[data-graphic-style="pro"] .style-choice.active{background:color-mix(in srgb,var(--acc) 16%,transparent);color:var(--txt);border-color:var(--acc)}
 

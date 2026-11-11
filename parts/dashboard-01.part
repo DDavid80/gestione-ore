@@ -131,6 +131,7 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
     <button type="button" class="style-choice active" data-style="base" onclick="setGraphicStyle('base')"><i class="fa-solid fa-layer-group"></i> Base</button>
     <button type="button" class="style-choice" data-style="ios" onclick="setGraphicStyle('ios')"><i class="fa-brands fa-apple"></i> iOS</button>
     <button type="button" class="style-choice" data-style="pro" onclick="setGraphicStyle('pro')"><i class="fa-solid fa-gauge-high"></i> Pro</button>
+    <button type="button" class="style-choice" data-style="aurora" onclick="setGraphicStyle('aurora')"><i class="fa-solid fa-wand-magic-sparkles"></i> Aurora</button>
   </div>
 
   <label>Sezioni</label><button class="year-item" style="width:100%;font:inherit;color:inherit" onclick="openStats()"><span>▥ &nbsp; Statistiche e confronti</span></button>
