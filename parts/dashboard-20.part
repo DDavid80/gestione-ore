@@ -159,16 +159,18 @@ async function pullGoogleData() {
     const payload = await response.json();
     const snapshot = payload && payload.data;
     if (!payload || !payload.ok || !snapshot || !snapshot.data) throw new Error('Archivio non disponibile');
+    const styleKey='strao_graphic_style_v1';
+    const localLook=new Map([THEME_KEY,styleKey].map(k=>[k,localStorage.getItem(k)]).filter(([,v])=>v!==null));
     if (snapshot.localStorage && typeof snapshot.localStorage === 'object') {
       Object.entries(snapshot.localStorage).forEach(([key, value]) => {
-        if (key.startsWith('strao_') && typeof value === 'string') localStorage.setItem(key, value);
+        if (!localLook.has(key) && key.startsWith('strao_') && typeof value === 'string') localStorage.setItem(key, value);
       });
     }
     DATA = snapshot.data;
     const repairedNotes=applyMemoDeletions(DATA);
     if (snapshot.brand) saveBrand(snapshot.brand);
-    if (snapshot.theme) localStorage.setItem(THEME_KEY, snapshot.theme);
-    if (snapshot.graphicStyle) localStorage.setItem('strao_graphic_style_v1', snapshot.graphicStyle);
+    if (!localLook.has(THEME_KEY) && snapshot.theme) localStorage.setItem(THEME_KEY, snapshot.theme);
+    if (!localLook.has(styleKey) && snapshot.graphicStyle) localStorage.setItem('strao_graphic_style_v1', snapshot.graphicStyle);
     purgeInvalidYears();
     const nowYear = String(new Date().getFullYear());
     const savedYear = snapshot.view && String(snapshot.view.year || '');

@@ -8,9 +8,9 @@ LIOcSyLkEci6BnEsg5xLIuQRyLoGcSyDnEsi5BHIugZxLIOcSyLkEci5NF4/eH+83/v3vT+h7epwBx1l
     if(payload&&payload.data&&typeof payload.data==='object'){
       DATA=payload.data;
       if(payload.brand) saveBrand(payload.brand);
-      if(payload.theme) localStorage.setItem(THEME_KEY,payload.theme);
-      if(payload.graphicStyle) localStorage.setItem('strao_graphic_style_v1',payload.graphicStyle);
-      initYears(); migrateHistoricalTicketClosures(true); populateMonthFilter(); if(typeof initBrand==='function') initBrand(); if(typeof initTheme==='function') initTheme(); if(typeof setGraphicStyle==='function') setGraphicStyle(payload.graphicStyle||'base'); renderAll();
+      if(!localStorage.getItem(THEME_KEY)&&payload.theme) localStorage.setItem(THEME_KEY,payload.theme);
+      if(!localStorage.getItem('strao_graphic_style_v1')&&payload.graphicStyle) localStorage.setItem('strao_graphic_style_v1',payload.graphicStyle);
+      initYears(); migrateHistoricalTicketClosures(true); populateMonthFilter(); if(typeof initBrand==='function') initBrand(); if(typeof initTheme==='function') initTheme(); if(typeof setGraphicStyle==='function') setGraphicStyle(localStorage.getItem('strao_graphic_style_v1')||'base'); renderAll();
       showToast('Backup predefinito caricato.');
     }
   }catch(e){ console.warn('Backup predefinito non caricato',e); }
