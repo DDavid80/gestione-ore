@@ -220,7 +220,20 @@ function renderYearList(){
     </div>`).join('');
 }
 
+function drawCompare(){
+ const host=document.getElementById('cmpFilters'),years=Object.keys(DATA).filter(x=>/^\d{4}$/.test(x)).sort(),year=String(currentYear);
+ if(!host||!years.length)return;
+ const now=new Date(),m=currentMonthFilter===''?now.getMonth():Number(currentMonthFilter);
+ for(const key of ['A','B']){
+ let y=document.getElementById('cmpYear'+key),mo=document.getElementById('cmpMonth'+key);
+ if(!y){const label=document.createElement('div');label.innerHTML='<strong>Periodo '+key+'</strong> <select aria-label="Anno '+key+'" id="cmpYear'+key+'"></select> <select aria-label="Mese '+key+'" id="cmpMonth'+key+'"></select>';host.append(label);y=label.children[1];mo=label.children[2];mo.add(new Option('Anno intero','all'));MONTHS.forEach((n,i)=>mo.add(new Option(n,i)));mo.value=String(m);}
+ const prev=y.value;if(Array.from(y.options,o=>o.value).join()!==years.join()){y.replaceChildren();years.forEach(n=>y.add(new Option(n,n)));y.value=years.includes(prev)?prev:(key==='A'&&years.includes(String(+year-1))?String(+year-1):year);}
+ }
+ function totals(k){const yr=document.getElementById('cmpYear'+k).value,sel=document.getElementById('cmpMonth'+k).value,y=DATA[yr],a=Array(8).fill(0);y.months.forEach((month,i)=>{if(sel!=='all'&&+sel!==i)return;let w=0;for(const e of month.entries){const h=Number(e.ore)||0;a[0]+=h;a[1]+=h*rateForDate(+yr,e.date);if(e.rep)a[2]+=h;if(e.recup)a[3]+=h;if(e.lavorato)w++;if(e.ferie)a[5]++;}a[4]+=w;const days=month.closed||month.ticketManualOverride||month.ticketManualProtected?Number(y.ticketMonths?.[i])||0:w;a[6]+=days;a[7]+=days*ticketRateForDate(+yr,yr+'-'+String(i+1).padStart(2,'0')+'-01');});return a;}
+ const a=totals('A'),b=totals('B');document.getElementById('cmpRows').innerHTML=['Straordinario (h)','Straordinario (€)','Reperibilità (h)','Recupero (h)','Giorni lavorati','Giorni di ferie','Giorni ticket','Ticket (€)'].map((n,i)=>{const fmt=x=>x.toLocaleString('it-IT',{minimumFractionDigits:i>=4&&i<=6?0:2,maximumFractionDigits:2});const d=Math.round((b[i]-a[i])*100)/100;return '<tr><th scope="row">'+n+'</th><td>'+fmt(a[i])+'</td><td>'+fmt(b[i])+'</td><td><b>'+(d>0?'+':'')+fmt(d)+'</b></td></tr>';}).join('');
+}
 function renderTotals(){
+  if(document.getElementById('periodCompare')?.open)drawCompare();
   renderMonthSummary();
   const t = yearTotals();
   document.getElementById('yearHours').textContent = t.ore.toFixed(2);

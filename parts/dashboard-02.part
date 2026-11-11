@@ -41,6 +41,7 @@ ilità</span><b>Apri →</b></button></div><button class="agenda-month-btn" oncl
     <div class="stat recup"><div class="lbl">Ore Recup. anno</div><div class="val" id="yearRecup">0</div></div>
   </div>
 
+  <details class="card" id="periodCompare" ontoggle="if(this.open) drawCompare()"><summary style="cursor:pointer;font-weight:750">Statistiche · Confronta periodi</summary><p>Confronta due mesi o due anni. La differenza è B meno A.</p><div id="cmpFilters" style="display:flex;gap:12px;flex-wrap:wrap" onchange="drawCompare()"></div><div style="overflow:auto"><table style="width:100%;margin-top:12px"><thead><tr><th>Indicatore</th><th>A</th><th>B</th><th>Differenza</th></tr></thead><tbody id="cmpRows"></tbody></table></div><small>Ferie: giorni spuntati nel registro. I mesi aperti includono i dati inseriti finora.</small></details>
   <div class="month-summary" id="monthSummary">
     <div class="stat"><div class="lbl">Ore mese</div><div class="val" id="mfOre">0</div></div>
     <div class="stat rep"><div class="lbl">Rep. mese</div><div class="val" id="mfRep">0</div></div>
