@@ -160,14 +160,14 @@ function toggleMonthClosed(mIdx){
 
 function monthWorkLabel(count,closed,mIdx){
   const days=ferieDays(mIdx);
-  return count+' gg lavorati'+(days?' · '+days+(days===1?' giorno di ferie':' giorni di ferie'):'')+(closed?' · Ticket calcolati':' · mese aperto');
+  return count+' gg lavorati'+(days?' · <span style="color:var(--month-ferie-color,#ffa68f)">'+days+(days===1?' giorno di ferie':' giorni di ferie')+'</span>':'')+(closed?' · Ticket calcolati':' · mese aperto');
 }
 function renderMonthWorkStatus(mIdx){
   const y=ensureYear(currentYear), count=workedDays(mIdx), closed=!!y.months[mIdx].closed;
   const countEl=document.getElementById('workcount-'+mIdx);
   if(countEl)countEl.textContent=count;
   const sub=document.getElementById('worksub-'+mIdx);
-  if(sub)sub.textContent=monthWorkLabel(count,closed,mIdx);
+  if(sub)sub.innerHTML=monthWorkLabel(count,closed,mIdx);
 }
 
 function deleteRow(mIdx, eIdx){
