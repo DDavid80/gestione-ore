@@ -29,6 +29,19 @@ function exportRepIcs(){
   setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1000);
 }
 function agendaFerieCount(mIdx){const y=ensureYear(currentYear),m=y.months[mIdx];return ((m&&m.entries)||[]).filter(e=>e.ferie).length;}
+const memoJournalKey='gestioneOre.noteEliminate.v1';
+function memoJournal(){try{return JSON.parse(localStorage.getItem(memoJournalKey)||'[]')}catch{return []}}
+function rememberMemoDeletion(yr,kind,item,idx){
+ const record={yr,kind,date:item.date,text:kind==='registro'?item.note:item.text,id:item.id,idx};
+ const items=memoJournal();if(!items.some(x=>JSON.stringify(x)===JSON.stringify(record)))localStorage.setItem(memoJournalKey,JSON.stringify([...items,record]));
+}
+function applyMemoDeletions(data){
+ let changed=false;
+ for(const d of memoJournal()){const y=data[d.yr];if(!y)continue;
+ if(d.kind==='registro'){const rows=y.months?.[Number(d.date.slice(5,7))-1]?.entries||[],e=rows.filter(e=>e.date===d.date)[d.idx];if(e&&e.note===d.text){e.note='';changed=true}}
+ else if(Array.isArray(y.notes)){const before=y.notes.length;y.notes=y.notes.filter(n=>!(String(n.id)===String(d.id)&&n.date===d.date&&n.text===d.text));if(before!==y.notes.length)changed=true}
+ }return changed;
+}
 function dayMemoButton(iso){
  const y=DATA[iso.slice(0,4)],m=Number(iso.slice(5,7))-1;
  const present=y?.notes?.some(n=>n.date===iso&&n.text?.trim())||y?.months?.[m]?.entries?.some(e=>e.date===iso&&e.note?.trim());
@@ -51,10 +64,10 @@ dialog.memo-dialog[open]{display:flex;flex-direction:column}
  let deleted=false;changes.push(()=>commit(deleted?'':t.value.trim()));
  if(value){row.classList.add('has-delete');const x=document.createElement('button');x.type='button';x.className='memo-delete';x.textContent='×';x.title='Elimina nota';x.setAttribute('aria-label','Elimina '+label.toLowerCase()+' '+(changes.length));row.append(x);x.onclick=()=>{deleted=true;const next=row.nextElementSibling;row.remove();next?.querySelector('textarea')?.focus()};}
  }
- for(const e of y.months[m].entries.filter(e=>e.date===iso&&e.note?.trim()))field('Nota del registro',e.note,v=>e.note=v);
- for(const n of y.notes.filter(n=>n.date===iso&&n.text?.trim()))field('Nota',n.text,v=>{if(v)n.text=v;else y.notes=y.notes.filter(item=>item!==n)});
+ for(const e of y.months[m].entries.filter(e=>e.date===iso&&e.note?.trim()))field('Nota del registro',e.note,v=>{if(!v)rememberMemoDeletion(iso.slice(0,4),'registro',e,y.months[m].entries.filter(row=>row.date===iso).indexOf(e));e.note=v});
+ for(const n of y.notes.filter(n=>n.date===iso&&n.text?.trim()))field('Nota',n.text,v=>{if(v)n.text=v;else{rememberMemoDeletion(iso.slice(0,4),'agenda',n);y.notes=y.notes.filter(item=>item!==n)}});
  field('Aggiungi nota o promemoria','',v=>{if(v)y.notes.push({id:Date.now()+Math.random(),date:iso,month:String(m),text:v})});
- const [cancel,save]=dialog.querySelectorAll('.memo-actions button');cancel.onclick=()=>dialog.close();save.onclick=()=>{changes.forEach(f=>f());saveData();renderAll();dialog.close()};
+ const [cancel,save]=dialog.querySelectorAll('.memo-actions button');cancel.onclick=()=>dialog.close();save.onclick=()=>{changes.forEach(f=>f());applyMemoDeletions(DATA);saveData();renderAll();dialog.close()};
  document.body.append(dialog);dialog.addEventListener('close',()=>dialog.remove(),{once:true});dialog.showModal();
 }
 function renderAgendaHome(){
@@ -152,6 +165,7 @@ async function pullGoogleData() {
       });
     }
     DATA = snapshot.data;
+    const repairedNotes=applyMemoDeletions(DATA);
     if (snapshot.brand) saveBrand(snapshot.brand);
     if (snapshot.theme) localStorage.setItem(THEME_KEY, snapshot.theme);
     if (snapshot.graphicStyle) localStorage.setItem('strao_graphic_style_v1', snapshot.graphicStyle);
@@ -169,7 +183,7 @@ async function pullGoogleData() {
     googleSyncRevision = payload.revision || 0; googleSyncReady = true;
     renderAll();
     if (typeof renderCoverStats === 'function') renderCoverStats();
-    setGoogleSyncStatus('Google sincronizzato', 'ok');
+    setGoogleSyncStatus('Google sincronizzato', 'ok');if(repairedNotes)scheduleGoogleSave();
   } catch (error) {
     googleSyncReady = false;
     setGoogleSyncStatus('Salvataggio locale attivo', 'offline');

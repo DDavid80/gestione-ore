@@ -243,7 +243,8 @@ function updateNoteField(id, field, value){
 }
 function deleteNote(id){
   const y = ensureYear(currentYear);
-  y.notes = y.notes.filter(n=>n.id!==id);
+  for(const n of y.notes.filter(n=>String(n.id)===String(id)))rememberMemoDeletion(String(currentYear),'agenda',n);
+  y.notes = y.notes.filter(n=>String(n.id)!==String(id));
   saveData();
   renderNotes();
 }
