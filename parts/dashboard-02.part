@@ -41,7 +41,7 @@ ilità</span><b>Apri →</b></button></div><button class="agenda-month-btn" oncl
     <div class="stat recup"><div class="lbl">Ore Recup. anno</div><div class="val" id="yearRecup">0</div></div>
   </div>
 
-  <details class="card" id="periodCompare" ontoggle="if(this.open) drawCompare()"><summary style="cursor:pointer;font-weight:750">Statistiche · Confronta periodi</summary><p>Confronta due mesi o due anni. La differenza è B meno A.</p><div id="cmpFilters" style="display:flex;gap:12px;flex-wrap:wrap" onchange="drawCompare()"></div><div style="overflow:auto"><table style="width:100%;margin-top:12px"><thead><tr><th>Indicatore</th><th>A</th><th>B</th><th>Differenza</th></tr></thead><tbody id="cmpRows"></tbody></table></div><small>Ferie: giorni spuntati nel registro. I mesi aperti includono i dati inseriti finora.</small></details>
+  
   <div class="month-summary" id="monthSummary">
     <div class="stat"><div class="lbl">Ore mese</div><div class="val" id="mfOre">0</div></div>
     <div class="stat rep"><div class="lbl">Rep. mese</div><div class="val" id="mfRep">0</div></div>
@@ -113,6 +113,7 @@ ilità</span><b>Apri →</b></button></div><button class="agenda-month-btn" oncl
 
 </div>
 
+<style>.main.stats-open>#repPage,.main.stats-open>#dashboardPage{display:none!important}#periodCompare{max-width:980px;margin:auto;padding:clamp(14px,3vw,32px)}#periodCompare header{border-left:4px solid var(--acc);padding:8px 16px;margin:18px 0;background:linear-gradient(100deg,#318af324,transparent)}#cmpFilters>div{flex:1 1 220px;display:flex;align-items:center;gap:8px;background:#7894b318;padding:12px;border-radius:12px}#cmpFilters select{min-width:0;width:auto;flex:1}#periodCompare td{text-align:right;font-variant-numeric:tabular-nums}#periodCompare td:last-child{color:var(--acc)}#periodCompare th:first-child{text-align:left}</style><section id="periodCompare" hidden><button class="btn" onclick="closeStats();hideRepPage()">← Registro ore</button><header><small>GESTIONE ORE · ANALISI</small><h1>Statistiche e confronti</h1><p>Scegli i periodi A e B per vedere di quanto sono cambiate ore, importi e presenze.</p></header><div id="cmpFilters" style="display:flex;gap:12px;flex-wrap:wrap" onchange="drawCompare()"></div><div style="overflow:auto"><table style="width:100%;margin-top:12px"><thead><tr><th>Indicatore</th><th>A</th><th>B</th><th>Differenza</th></tr></thead><tbody id="cmpRows"></tbody></table></div><small>Ferie: giorni spuntati nel registro. I mesi aperti includono i dati inseriti finora.</small></section>
 <div id="repPage" style="display:none;">
   <div class="top">
     <div>

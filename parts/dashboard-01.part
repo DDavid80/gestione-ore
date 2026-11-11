@@ -133,12 +133,12 @@ table{border-collapse:separate;border-spacing:0}th{color:var(--txt-muted);border
     <button type="button" class="style-choice" data-style="pro" onclick="setGraphicStyle('pro')"><i class="fa-solid fa-gauge-high"></i> Pro</button>
   </div>
 
-  <label>Sezioni</label>
-  <div class="year-item" onclick="showRepPage()" id="repPageBtn">
+  <label>Sezioni</label><button class="year-item" style="width:100%;font:inherit;color:inherit" onclick="openStats()"><span>▥ &nbsp; Statistiche e confronti</span></button>
+  <div class="year-item" onclick="closeStats();showRepPage()" id="repPageBtn">
     <span><i class="fa-solid fa-phone-volume" style="margin-right:8px;"></i>Reperibilità</span>
     <span class="del" style="visibility:hidden;"><i class="fa-solid fa-trash"></i></span>
   </div>
-  <div class="year-item" onclick="showCover()" id="coverBtn">
+  <div class="year-item" onclick="closeStats();showCover()" id="coverBtn">
     <span><i class="fa-solid fa-house" style="margin-right:8px;"></i>Copertina</span>
     <span class="del" style="visibility:hidden;"><i class="fa-solid fa-trash"></i></span>
   </div>
