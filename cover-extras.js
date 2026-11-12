@@ -129,6 +129,15 @@ const css=document.createElement('style');css.textContent=`
 .register-scroll th,.leave-scroll th{position:sticky!important;top:0;z-index:30!important;background:var(--side)!important;color:var(--txt)!important;opacity:1!important;box-shadow:0 2px 0 var(--line),0 9px 14px color-mix(in srgb,var(--bg) 44%,transparent)}
 .register-scroll td,.leave-scroll td{position:relative;z-index:1}
 .register-scroll tr:first-child td,.leave-scroll tr:first-child td{border-top:0}
+@media(max-width:760px){
+#monthsGrid .register-scroll{--date-solid:#17263a}
+body[data-theme=grigio] #monthsGrid .register-scroll{--date-solid:#343539}
+body[data-theme=tortora] #monthsGrid .register-scroll{--date-solid:#eee9e2}
+#monthsGrid .register-scroll tbody tr>td:first-child{position:sticky!important;left:0!important;z-index:8!important;background:var(--date-solid)!important;opacity:1!important;backdrop-filter:none!important;box-shadow:inset -1px 0 var(--line)}
+#monthsGrid .register-scroll tbody tr:is(.holiday-it,.weekend-sat,.weekend-sun)>td:first-child{border-inline-start:3px solid var(--day-mark,#ffb020)}
+#monthsGrid .weekend-sat{--day-mark:#38bdf8}#monthsGrid .weekend-sun{--day-mark:#fb7185}
+#monthsGrid .register-scroll thead tr>th:first-child{left:0!important;z-index:40!important;background:var(--date-solid)!important}
+}
 /* Fasce fisse: sempre opache, anche con lo stile iOS */
 #monthsGrid .month-head{background:color-mix(in srgb,var(--bg) 84%,var(--acc))!important;opacity:1!important}
 .register-scroll th,.leave-scroll th{background:color-mix(in srgb,var(--bg) 78%,var(--acc))!important;opacity:1!important}
