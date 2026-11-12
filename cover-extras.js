@@ -129,6 +129,12 @@ const css=document.createElement('style');css.textContent=`
 .register-scroll th,.leave-scroll th{position:sticky!important;top:0;z-index:30!important;background:var(--side)!important;color:var(--txt)!important;opacity:1!important;box-shadow:0 2px 0 var(--line),0 9px 14px color-mix(in srgb,var(--bg) 44%,transparent)}
 .register-scroll td,.leave-scroll td{position:relative;z-index:1}
 .register-scroll tr:first-child td,.leave-scroll tr:first-child td{border-top:0}
+/* Fasce fisse: sempre opache, anche con lo stile iOS */
+#monthsGrid .month-head{background:color-mix(in srgb,var(--bg) 84%,var(--acc))!important;opacity:1!important}
+.register-scroll th,.leave-scroll th{background:color-mix(in srgb,var(--bg) 78%,var(--acc))!important;opacity:1!important}
+.register-scroll th:first-child,.leave-scroll th:first-child{background:color-mix(in srgb,var(--bg) 73%,var(--acc))!important}
+html[data-graphic-style=ios] #monthsGrid .month-head{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+html[data-graphic-style=ios] .register-scroll th,html[data-graphic-style=ios] .leave-scroll th{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 html[data-graphic-style=ios] #monthFilter,html[data-graphic-style=ios] #monthFilter option{color:#fff!important;background:#202d40!important;color-scheme:dark;border-color:#8397b1!important}
 #coverScreen .cover-toprow{flex-wrap:wrap}
 .cover-tools{flex:0 0 100%;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;min-width:0}
