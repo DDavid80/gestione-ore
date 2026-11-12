@@ -91,3 +91,31 @@ html[data-graphic-style="aurora"] #notifySideCard button{background:color-mix(in
   html[data-graphic-style="aurora"] .year-item.active{box-shadow:none}
 }
 @media(prefers-reduced-motion:reduce){html[data-graphic-style="aurora"] *{transition:none!important}}
+
+
+/* Fix scorrimento tabelle: la colonna Data fissa deve essere totalmente opaca.
+   Il mix con --bg (opaco) mantiene la tonalita' del tema senza trasparenze. */
+@media (max-width:760px){
+  .month-card table tr > :first-child,
+  .ferie-table tr > :first-child,
+  .section-card table tr > :first-child{
+    background-color:color-mix(in srgb,var(--card) 65%,var(--bg) 35%)!important;
+    background-image:none!important;
+    background-clip:padding-box;
+    opacity:1;
+    z-index:3;
+  }
+  .month-card table tr > th:first-child,
+  .ferie-table tr > th:first-child,
+  .section-card table tr > th:first-child{
+    z-index:4;
+  }
+  .month-card table tr.weekend-sat > td:first-child,
+  .ferie-table tr.weekend-sat > td:first-child{
+    background-color:color-mix(in srgb,#38bdf8 8%,color-mix(in srgb,var(--card) 65%,var(--bg) 35%))!important;
+  }
+  .month-card table tr.weekend-sun > td:first-child,
+  .ferie-table tr.weekend-sun > td:first-child{
+    background-color:color-mix(in srgb,#fb7185 9%,color-mix(in srgb,var(--card) 65%,var(--bg) 35%))!important;
+  }
+}
