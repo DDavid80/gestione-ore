@@ -1,7 +1,7 @@
 /* Gestione Ore: PWA cache con priorita' alla rete e fallback offline.
    Mantiene intatto il sistema notifiche push gia' configurato. */
-const CACHE='gestione-ore-app-v6';
-const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg','./aurora.css','./mobile-app.css','./mobile-app.js','./cover-extras.js','./notifications.js','./rep-summary.js'];
+const CACHE='gestione-ore-app-v7';
+const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg','./aurora.css','./mobile-app.css','./mobile-app.js','./mobile-work.js','./mobile-work.css','./cover-extras.js','./notifications.js','./rep-summary.js'];
 const PARTS=Array.from({length:21},(_,i)=>'./parts/dashboard-'+String(i).padStart(2,'0')+'.part');
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(async cache=>{
