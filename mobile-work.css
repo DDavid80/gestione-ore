@@ -12,3 +12,29 @@
  .mw-balances{display:grid;grid-template-columns:1fr 1fr;gap:10px}.mw-balances>div{display:grid;gap:8px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:14px}.mw-balances small{color:var(--txt-muted)}.mw-balances strong{font-size:1.35rem;color:var(--acc)}
  #oreWorkspace h2{font-size:1.1rem;margin:20px 0 12px}#oreWorkspace details{margin-top:20px;border:1px solid var(--line);border-radius:14px;padding:12px}#oreWorkspace summary{min-height:36px;cursor:pointer;font-weight:700}#oreWorkspace details form{padding-top:12px}.mw-ticket-list{display:grid;gap:8px}.mw-ticket{display:grid;grid-template-columns:1fr auto;gap:6px;padding:13px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--txt);text-align:left;min-height:62px}.mw-ticket small{grid-column:1/-1;color:var(--txt-muted)}.mw-ticket strong{color:var(--acc)}
 }
+
+/* Keep the editor inside Safari's visible viewport, including the keyboard. */
+@media(max-width:760px){
+  dialog.mw-dialog{
+    position:fixed!important;inset:auto!important;
+    top:calc(var(--mw-vtop,0px) + max(10px,env(safe-area-inset-top)))!important;
+    left:calc(var(--mw-vleft,0px) + 10px)!important;
+    margin:0!important;padding:0!important;box-sizing:border-box!important;
+    width:calc(var(--mw-vw,100vw) - 20px)!important;min-width:0!important;max-width:460px!important;
+    height:calc(var(--mw-vh,100dvh) - max(10px,env(safe-area-inset-top)) - max(10px,env(safe-area-inset-bottom)))!important;
+    max-height:calc(var(--mw-vh,100dvh) - max(10px,env(safe-area-inset-top)) - max(10px,env(safe-area-inset-bottom)))!important;
+    overflow:hidden!important;transform:none!important;
+  }
+  dialog.mw-dialog[open]{display:flex!important;flex-direction:column}
+  .mw-dialog>form{display:flex!important;flex-direction:column;width:100%;height:100%;min-height:0;min-width:0;margin:0;overflow:hidden}
+  .mw-dialog header{position:static!important;flex:none;min-width:0;padding:10px 14px!important}
+  .mw-dialog header h2{min-width:0;overflow-wrap:anywhere}
+  .mw-dialog .mw-dialog-body{display:flex;flex-direction:column;gap:10px;flex:1 1 auto;min-height:0;min-width:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:12px 14px!important}
+  .mw-dialog footer{position:static!important;flex:none;padding:10px 14px!important}
+  .mw-dialog .mw-field{display:flex;flex-direction:column;width:100%;min-width:0;max-width:100%;flex:none;margin-bottom:2px}
+  .mw-dialog .mw-field input{display:block!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:100%!important;min-height:44px;font-size:16px!important;margin:0!important}
+  .mw-dialog input[type=time]{appearance:none;-webkit-appearance:none;text-align:left;overflow:hidden}
+  .mw-dialog input[type=time]::-webkit-date-and-time-value{text-align:left;min-height:1.4em}
+  .mw-dialog .mw-flags{grid-template-columns:repeat(2,minmax(0,1fr));flex:none;min-width:0}
+  .mw-dialog .mw-flag{min-width:0;overflow-wrap:anywhere;padding:8px 6px;font-size:.75rem}
+}

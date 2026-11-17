@@ -40,10 +40,15 @@ function render(){
   content.querySelector('#mwRate').onsubmit=e=>{e.preventDefault();document.querySelector('#ticketRateInput').value=e.target.elements.rate.value;updateTicketRate();render()};
  }
 }
+function fitEditor(){
+ if(!dialog)return;
+ const vv=window.visualViewport;
+ for(const [key,value] of Object.entries({vw:vv?.width||window.innerWidth,vh:vv?.height||window.innerHeight,vtop:vv?.offsetTop||0,vleft:vv?.offsetLeft||0}))dialog.style.setProperty('--mw-'+key,value+'px');
+}
 function openForm(title,html,save){
  dialog.innerHTML=`<form><header><h2>${esc(title)}</h2><button type="button" class="mw-cancel" aria-label="Chiudi">✕</button></header><div class="mw-dialog-body">${html}</div><footer><button type="button" class="mw-cancel">Annulla</button><button class="mw-save">Salva</button></footer></form>`;
  dialog.querySelectorAll('.mw-cancel').forEach(b=>b.onclick=()=>dialog.close());
- dialog.querySelector('form').onsubmit=e=>{e.preventDefault();save(e.target);dialog.close();render()};dialog.showModal();
+ dialog.querySelector('form').onsubmit=e=>{e.preventDefault();save(e.target);dialog.close();render()};fitEditor();dialog.showModal();
 }
 function editDay(i){
  const e=ensureYear(currentYear).months[month].entries[i],closed=ensureYear(currentYear).months[month].closed;
@@ -60,6 +65,7 @@ function editTicket(i){
 }
 function boot(){
  panel=document.createElement('section');panel.id='oreWorkspace';dialog=document.createElement('dialog');dialog.className='mw-dialog';document.body.append(panel,dialog);
+ window.visualViewport?.addEventListener('resize',fitEditor);window.visualViewport?.addEventListener('scroll',fitEditor);window.addEventListener('resize',fitEditor);
  const nav=document.querySelector('.ore-app-nav');if(!nav)return;
  nav.innerHTML=[['home','fa-house','Home'],['ore','fa-clock','Ore'],['rep','fa-phone-volume','Rep.'],['ferie','fa-umbrella-beach','Ferie'],['ticket','fa-ticket','Ticket'],['more','fa-bars','Altro']].map(([id,icon,n])=>`<button type="button" data-view="${id}"><i class="fa-solid ${icon}"></i><span>${n}</span></button>`).join('');
  document.addEventListener('click',ev=>{
