@@ -1,14 +1,37 @@
-/* Service Worker — Gestione Ore notifications */
-const CACHE = 'gestione-ore-sw-v1';
-
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
+/* Gestione Ore: PWA cache con priorita' alla rete e fallback offline.
+   Mantiene intatto il sistema notifiche push gia' configurato. */
+const CACHE='gestione-ore-app-v2';
+const CORE=['./','./index.html','./manifest.webmanifest','./icon.svg','./aurora.css','./mobile-app.css','./mobile-app.js','./cover-extras.js','./notifications.js','./rep-summary.js'];
+const PARTS=Array.from({length:21},(_,i)=>'./parts/dashboard-'+String(i).padStart(2,'0')+'.part');
+self.addEventListener('install',event=>{
+  event.waitUntil(caches.open(CACHE).then(async cache=>{
+    await Promise.allSettled([...CORE,...PARTS].map(url=>cache.add(new Request(url,{cache:'reload'}))));
+    await self.skipWaiting();
+  }));
 });
-
-self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
+self.addEventListener('activate',event=>{
+  event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('gestione-ore-app-')&&key!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));
 });
-
+self.addEventListener('fetch',event=>{
+  if(event.request.method!=='GET')return;
+  const url=new URL(event.request.url);
+  if(url.origin!==self.location.origin)return;
+  event.respondWith((async()=>{
+    const cache=await caches.open(CACHE);
+    try{
+      const response=await fetch(event.request);
+      if(response.ok)cache.put(event.request,response.clone()).catch(()=>{});
+      return response;
+    }catch(err){
+      const cached=await cache.match(event.request,{ignoreSearch:true});
+      if(cached)return cached;
+      if(event.request.mode==='navigate'){
+        const fallback=await cache.match('./index.html');if(fallback)return fallback;
+      }
+      throw err;
+    }
+  })());
+});
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
   const target = (event.notification && event.notification.data && event.notification.data.url) || './';
