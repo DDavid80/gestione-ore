@@ -49,6 +49,16 @@
   // Un solo giorno aperto alla volta. Il registro originale e gli handler
   // onchange restano nel DOM: nessuna modifica a salvataggi o calcoli.
   let selectedDay=null;
+  // Entry identity survives render/sort without adding fields to persisted data.
+  const entryKeys=new WeakMap();let entrySequence=0;
+  function dayKey(tr){
+    const match=/^dayrow-(\d+)-(\d+)$/.exec(tr.id);
+    if(match&&typeof ensureYear==='function'&&typeof currentYear!=='undefined'){
+      const entry=ensureYear(currentYear).months[Number(match[1])]?.entries[Number(match[2])];
+      if(entry){if(!entryKeys.has(entry))entryKeys.set(entry,++entrySequence);return entryKeys.get(entry);}
+    }
+    return tr.id;
+  }
   const weekday=['dom','lun','mar','mer','gio','ven','sab'];
   function dateText(raw){
     if(!raw||!/^\d{4}-\d{2}-\d{2}$/.test(raw))return 'Data da impostare';
@@ -63,8 +73,21 @@
       const dateInput=tr.querySelector('td:first-child input[type=date]');
       if(!dateInput)return;
       const cells=[...tr.children].filter(el=>el.tagName==='TD');
-      const key=tr.id||dateInput.value;
-      cells.forEach((td,i)=>{if(td.dataset.appLabel!==labels[i])td.dataset.appLabel=labels[i];});
+      const key=dayKey(tr);
+      cells.forEach((td,i)=>{
+        if(td.dataset.appLabel!==labels[i])td.dataset.appLabel=labels[i];
+        td.querySelectorAll('input,button.row-del').forEach((input,j)=>{
+          input.setAttribute('aria-label',i===3?(j===0?'Ora di uscita':'Ore straordinarie'):labels[i]);
+          if(i===3&&j===1)input.setAttribute('inputmode','decimal');
+        });
+        if(i===3&&!td.querySelector('.ore-field-label')){
+          td.querySelectorAll('input').forEach((input,j)=>{
+            const label=document.createElement('label');label.className='ore-field-label';
+            const text=document.createElement('span');text.textContent=j===0?'Ora di uscita':'Ore straordinarie';
+            input.before(label);label.append(text,input);
+          });
+        }
+      });
       tr.classList.add('ore-day-collapsed');
       const open=key===selectedDay;
       tr.classList.toggle('ore-day-open',open);
@@ -93,20 +116,24 @@
   }
   function toggleDay(tr){
     if(!tr)return;
-    const key=tr.id;
+    const key=dayKey(tr);
     selectedDay=selectedDay===key?null:key;
-    document.querySelectorAll('.month-card table tbody tr').forEach(row=>{
-      const open=row.id===selectedDay;
-      row.classList.toggle('ore-day-open',open);
-      row.classList.toggle('ore-day-collapsed',!open);
-      const b=row.querySelector('.ore-day-toggle');
-      if(b){
-        b.setAttribute('aria-expanded',String(open));
-        const ico=b.querySelector('i');
-        if(ico)ico.className='fa-solid fa-chevron-'+(open?'up':'down');
-      }
-    });
+    prepareRows();
+    if(selectedDay)requestAnimationFrame(()=>tr.scrollIntoView({block:'start',behavior:'smooth'}));
   }
+  function openMobileDay(mIdx,eIdx){
+    menu(false);
+    const cover=$('#coverScreen');if(cover)cover.classList.add('hidden');
+    if(typeof window.closeStats==='function')window.closeStats();
+    if(typeof window.hideRepPage==='function')window.hideRepPage();
+    window.setMonthFilter(String(mIdx));
+    const section=$('#secOre');if(section?.classList.contains('closed'))window.toggleSection('secOre');
+    const body=$('#mbody-'+mIdx);if(body)body.classList.add('open');
+    const row=$('#dayrow-'+mIdx+'-'+eIdx);
+    if(row){selectedDay=dayKey(row);prepareRows();requestAnimationFrame(()=>row.scrollIntoView({block:'start',behavior:'smooth'}));}
+    setActive('ore');
+  }
+
   function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;if(mq.matches)prepareRows();});}
   function start(){
     if(!$('.main')||$('.ore-app-nav'))return;
@@ -135,6 +162,13 @@
       side.addEventListener('touchend',()=>{startY=null;},{passive:true});
     }
     document.addEventListener('click',e=>{if(!mq.matches)return;const btn=e.target.closest('.ore-day-toggle');if(btn)toggleDay(btn.closest('tr'));});
+    document.addEventListener('change',e=>{if(mq.matches&&e.target.closest('#monthsGrid'))schedule();});
+    // The original desktop entry point stays intact outside the mobile breakpoint.
+    const originalOpenDay=window.openAgendaDay;
+    window.openAgendaDay=function(mIdx,eIdx){
+      if(!mq.matches)return originalOpenDay.apply(this,arguments);
+      openMobileDay(mIdx,eIdx);
+    };
     const grid=$('#monthsGrid');
     if(grid){observer=new MutationObserver(schedule);observer.observe(grid,{childList:true,subtree:false});}
     mq.addEventListener?.('change',()=>{menu(false);schedule();});
