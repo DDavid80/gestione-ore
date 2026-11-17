@@ -51,7 +51,7 @@
   let selectedDay=null;
   const weekday=['dom','lun','mar','mer','gio','ven','sab'];
   function dateText(raw){
-    if(!raw||!/^\\d{4}-\\d{2}-\\d{2}$/.test(raw))return 'Data da impostare';
+    if(!raw||!/^\d{4}-\d{2}-\d{2}$/.test(raw))return 'Data da impostare';
     const [year,month,day]=raw.split('-').map(Number);
     const d=new Date(year,month-1,day);
     return weekday[d.getDay()]+' '+day+' '+d.toLocaleDateString('it-IT',{month:'short'});
