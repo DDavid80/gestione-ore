@@ -46,14 +46,65 @@
     }
     setActive(id);
   }
+  // Un solo giorno aperto alla volta. Il registro originale e gli handler
+  // onchange restano nel DOM: nessuna modifica a salvataggi o calcoli.
+  let selectedDay=null;
+  const weekday=['dom','lun','mar','mer','gio','ven','sab'];
+  function dateText(raw){
+    if(!raw||!/^\\d{4}-\\d{2}-\\d{2}$/.test(raw))return 'Data da impostare';
+    const [year,month,day]=raw.split('-').map(Number);
+    const d=new Date(year,month-1,day);
+    return weekday[d.getDay()]+' '+day+' '+d.toLocaleDateString('it-IT',{month:'short'});
+  }
   function prepareRows(){
-    const cells=['Data','Lavorato','Ferie','Uscita e ore','Reperibilità','Recupero','Note','Azioni'];
-    document.querySelectorAll('.month-card table tbody tr').forEach(tr=>{
-      [...tr.children].forEach((td,i)=>{
-        if(td.tagName!=='TD')return;
-        const label=cells[i]||'';
-        if(td.dataset.appLabel!==label)td.dataset.appLabel=label;
-      });
+    const labels=['Data','Lavorato','Ferie','Uscita / ore','Reperibilità','Recupero','Note','Elimina'];
+    const rows=document.querySelectorAll('.month-card table tbody tr');
+    rows.forEach(tr=>{
+      const dateInput=tr.querySelector('td:first-child input[type=date]');
+      if(!dateInput)return;
+      const cells=[...tr.children].filter(el=>el.tagName==='TD');
+      const key=tr.id||dateInput.value;
+      cells.forEach((td,i)=>{if(td.dataset.appLabel!==labels[i])td.dataset.appLabel=labels[i];});
+      tr.classList.add('ore-day-collapsed');
+      const open=key===selectedDay;
+      tr.classList.toggle('ore-day-open',open);
+      tr.classList.toggle('ore-day-collapsed',!open);
+      const first=cells[0];
+      let btn=first.querySelector('.ore-day-toggle');
+      if(!btn){
+        btn=document.createElement('button');
+        btn.type='button';btn.className='ore-day-toggle';
+        first.prepend(btn);
+      }
+      const state=[];
+      const checked=i=>!!cells[i]?.querySelector('input[type=checkbox]')?.checked;
+      if(checked(1))state.push('Lavorato');
+      if(checked(2))state.push('Ferie');
+      if(checked(4))state.push('Rep.');
+      if(checked(5))state.push('Recup.');
+      const hour=cells[3]?.querySelector('input[type=number]')?.value;
+      const exit=cells[3]?.querySelector('input[type=time]')?.value;
+      if(exit)state.push('Uscita '+exit);
+      else if(hour&&Number(hour))state.push(hour+' h');
+      btn.innerHTML='<span class="ore-day-info"><strong>'+dateText(dateInput.value)+'</strong><small>'+(state.join(' · ')||'Nessuna registrazione')+'</small></span><span class="ore-day-chevron"><i class="fa-solid fa-chevron-'+(open?'up':'down')+'"></i></span>';
+      btn.setAttribute('aria-expanded',String(open));
+      btn.setAttribute('aria-label',(open?'Chiudi':'Modifica')+' '+dateText(dateInput.value));
+    });
+  }
+  function toggleDay(tr){
+    if(!tr)return;
+    const key=tr.id;
+    selectedDay=selectedDay===key?null:key;
+    document.querySelectorAll('.month-card table tbody tr').forEach(row=>{
+      const open=row.id===selectedDay;
+      row.classList.toggle('ore-day-open',open);
+      row.classList.toggle('ore-day-collapsed',!open);
+      const b=row.querySelector('.ore-day-toggle');
+      if(b){
+        b.setAttribute('aria-expanded',String(open));
+        const ico=b.querySelector('i');
+        if(ico)ico.className='fa-solid fa-chevron-'+(open?'up':'down');
+      }
     });
   }
   function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;if(mq.matches)prepareRows();});}
@@ -83,8 +134,9 @@
       side.addEventListener('touchmove',e=>{if(startY!==null&&e.touches[0].clientY-startY>100){startY=null;menu(false);}},{passive:true});
       side.addEventListener('touchend',()=>{startY=null;},{passive:true});
     }
+    document.addEventListener('click',e=>{if(!mq.matches)return;const btn=e.target.closest('.ore-day-toggle');if(btn)toggleDay(btn.closest('tr'));});
     const grid=$('#monthsGrid');
-    if(grid){observer=new MutationObserver(schedule);observer.observe(grid,{childList:true,subtree:true});}
+    if(grid){observer=new MutationObserver(schedule);observer.observe(grid,{childList:true,subtree:false});}
     mq.addEventListener?.('change',()=>{menu(false);schedule();});
     setActive('home');schedule();
   }
