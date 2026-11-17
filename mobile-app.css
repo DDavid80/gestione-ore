@@ -133,3 +133,19 @@
   #monthsGrid .month-head .sub{line-height:1.6;overflow-wrap:anywhere}
 }
 @media(min-width:761px){.ore-day-toggle{display:none!important}}
+
+/* Safari iPhone: avoid table/grid intrinsic sizing pushing controls off-screen. */
+@media(max-width:760px){
+  #monthsGrid, #monthsGrid .month-card, #monthsGrid .month-body,
+  #monthsGrid .register-scroll, #monthsGrid table, #monthsGrid tbody,
+  #monthsGrid tbody tr {min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+  #monthsGrid table, #monthsGrid tbody, #monthsGrid tbody tr {width:100%!important}
+  #monthsGrid .register-scroll tbody tr {display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:0!important;overflow:hidden!important}
+  #monthsGrid .register-scroll tbody tr.ore-day-open {gap:8px!important;padding:0 10px 10px!important}
+  #monthsGrid .register-scroll tbody tr>td, #monthsGrid .register-scroll tbody tr.ore-day-open>td {grid-column:1!important;min-width:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0!important}
+  #monthsGrid .register-scroll tbody tr.ore-day-open>td:first-child {width:100%!important}
+  #monthsGrid .register-scroll tbody tr.ore-day-open>td:nth-child(4) {display:flex!important;flex-direction:column!important}
+  #monthsGrid .ore-field-label, #monthsGrid .date-cell {width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+  #monthsGrid .register-scroll input:not([type=checkbox]) {display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+  #monthsGrid .register-scroll tbody tr.ore-day-open>td.chk {min-height:48px!important}
+}
