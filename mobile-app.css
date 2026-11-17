@@ -149,3 +149,10 @@
   #monthsGrid .register-scroll input:not([type=checkbox]) {display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
   #monthsGrid .register-scroll tbody tr.ore-day-open>td.chk {min-height:48px!important}
 }
+
+/* I giorni della reperibilità scorrono insieme alla pagina su telefono. */
+@media(max-width:760px){
+  #repMonthsGrid .month-body.open{max-height:none!important;height:auto!important;overflow:visible!important}
+  #repMonthsGrid .month-card{min-width:0;max-width:100%}
+  #repMonthsGrid .rep-day-row label{min-height:44px;display:flex;align-items:center;gap:10px}
+}
