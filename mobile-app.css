@@ -156,3 +156,21 @@
   #repMonthsGrid .month-card{min-width:0;max-width:100%}
   #repMonthsGrid .rep-day-row label{min-height:44px;display:flex;align-items:center;gap:10px}
 }
+
+/* Ferie, permessi e ticket: le stesse celle diventano schede su telefono. */
+@media(max-width:760px){
+  #secFerie .ore-ledger-wrap,#secTicket .ore-ledger-wrap{overflow:visible!important;max-height:none!important;height:auto!important;min-width:0!important;scrollbar-gutter:auto}
+  #secFerie table.ore-mobile-ledger,#secTicket table.ore-mobile-ledger{display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;border:0!important}
+  #secFerie .ore-mobile-ledger thead,#secTicket .ore-mobile-ledger thead{display:none!important}
+  #secFerie .ore-mobile-ledger tbody,#secTicket .ore-mobile-ledger tbody{display:flex!important;flex-direction:column;gap:12px;width:100%;min-width:0}
+  #secFerie .ore-mobile-ledger tr,#secTicket .ore-mobile-ledger tr{display:flex!important;flex-direction:column;gap:12px;width:100%!important;min-width:0!important;max-width:100%;box-sizing:border-box;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+  #secFerie .ore-mobile-ledger tr>td,#secTicket .ore-mobile-ledger tr>td{display:block!important;position:static!important;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box;padding:0!important;border:0!important;white-space:normal!important;text-align:left!important;background:transparent!important;box-shadow:none!important;overflow-wrap:anywhere}
+  #secFerie .ore-mobile-ledger td:first-child,#secTicket .ore-mobile-ledger td:first-child{font-size:1.05rem;font-weight:800;color:var(--acc);padding-bottom:10px!important;border-bottom:1px solid var(--line)!important}
+  #secFerie .ore-mobile-ledger td:not(:first-child)::before,#secTicket .ore-mobile-ledger td:not(:first-child)::before{content:attr(data-mobile-label);display:block;margin-bottom:6px;font-size:.78rem;font-weight:700;color:var(--txt-muted)}
+  #secFerie .ore-mobile-ledger input,#secTicket .ore-mobile-ledger input{display:block;width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box;min-height:46px;padding:10px!important;font-size:16px!important;background:var(--bg);border:1px solid var(--line);border-radius:10px}
+  #secTicket .ticket-box{display:flex!important;flex-direction:column;min-width:0;gap:12px}
+  #secTicket .ticket-box .field,#secTicket .ticket-box input,#secTicket .ticket-box button{width:100%!important;min-width:0;box-sizing:border-box}
+  #secTicket .ticket-auto,#secTicket .ticket-wait{display:block;margin-top:7px;white-space:normal}
+  #secTicket .rate-history{overflow-wrap:anywhere}
+  #secFerie .ore-mobile-ledger tr.saldo{border-color:var(--acc)}
+}

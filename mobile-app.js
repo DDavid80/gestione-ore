@@ -135,6 +135,28 @@
   }
 
   function schedule(){if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;if(mq.matches)prepareRows();});}
+  // Annotate the existing controls; keep their original onchange handlers.
+  function prepareLedgers(){
+    for(const [id,labels] of [
+      ['ferieHeadRows',['','Ferie (giorni)','Permessi','Semifestività','Recupero ore / DIR.VI']],
+      ['ferieMonthRows',['Mese','Ferie (giorni)','Permessi','Semifestività','Recupero ore / DIR.VI']],
+      ['ticketRows',['Mese','Giorni presenza','Valore ticket (€)','Totale']]
+    ]){
+      const body=document.getElementById(id);if(!body)continue;
+      body.closest('table').classList.add('ore-mobile-ledger');
+      body.closest('table').parentElement.classList.add('ore-ledger-wrap');
+      for(const row of body.rows){
+        const heading=row.cells[0]?.textContent.trim()||'';
+        [...row.cells].forEach((cell,i)=>{
+          cell.dataset.mobileLabel=labels[i];
+          cell.querySelectorAll('input').forEach(input=>{
+            input.setAttribute('aria-label',heading+' · '+labels[i]);
+            input.setAttribute('inputmode',id==='ticketRows'&&i===1?'numeric':'decimal');
+          });
+        });
+      }
+    }
+  }
   function start(){
     if(!$('.main')||$('.ore-app-nav'))return;
     const header=document.createElement('header');
@@ -172,6 +194,11 @@
     const grid=$('#monthsGrid');
     if(grid){observer=new MutationObserver(schedule);observer.observe(grid,{childList:true,subtree:false});}
     mq.addEventListener?.('change',()=>{menu(false);schedule();});
+    prepareLedgers();
+    for(const id of ['ferieHeadRows','ferieMonthRows','ticketRows']){
+      const body=document.getElementById(id);
+      if(body)new MutationObserver(prepareLedgers).observe(body,{childList:true});
+    }
     setActive('home');schedule();
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);
