@@ -20,6 +20,7 @@ function toggleRepDay(mIdx, eIdx, checked){
   y.reperibilitaDays[mIdx].entries[eIdx].rep = checked;
   saveData();
   renderRepPage();
+  renderMonthSummary();
 }
 function toggleRepMonth(mIdx){
   if(repOpenMonths.has(mIdx)) repOpenMonths.delete(mIdx);
