@@ -45,6 +45,7 @@ ilità</span><b>Apri →</b></button></div><button class="agenda-month-btn" oncl
   <div class="month-summary" id="monthSummary">
     <div class="stat"><div class="lbl">Ore mese</div><div class="val" id="mfOre">0</div></div>
     <div class="stat rep"><div class="lbl">Rep. mese</div><div class="val" id="mfRep">0</div></div>
+    <div class="stat rep"><div class="lbl">Giorni reperibilità mese</div><div class="val" id="mfRepDays">0</div></div>
     <div class="stat recup"><div class="lbl">Recup. mese</div><div class="val" id="mfRecup">0</div></div>
     <div class="stat euro"><div class="lbl">Euro mese</div><div class="val" id="mfEuro">0</div></div>
   </div>
