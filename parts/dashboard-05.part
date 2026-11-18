@@ -223,6 +223,7 @@ function renderMonthSummary(){
   const t = monthTotals(mIdx);
   document.getElementById('mfOre').textContent = t.ore.toFixed(2);
   document.getElementById('mfRep').textContent = t.rep.toFixed(2);
+  document.getElementById('mfRepDays').textContent = ensureYear(currentYear).reperibilitaDays[mIdx].entries.filter(e=>e.rep).length;
   document.getElementById('mfRecup').textContent = t.recup.toFixed(2);
   document.getElementById('mfEuro').textContent = '€' + t.euro.toFixed(2);
 }
