@@ -146,7 +146,9 @@
       body.closest('table').classList.add('ore-mobile-ledger');
       body.closest('table').parentElement.classList.add('ore-ledger-wrap');
       for(const row of body.rows){
-        const heading=row.cells[0]?.textContent.trim()||'';
+        const c0=row.cells[0];
+        if(c0&&!c0.dataset.name)c0.dataset.name=(c0.childNodes[0]?.textContent||c0.textContent).trim();
+        const heading=c0?.dataset.name||'';
         [...row.cells].forEach((cell,i)=>{
           cell.dataset.mobileLabel=labels[i];
           cell.querySelectorAll('input').forEach(input=>{
@@ -154,8 +156,40 @@
             input.setAttribute('inputmode',id==='ticketRows'&&i===1?'numeric':'decimal');
           });
         });
+        if(id!=='ferieHeadRows')collapseLedgerRow(id,row,heading);
       }
     }
+  }
+  // Ogni mese di Ferie e Ticket resta chiuso con il riepilogo; si apre toccando il titolo.
+  const openLedger=new Set();
+  const nz=v=>String(+(+v||0).toFixed(2));
+  function ledgerSummary(id,row){
+    const val=i=>row.cells[i]?.querySelector('input')?.value;
+    if(id==='ticketRows'){
+      const rate=(+String(val(2)||0).replace(',','.')||0).toFixed(2);
+      return {tot:(row.cells[3]?.textContent||'').trim(),line:(val(1)||0)+' gg × €'+rate,empty:false};
+    }
+    const parts=[['Ferie','gg',1],['Permessi','',2],['Semifestività','',3],['Recupero','h',4]].filter(([,,i])=>+String(val(i)||0).replace(',','.')).map(([n,u,i])=>n+' '+nz(String(val(i)).replace(',','.'))+(u?' '+u:''));
+    return {tot:'',line:parts.length?parts.join(' · '):'Nessun utilizzo',empty:!parts.length};
+  }
+  function collapseLedgerRow(id,row,heading){
+    const c0=row.cells[0];if(!c0)return;
+    const key=id+':'+heading;
+    row.classList.add('ledger-collapsible');
+    row.classList.toggle('ledger-open',openLedger.has(key));
+    let sum=c0.querySelector('.ledger-sum');
+    if(!sum){sum=document.createElement('span');sum.className='ledger-sum';c0.append(sum);}
+    const paint=()=>{
+      const r=ledgerSummary(id,row);
+      sum.innerHTML='<strong class="ledger-tot">'+(r.tot?r.tot+' ':'')+'<i class="ledger-chev" aria-hidden="true">▾</i></strong><small class="ledger-line'+(r.empty?' empty':'')+'">'+r.line+'</small>';
+      c0.setAttribute('aria-expanded',String(row.classList.contains('ledger-open')));
+    };
+    paint();
+    c0.setAttribute('role','button');c0.tabIndex=0;
+    const toggle=()=>{const on=!row.classList.contains('ledger-open');row.classList.toggle('ledger-open',on);on?openLedger.add(key):openLedger.delete(key);c0.setAttribute('aria-expanded',String(on));};
+    c0.onclick=toggle;
+    c0.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}};
+    row.addEventListener('change',()=>setTimeout(paint,50));
   }
   function start(){
     if(!$('.main')||$('.ore-app-nav'))return;
