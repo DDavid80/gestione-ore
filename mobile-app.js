@@ -201,6 +201,17 @@
     }
     setActive('home');schedule();
   }
+  // Spuntare Lavorato/Ferie o cambiare data ricostruisce tutti i mesi: su telefono la pagina
+  // risaliva e gli altri mesi si richiudevano. Qui si ripristinano mesi aperti e posizione.
+  const baseUpdateEntry=window.updateEntry;
+  if(typeof baseUpdateEntry==='function')window.updateEntry=function(m,e,field){
+    if(!mq.matches||!['lavorato','ferie','date'].includes(field))return baseUpdateEntry.apply(this,arguments);
+    const y=window.scrollY,open=[...document.querySelectorAll('.month-body.open')].map(x=>x.id);
+    const out=baseUpdateEntry.apply(this,arguments);
+    const restore=()=>{open.forEach(id=>document.getElementById(id)?.classList.add('open'));window.scrollTo(0,y);};
+    restore();requestAnimationFrame(()=>{restore();requestAnimationFrame(restore);});setTimeout(restore,250);
+    return out;
+  };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);
   else start();
 })();

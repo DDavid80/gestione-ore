@@ -13,7 +13,8 @@ function show(v){
  document.querySelectorAll('.ore-app-nav [data-view]').forEach(b=>b.classList.toggle('active',b.dataset.view===v));
  render();window.scrollTo(0,0);
 }
-function render(){
+function render(){const keep=window.scrollY;renderInner();window.scrollTo(0,keep)}
+function renderInner(){
  if(!panel)return;
  const y=ensureYear(currentYear);
  panel.innerHTML=`<div class="mw-period"><label>Anno<select id="mwYear">${Object.keys(DATA).filter(k=>/^\d{4}$/.test(k)).sort().map(k=>`<option ${+k===+currentYear?'selected':''}>${k}</option>`).join('')}</select></label><label>Mese<select id="mwMonth">${names.map((n,i)=>`<option value="${i}" ${i===month?'selected':''}>${n}</option>`).join('')}</select></label></div><div id="mwContent"></div>`;
@@ -30,15 +31,24 @@ function render(){
   content.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{const i=+b.dataset.day;if(view==='rep'){toggleRepDay(month,i,!entries[i].rep);render()}else editDay(i)});
  }else if(view==='ferie'){
   setMonthFilter(String(month));renderFerie();const cells=document.querySelector('#ferieHeadRows tr.saldo').cells;
-  content.innerHTML=`<h2>Saldi attuali</h2><div class="mw-balances">${['Ferie · gg','Permessi','Semifestività','Recupero · ore'].map((n,i)=>`<div><small>${n}</small><strong>${esc(cells[i+1].textContent)}</strong></div>`).join('')}</div><p class="mw-summary">Saldi fino a ${names[month]}. Inserisci qui l’usufruito di ${names[month]}.</p><form id="mwLeave">${['ferie','per','semifestivita','rechh'].map((k,i)=>field(k,['Ferie (giorni)','Permessi','Semifestività','Recupero ore / DIR.VI'][i],'number',y.ferie.usufruitoMonths[month][k]||0,'step="0.5" inputmode="decimal"')).join('')}<button class="mw-save">Salva mese</button></form><details><summary>Residui e spettanza</summary><div id="mwBase"></div></details>`;
-  content.querySelector('#mwLeave').onsubmit=e=>{e.preventDefault();const values=new FormData(e.target);for(const [k,v] of values)updateFerieMonth(month,k,v);showToast('Ferie e permessi salvati');render()};
+  content.innerHTML=`<h2>Saldi attuali</h2><div class="mw-balances">${['Ferie · gg','Permessi','Semifestività','Recupero · ore'].map((n,i)=>`<div><small>${n}</small><strong>${esc(cells[i+1].textContent)}</strong></div>`).join('')}</div><p class="mw-summary">Saldi fino a ${names[month]}. Tocca un mese per modificare ferie e permessi.</p><div class="mw-ticket-list">${names.map((n,i)=>`<button type="button" data-leave="${i}" class="mw-ticket mw-leave"><span>${n}${i===month?' · selezionato':''}</span><strong>${leaveTotal(y.ferie.usufruitoMonths[i])}</strong><small>${leaveSummary(y.ferie.usufruitoMonths[i])}</small></button>`).join('')}</div><details><summary>Residui e spettanza</summary><div id="mwBase"></div></details>`;
+  content.querySelectorAll('[data-leave]').forEach(b=>b.onclick=()=>editLeave(+b.dataset.leave));
   const base=content.querySelector('#mwBase');
   for(const kind of ['residuoPrec','spettanza']){const form=document.createElement('form');form.innerHTML=`<h3>${kind==='residuoPrec'?'Residuo precedente':'Spettanza'}</h3>`+['ferie','per','semifestivita','rechh'].map((k,i)=>field(k,['Ferie','Permessi','Semifestività','Recupero ore'][i],'number',y.ferie[kind][k]||0,'step="0.5" inputmode="decimal"')).join('')+'<button class="mw-save">Salva</button>';form.onsubmit=e=>{e.preventDefault();for(const [k,v] of new FormData(form))updateFerieBase(kind,k,v);showToast('Valori salvati');render()};base.append(form)}
  }else{
-  renderTicket();content.innerHTML=`<p class="mw-summary">${esc(document.querySelector('#ticketTotalBox').textContent)}</p><div class="mw-ticket-list">${[...document.querySelector('#ticketRows').rows].map((r,i)=>`<button type="button" data-ticket="${i}" class="mw-ticket"><span>${names[i]}${i===month?' · selezionato':''}</span><strong>${esc(r.cells[3].textContent)}</strong><small>${esc(r.cells[1].textContent.trim())}</small></button>`).join('')}</div><details><summary>Valore ticket da oggi</summary><form id="mwRate">${field('rate','Nuovo valore (€)','number',document.querySelector('#ticketRateInput').value,'min="0" step="0.01"')}<button class="mw-save">Applica da oggi</button></form></details>`;
+  renderTicket();content.innerHTML=`<p class="mw-summary">${esc(document.querySelector('#ticketTotalBox').textContent)}</p><div class="mw-ticket-list">${[...document.querySelector('#ticketRows').rows].map((r,i)=>`<button type="button" data-ticket="${i}" class="mw-ticket"><span>${names[i]}${i===month?' · selezionato':''}</span><strong>${esc(r.cells[3].textContent)}</strong><small>${esc(ticketLine(r))}</small></button>`).join('')}</div><details><summary>Valore ticket da oggi</summary><form id="mwRate">${field('rate','Nuovo valore (€)','number',document.querySelector('#ticketRateInput').value,'min="0" step="0.01"')}<button class="mw-save">Applica da oggi</button></form></details>`;
   content.querySelectorAll('[data-ticket]').forEach(b=>b.onclick=()=>editTicket(+b.dataset.ticket));
   content.querySelector('#mwRate').onsubmit=e=>{e.preventDefault();document.querySelector('#ticketRateInput').value=e.target.elements.rate.value;updateTicketRate();render()};
  }
+}
+const num=v=>String(+(+v||0).toFixed(2));
+const LEAVE=[['ferie','Ferie','gg'],['per','Permessi',''],['semifestivita','Semifestività',''],['rechh','Recupero','h']];
+function leaveSummary(m){const parts=LEAVE.filter(([k])=>+(m||{})[k]).map(([k,l,u])=>l+' '+num(m[k])+(u?' '+u:''));return parts.length?parts.join(' · '):'Nessun utilizzo'}
+function leaveTotal(){return ''}
+function ticketLine(r){const d=r.cells[1].querySelector('input')?.value||'0',v=r.cells[2].querySelector('input')?.value||'0';return d+' gg × €'+v}
+function editLeave(i){
+ const m=ensureYear(currentYear).ferie.usufruitoMonths[i];
+ openForm('Ferie e permessi · '+names[i],LEAVE.map(([k,l],j)=>field(k,['Ferie (giorni)','Permessi','Semifestività','Recupero ore / DIR.VI'][j],'number',m[k]||0,'step="0.5" inputmode="decimal"')).join(''),f=>{for(const [k] of LEAVE)updateFerieMonth(i,k,f.elements[k].value);showToast('Ferie e permessi salvati')});
 }
 function fitEditor(){
  if(!dialog)return;

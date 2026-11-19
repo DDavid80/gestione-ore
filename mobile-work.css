@@ -38,3 +38,4 @@
   .mw-dialog .mw-flags{grid-template-columns:repeat(2,minmax(0,1fr));flex:none;min-width:0}
   .mw-dialog .mw-flag{min-width:0;overflow-wrap:anywhere;padding:8px 6px;font-size:.75rem}
 }
+.mw-leave small{line-height:1.4}.mw-leave strong:empty{display:none}.mw-leave{grid-template-columns:1fr auto}
