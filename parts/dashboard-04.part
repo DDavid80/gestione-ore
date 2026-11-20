@@ -246,6 +246,7 @@ function renderTotals(){
   document.getElementById('yearEuro').textContent = '€' + t.euro.toFixed(2);
   document.getElementById('yearRep').textContent = t.rep.toFixed(2);
   document.getElementById('yearRecup').textContent = t.recup.toFixed(2);
+  if(typeof renderFerie==='function') renderFerie();
   const oreClosedSummary = document.getElementById('oreClosedSummary');
   if(oreClosedSummary){
     const oreFmt = t.ore.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2});
