@@ -40,3 +40,4 @@
 }
 .mw-leave small{line-height:1.4}.mw-leave strong:empty{display:none}.mw-leave{grid-template-columns:1fr auto}
 .mw-ticket strong{font-size:1.2rem;color:var(--success)}.mw-ticket small{font-size:.98rem;font-weight:700;color:var(--success)}.mw-ticket.mw-empty small{font-weight:400;color:var(--txt-muted)}
+.mw-leave:not(.mw-empty) small{color:var(--danger,#ef4444)}

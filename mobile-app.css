@@ -187,3 +187,4 @@
   .ledger-line{grid-column:1/-1;grid-row:2;font-size:.98rem;font-weight:700;color:var(--success)}
   .ledger-line.empty{font-weight:400;color:var(--txt-muted)}
 }
+@media(max-width:760px){#secFerie .ledger-line:not(.empty){color:var(--danger,#ef4444)}}
