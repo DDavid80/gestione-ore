@@ -284,6 +284,12 @@ function updateFerieBase(kind, col, value){
   saveData();
   renderFerie();
 }
+function updateRecupDal(value){
+  const f = ensureYear(currentYear).ferie;
+  if(value) f.recupDal = value;
+  saveData();
+  renderFerie();
+}
 function updateFerieMonth(mIdx, col, value){
   const y = ensureYear(currentYear);
   y.ferie.usufruitoMonths[mIdx][col] = parseFloat(value)||0;
@@ -313,8 +319,12 @@ function renderFerie(){
     </tr>`;
 
   // Le ore dei giorni spuntati "Recup." (fino al mese selezionato) si sommano al monte ore recupero.
+  // Il residuo precedente viene dalla busta paga: contano solo le spunte Recup. dalla data scelta in poi.
+  if(!f.recupDal){ const d=new Date(); d.setDate(d.getDate()-1); f.recupDal = d.toISOString().slice(0,10); saveData(); }
   let recupMaturato = 0;
-  for(let i=0;i<=upToMonth;i++){ if(y.months[i]) recupMaturato += monthTotals(i).recup; }
+  for(let i=0;i<=upToMonth;i++){
+    (y.months[i]?.entries||[]).forEach(e=>{ if(e.recup && e.date && e.date >= f.recupDal) recupMaturato += parseFloat(e.ore)||0; });
+  }
   const saldo = {}; FERIE_COLS.forEach(c=> saldo[c] = (f.residuoPrec[c]||0) + (f.spettanza[c]||0) - cumUsu[c] + (c==='rechh' ? recupMaturato : 0));
 
   const ferieSummary = document.getElementById('ferieClosedSummary');
@@ -328,8 +338,8 @@ function renderFerie(){
   document.getElementById('ferieHeadRows').innerHTML =
     rowHtml('Residuo Prec.', 'residuoPrec', true, f.residuoPrec) +
     rowHtml('Spettanza', 'spettanza', true, f.spettanza) +
-    rowHtml('Recup. maturato', '', false, {rechh: recupMaturato}) +
-    rowHtml(currentMonthFilter===''? 'Usufruito (anno)' : 'Usufruito (' + MONTHS[upToMonth].charAt(0)+MONTHS[upToMonth].slice(1).toLowerCase() + ')', '', false, usuRowVals) +
+    rowHtml('Recup. maturato', '', false, {rechh: recupMaturato}).replace('<td>Recup. maturato</td>', `<td>Recup. maturato<br><small style="font-weight:400">dal <input type="date" value="${f.recupDal}" onchange="updateRecupDal(this.value)" style="width:auto;min-width:0"></small></td>`) +
+    rowHtml(currentMonthFilter===''? 'Usufruito (anno)' : 'Usufruito (' + MONTHS[upToMonth].charAt(0)+MONTHS[upToMonth].slice(1).toLowerCase() + ')', '', false, usuRowVals).replace('<tr>','<tr class="usu-row">') +
     `<tr class="saldo">` + `<td>Saldo</td>` + FERIE_COLS.map(c=>`<td>${saldo[c].toFixed(2)}</td>`).join('') + `</tr>`;
 
   document.getElementById('ferieMonthRows').innerHTML = MONTHS.map((name,i)=>`

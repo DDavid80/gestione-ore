@@ -5,6 +5,7 @@
  #ticketRows td:last-child{color:var(--success,#35d889)!important;font-weight:700;background:transparent;font-variant-numeric:tabular-nums}
  #secFerie .ferie-table :is(input[type=number],td.read-value){color:var(--text-muted,#b6bdc7)!important;font-weight:400!important}
  #secFerie .ferie-table :is(input[type=number],td.read-value).recorded{color:var(--success,#35d889)!important;font-weight:700!important}
+ #secFerie #ferieHeadRows tr.usu-row td.read-value.recorded,#secFerie #ferieMonthRows input[type=number].recorded{color:var(--danger,#ef4444)!important}
  #repMonthsGrid .month-body.open{max-height:clamp(160px,36dvh,370px);overflow-y:auto;scrollbar-gutter:stable}
  #repTrend,.rep-dialog{padding:16px;border-radius:16px;background:var(--card,#202936);color:var(--text,inherit);border:1px solid var(--card-border);margin-bottom:16px}
  #repTrend h3,.rep-dialog h2{margin:0 0 12px}.rep-bars{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:3px}.rep-bar{display:flex;align-items:center;flex-direction:column;justify-content:flex-end;height:110px;font-size:clamp(9px,2vw,13px)}.rep-bar i{width:65%;background:#18af94;border-radius:4px 4px 0 0;min-height:1px}
